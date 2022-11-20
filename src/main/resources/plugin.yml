@@ -1,0 +1,19 @@
+name: FireMysteryBlocks
+version: ${project.version}
+main: cz.devfire.mysteryblocks.MysteryBlocksPluginImpl
+api-version: 1.16
+author: "Firestone82"
+load: POSTWORLD
+
+softdepend:
+  - "PlaceholderAPI"
+  - "CMI"
+  - "HolographicDisplays"
+  - "DecentHolograms"
+
+commands:
+  mysteryblocks:
+    aliases:
+      - "firemysteryblocks"
+      - "mb"
+      - "fmb"

@@ -1,0 +1,141 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'maven-publish'
+}
+
+group 'FireMysteryBlocks'
+version = "2.1.2"
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    repositories {
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo.bg-software.com/repository/nms/' }
+        maven {
+            url 'http://nexus.basicland.cz:8081/repository/dev-nms/'
+            allowInsecureProtocol = true
+        }
+        maven {
+            url 'http://nexus.basicland.cz:8081/repository/dev-public/'
+            allowInsecureProtocol = true
+        }
+
+        maven {
+            url 'http://nexus.basicland.cz:8081/repository/dev-private/'
+            credentials {
+                username "dev"
+                password "mandarinka"
+            }
+            allowInsecureProtocol = true
+        }
+    }
+
+    dependencies {
+        // Spigot jars
+        compileOnly "net.minecraft:server:1.18.1"
+        compileOnly "org.spigotmc:v1_18_R2:b3450-2"
+
+        // Addons
+        compileOnly "me.clip:placeholderapi:2.10.9"
+        compileOnly "com.zrips:cmi:9.0.4.4"
+        compileOnly "com.zrips:cmiLib:1.0.3.10"
+        compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
+        compileOnly 'com.github.decentsoftware-eu:decentholograms:2.5.1'
+        implementation "com.iridium:IridiumColorAPI:1.0.5"
+    }
+
+    build {
+        dependsOn shadowJar
+    }
+}
+
+dependencies {
+    implementation project(":API")
+    implementation fileTree("archive")
+
+    // Addons
+    compileOnly "me.clip:placeholderapi:2.10.9"
+    compileOnly "com.zrips:cmi:9.0.4.4"
+    compileOnly "com.zrips:cmiLib:1.0.3.10"
+    compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
+    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.5.1'
+    implementation "com.iridium:IridiumColorAPI:1.0.5"
+}
+
+subprojects {
+    shadowJar {
+        archiveFileName = "${project.name}.jar"
+        destinationDirectory = file("../archive/")
+    }
+}
+
+processResources {
+    outputs.upToDateWhen {false}
+    String versionNumber = System.getenv("BUILD_NUMBER") == null ? version : version + "." + System.getenv("BUILD_NUMBER")
+
+    eachFile { details ->
+        if (details.name.contentEquals('plugin.yml')) {
+            filter { String line ->
+                line.replace('${project.version}', versionNumber)
+            }
+        }
+    }
+}
+
+shadowJar {
+    dependsOn(jar)
+
+    if (System.getenv("BUILD_NUMBER") == null) {
+        archiveName = rootProject.name + "-" + version + ".jar"
+    } else {
+        archiveName = rootProject.name + "-" + version + "-b" + System.getenv("BUILD_NUMBER") + ".jar"
+    }
+
+    delete fileTree('./target/') {
+        exclude archiveName
+    }
+
+    destinationDir = file("./target/")
+    from sourceSets.getByName("main").output
+    configurations = [project.configurations.getByName("runtimeClasspath")]
+}
+
+task copyAPI(type: Copy) {
+    String versionNumber = System.getenv("BUILD_NUMBER") == null ? version : version + "." + System.getenv("BUILD_NUMBER")
+
+    from './archive/API.jar'
+    into './target/'
+    rename('API.jar', rootProject.name + 'API-'+ versionNumber +'.jar')
+}
+
+clean {
+    delete file('./archive/')
+}
+
+build {
+    dependsOn shadowJar
+    dependsOn copyAPI
+    dependsOn clean
+}
+
+publish.shouldRunAfter shadowJar
+shadowJar.shouldRunAfter build
+build.shouldRunAfter subprojects.build

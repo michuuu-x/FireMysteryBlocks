@@ -3,6 +3,7 @@ package cz.devfire.mysteryblocks.Block.AntiAfk.Methods;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.AntiAfk.AntiAfkMethod;
+import cz.devfire.mysteryblocks.api.Block.AntiAfk.BlockAntiAfkHandler;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -11,20 +12,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.awt.geom.Point2D;
 import java.util.Random;
 
-public class KnockbackMethod implements AntiAfkMethod {
-
-    private final MysteryBlocksPluginImpl plugin;
-    private final MysteryBlock mysteryBlock;
-
-    private final double percentage;
+public class KnockbackMethod extends BaseAntiAfkMethod {
     private final float power;
 
-    public KnockbackMethod(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
-        this.plugin = plugin;
-        this.mysteryBlock = mysteryBlock;
+    public KnockbackMethod(BlockAntiAfkHandler handler, MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
+        super(plugin, handler, mysteryBlock);
 
-        this.percentage = mysteryBlock.getConfig().getInt("AntiAFK.Methods.Knockback.Chance", 10);
-        this.power = Float.parseFloat(mysteryBlock.getConfig().getString("AntiAFK.Methods.Knockback.Power", "1"));
+        this.power = Float.parseFloat(mysteryBlock.getConfig().getString("AntiAFK.Methods.Knockback.Power","1"));
     }
 
     public void check(Player player) {
@@ -51,7 +45,7 @@ public class KnockbackMethod implements AntiAfkMethod {
                 public void run() {
                     entity.setVelocity(player.getLocation().getDirection().normalize().setX(point2D.getX()).setZ(point2D.getY()).multiply(player.isSneaking() ? 1 : 0.75).setY(0.4D));
                 }
-            }.runTaskLater(plugin, 2);
+            }.runTaskLater(plugin,2);
         } else {
             if (player.isSneaking()) {
                 player.setVelocity(player.getVelocity().setY(0.475D));
@@ -61,14 +55,10 @@ public class KnockbackMethod implements AntiAfkMethod {
                     public void run() {
                         entity.setVelocity(player.getLocation().getDirection().normalize().multiply((power * player.getLocation().getPitch() > 50 ? 1.5 : 0.65) * (-1)).setY(0.4));
                     }
-                }.runTaskLater(plugin, 2);
+                }.runTaskLater(plugin,2);
             } else {
                 entity.setVelocity(player.getLocation().getDirection().normalize().multiply((power * player.getLocation().getPitch() > 50 ? 1.5 : 1) * (-1)).setY(0.4));
             }
         }
-    }
-
-    public boolean canCheck(Player player) {
-        return (100 * new Random().nextDouble()) <= percentage;
     }
 }

@@ -10,6 +10,7 @@ import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.Hologram.BlockHologram;
 import cz.devfire.mysteryblocks.api.Block.Hologram.Handlers.BlockHologramHandler;
+import cz.devfire.mysteryblocks.api.Block.Hologram.Providers.HologramProvider;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,98 +19,34 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class HolographicDisplaysProvider implements BlockHologram {
-    private final MysteryBlocksPluginImpl plugin;
-    private final MysteryBlock mysteryBlock;
-    private final BlockHologramHandler hologramHandler;
-
-    private final String name;
-    private final ArrayList<TextLine> lines = Lists.newArrayList();
+public class HolographicDisplaysProvider extends BaseHologramProvider {
     private Location location;
     private Hologram hologram;
 
-    public HolographicDisplaysProvider(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock, BlockHologramHandler hologramHandler) {
-        this.plugin = plugin;
-        this.mysteryBlock = mysteryBlock;
-        this.hologramHandler = hologramHandler;
-        this.name = "FMB-" + mysteryBlock.getName();
+    private final ArrayList<TextLine> lines = Lists.newArrayList();
+
+    public HolographicDisplaysProvider(BlockHologramHandler handler, MysteryBlock mysteryBlock) {
+        super(handler, mysteryBlock,"FMB-"+ mysteryBlock.getName());
     }
 
     public void create() {
-        update();
+        location = mysteryBlock.getLocation().clone().add(0.5,2 + hologramHandler.getOffset(),0.5);
+        hologram = HologramsAPI.createHologram(hologramHandler.getPlugin(), location);
+
+        ConfigurationSection settings = hologramHandler.getConfig(HologramProvider.HolographicDisplays);
+        hologram.setAllowPlaceholders(settings.getBoolean("AllowPlaceholders",false));
     }
 
     public void recreate() {
-        if (hologram != null) {
-            hologram.delete();
-        }
-
-        ConfigurationSection settings = hologramHandler.getHologramConfiguration();
-
-        this.location = mysteryBlock.getLocation().clone().add(0.5, 2 + hologramHandler.getHologramOffset(), 0.5);
-        this.hologram = HologramsAPI.createHologram(plugin, location);
-
-        if (settings.isConfigurationSection("HolographicDisplays")) {
-            this.hologram.setAllowPlaceholders(settings.getBoolean("HolographicDisplays.AllowPlaceholders", false));
-        }
-
+        destroy();
         create();
     }
 
     public void update() {
-        List<String> hologramLines = Lists.newArrayList();
+        List<String> hologramLines = getLines();
 
-        if (mysteryBlock.isCooldownEnabled()) {
-            long time = mysteryBlock.getCooldownCurrent() + mysteryBlock.getCooldownRequired() - System.currentTimeMillis();
-
-            LinkedHashMap<String, Integer> list = Maps.newLinkedHashMap(mysteryBlock.getMineMap());
-            list = Utils.sortMapByValue(list, false);
-
-            for (String line : time < 0 ? hologramHandler.getHologramActiveLines() : hologramHandler.getHologramInactiveLines()) {
-                line = Utils.parseArgs(line,
-                        mysteryBlock.getName(),
-                        mysteryBlock.getCurrentMines() + "",
-                        (mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines()) + "",
-                        mysteryBlock.getRequiredMines() + "",
-                        time > 0 ? Utils.translateTime(time) + "" : "00:00:00",
-                        time > 0 ? Utils.setTimeSecondsToString(time / 1000) + "" : "0s",
-                        time > 0 ? ((int) (time / 1000)) + "" : "0");
-
-                if (line.contains("{pos")) {
-                    for (int i = 0; i < 10; i++) {
-                        String pos = i + 1 > list.size() ? Language.EMPTY.getMessage() : (String) list.keySet().toArray()[i];
-
-                        line = line.replace("{pos-" + (i + 1) + "-name}", pos);
-                        line = line.replace("{pos-" + (i + 1) + "-value}", "" + list.getOrDefault(pos, 0));
-                    }
-                }
-
-                hologramLines.add(line);
-            }
-        } else {
-            LinkedHashMap<String, Integer> list = Maps.newLinkedHashMap(mysteryBlock.getMineMap());
-            list = Utils.sortMapByValue(list, false);
-
-            for (String line : hologramHandler.getHologramActiveLines()) {
-                line = Utils.parseArgs(line,
-                        mysteryBlock.getName(),
-                        mysteryBlock.getCurrentMines() + "",
-                        (mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines()) + "",
-                        mysteryBlock.getRequiredMines() + "",
-                        "00:00:00",
-                        "0s",
-                        "0");
-
-                for (int i = 0; i < 10; i++) {
-                    String pos = i > list.size() ? Language.EMPTY.getMessage() : (String) list.keySet().toArray()[i];
-
-                    line = line.replace("{pos-" + (i + 1) + "-name}", pos);
-                    line = line.replace("{pos-" + (i + 1) + "-value}", "" + list.getOrDefault(pos, 0));
-                }
-
-                hologramLines.add(line);
-            }
-        }
+        location = mysteryBlock.getLocation().add(0.5,2 + hologramHandler.getOffset(),0.5);
+        hologram.getLocation().setY(location.getY());
 
         if (lines.isEmpty()) {
             for (String line : hologramLines) {
@@ -137,6 +74,9 @@ public class HolographicDisplaysProvider implements BlockHologram {
     }
 
     public void destroy() {
-        hologram.delete();
+        if (hologram != null) {
+            hologram.delete();
+            hologram = null;
+        }
     }
 }

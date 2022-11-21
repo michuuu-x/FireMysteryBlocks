@@ -30,4 +30,10 @@ public interface BlockAntiAfkHandler {
      */
     boolean isEnabled();
 
+    /**
+     * Get chance of antiAfk
+     *
+     * @return Chance of antiAfk
+     */
+    double getChance();
 }

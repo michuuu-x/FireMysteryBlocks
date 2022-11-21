@@ -1,5 +1,6 @@
 package cz.devfire.mysteryblocks.Block.Listener;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
@@ -21,13 +22,14 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 public class BlockMineListener implements Listener {
     private final MysteryBlocksPluginImpl plugin;
 
-    private final HashMap<String, Long> mineMap = Maps.newHashMap();
+    private final HashMap<Player, List<Long>> mineMap = Maps.newHashMap();
 
     public BlockMineListener(MysteryBlocksPluginImpl plugin) {
         this.plugin = plugin;
@@ -76,11 +78,13 @@ public class BlockMineListener implements Listener {
         if (mysteryBlock != null) {
             event.setCancelled(true);
 
-            long time = mineMap.getOrDefault(player.getName(),0L);
-            if (time + 100 > System.currentTimeMillis()) {
+            List<Long> timeList = mineMap.getOrDefault(player, Lists.newArrayList());
+            timeList.add(System.currentTimeMillis());
+            mineMap.put(player, timeList);
+
+            if (timeList.size() > 100) {
+                // Actions
                 return;
-            } else {
-                mineMap.put(player.getName(), System.currentTimeMillis());
             }
 
             if (mysteryBlock.isCooldownEnabled() && mysteryBlock.getCooldownCurrent() != 0) {

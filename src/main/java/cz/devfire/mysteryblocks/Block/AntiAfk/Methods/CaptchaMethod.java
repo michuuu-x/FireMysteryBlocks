@@ -5,6 +5,7 @@ import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.AntiAfk.AntiAfkMethod;
+import cz.devfire.mysteryblocks.api.Block.AntiAfk.BlockAntiAfkHandler;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,74 +24,90 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class CaptchaMethod implements AntiAfkMethod {
-
-    private final MysteryBlocksPluginImpl plugin;
-    private final MysteryBlock mysteryBlock;
-
+public class CaptchaMethod extends BaseAntiAfkMethod implements Listener {
+    private int size;
+    private final boolean fillEnabled;
+    private final ItemStack activeItem;
+    private final ItemStack fillItem;
     private final ArrayList<String> checkingPlayers = Lists.newArrayList();
-
-    private final double percentage;
-    private final Material item;
     private final ArrayList<String> onFailActions = Lists.newArrayList();
     private final ArrayList<String> onSuccessActions = Lists.newArrayList();
 
-    public CaptchaMethod(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
-        this.plugin = plugin;
-        this.mysteryBlock = mysteryBlock;
+    public CaptchaMethod(BlockAntiAfkHandler handler, MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
+        super(plugin, handler, mysteryBlock);
 
-        this.percentage = mysteryBlock.getConfig().getDouble("AntiAFK.Methods.Captcha.Chance", 10);
-        this.item = Material.valueOf(mysteryBlock.getConfig().getString("AntiAFK.Methods.Captcha.Material"));
+        this.size = mysteryBlock.getConfig().getInt("AntiAFK.Methods.Captcha.Size");
+        this.fillEnabled = mysteryBlock.getConfig().getBoolean("AntiAFK.Methods.Captcha.Inventory.Fill.Enabled");
+        this.activeItem = Utils.getItemFromSection(mysteryBlock.getConfig().getConfigurationSection("AntiAFK.Methods.Captcha.Inventory.Active"));
+        this.fillItem = Utils.getItemFromSection(mysteryBlock.getConfig().getConfigurationSection("AntiAFK.Methods.Captcha.Inventory.Fill"));
         this.onFailActions.addAll(mysteryBlock.getConfig().getStringList("AntiAFK.Methods.Captcha.Action.OnFail"));
         this.onSuccessActions.addAll(mysteryBlock.getConfig().getStringList("AntiAFK.Methods.Captcha.Action.OnSuccess"));
 
-        plugin.getServer().getPluginManager().registerEvents(new Listener() {
-            @EventHandler
-            public void onClick(InventoryClickEvent event) {
-                if (!checkingPlayers.contains(event.getWhoClicked().getName())) return;
-
-                if (event.getCurrentItem() != null && event.getClickedInventory() != event.getWhoClicked().getInventory()) {
-                    checkingPlayers.remove(event.getWhoClicked().getName());
-                    event.getWhoClicked().closeInventory();
-
-                    Utils.doActions(plugin, mysteryBlock, onSuccessActions, event.getWhoClicked().getName());
-                }
-
-                event.setCancelled(true);
-            }
-
-            @EventHandler
-            public void onClose(InventoryCloseEvent event) {
-                if (!checkingPlayers.contains(event.getPlayer().getName())) return;
-
-                checkingPlayers.remove(event.getPlayer().getName());
-                Utils.doActions(plugin, mysteryBlock, onFailActions, event.getPlayer().getName());
-            }
-
-            @EventHandler
-            public void onDisconnect(PlayerQuitEvent event) {
-                checkingPlayers.remove(event.getPlayer().getName());
-            }
-        }, plugin);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
     public void check(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 27, Language.CAPTCHA_TITLE.getMessage());
+        Inventory inventory = null;
 
-        ItemStack itemStack = new ItemStack(item);
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(Utils.cc(Language.CAPTCHA_ITEM_TITLE.getMessage()));
-        itemMeta.setLore(Utils.ccl(Arrays.stream(Language.CAPTCHA_ITEM_DESCRIPTION.getMessage().split("\n")).toList()));
-        itemStack.setItemMeta(itemMeta);
+        if (size < 9) {
+            size = 5;
 
-        inventory.setItem((new Random().nextInt(27) + 1), itemStack);
+            inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Language.CAPTCHA_TITLE.getMessage());
+        } else {
+            if (size < 18) {
+                size = 9;
+            } else if (size < 27) {
+                size = 18;
+            } else if (size < 36) {
+                size = 27;
+            } else if (size < 45) {
+                size = 36;
+            } else if (size < 54) {
+                size = 45;
+            } else {
+                size = 54;
+            }
+
+            inventory = Bukkit.createInventory(null, size, Language.CAPTCHA_TITLE.getMessage());
+        }
+
+        if (fillEnabled) {
+            for (int i = 0; i < size; i++) {
+                inventory.setItem(i, fillItem);
+            }
+        }
+
+        inventory.setItem((new Random().nextInt(size) + 1), activeItem);
 
         checkingPlayers.add(player.getName());
         player.openInventory(inventory);
     }
 
-    public boolean canCheck(Player player) {
-        return (100 * new Random().nextDouble()) <= percentage;
+    @EventHandler
+    public void onClick(InventoryClickEvent event) {
+        if (!checkingPlayers.contains(event.getWhoClicked().getName())) return;
+
+        if (event.getCurrentItem() != null && event.getClickedInventory() != event.getWhoClicked().getInventory()) {
+            checkingPlayers.remove(event.getWhoClicked().getName());
+            event.getWhoClicked().closeInventory();
+
+            Utils.doActions(plugin, mysteryBlock, event.getCurrentItem() == activeItem ?  onSuccessActions : onFailActions, event.getWhoClicked().getName());
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent event) {
+        if (!checkingPlayers.contains(event.getPlayer().getName())) return;
+
+        checkingPlayers.remove(event.getPlayer().getName());
+        Utils.doActions(plugin, mysteryBlock, onFailActions, event.getPlayer().getName());
+    }
+
+    @EventHandler
+    public void onDisconnect(PlayerQuitEvent event) {
+        checkingPlayers.remove(event.getPlayer().getName());
     }
 }

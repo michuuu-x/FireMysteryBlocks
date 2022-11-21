@@ -59,9 +59,22 @@ EnchantLimit:
 MiningEffects:
   # If enabled, player will have specific effect when mining this block
   # Effect must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
-  Enabled: true
+  Enabled: false
   List:
     - "SLOW_DIGGING:1"
+
+AntiCheat:
+  # If enabled, player that are mining block faster than allowed mines per millisecond
+  # will be actioned from list bellow
+  Enabled: true
+  # Time in millisecond that time will count
+  Time: 1000
+  # Action performer after player reach limit
+  Action:
+    50:
+      - "[WARN] {2} is mining block {0} too fast!"
+    100:
+      - "[COMMAND] kick {2} You are mining block {0} too fast!"
 
 AntiAFK:
   # If enabled, players that are mining will be randomly blocked depends on method
@@ -87,7 +100,7 @@ AntiAFK:
             - "&r"
             - "&7 Click this item to verify you there &r"
             - "&r"
-        # Material that will be used in menu
+        # Material that will be filled in all other slots
         Fill:
           Enabled: false
           Item:
@@ -156,10 +169,21 @@ Hologram:
       UpdateInterval: 0
     HolographicDisplays:
       AllowPlaceholders: false
+    DecentHolograms:
+      # Perm: decentholograms.hologram.FMB-BLOCKNAME
+      #  BlockName is the name of file without .yml at the end
+      RequirePerms: false
+      UpdateRange: 48
+      ShowRange: 48
+      TextDownOrder: false
+      AlwaysFacePlayer: false
+      Facing: 0
+      # Set UpdateInterval to 0 to disable
+      UpdateInterval: 2
 
 Cooldown:
-  # If enabled, block will be unmineable for specific time.
-  # After that time, block will be working again.
+  # If enabled, block will be unminable for specific time.
+  # After that time, block will be regenerated back.
   # After is mined, block will to turn to material specific bellow.
   Enabled: true
   # Time is set in milliseconds

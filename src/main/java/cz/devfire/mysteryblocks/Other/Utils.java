@@ -8,7 +8,10 @@ import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -556,5 +559,16 @@ public class Utils {
             return "W";
         }
         return "none";
+    }
+
+    public static ItemStack getItemFromSection(ConfigurationSection section) {
+        ItemStack stack = new ItemStack(Material.valueOf(section.getString("Material","BEDROCK")));
+        ItemMeta meta = stack.getItemMeta();
+
+        meta.setDisplayName(Utils.cc(section.getString("Name","&cError")));
+        meta.setLore(Utils.ccl(section.getStringList("Lore")));
+        stack.setItemMeta(meta);
+
+        return stack;
     }
 }

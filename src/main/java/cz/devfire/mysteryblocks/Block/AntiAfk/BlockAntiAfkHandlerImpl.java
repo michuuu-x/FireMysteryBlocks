@@ -13,6 +13,7 @@ public class BlockAntiAfkHandlerImpl implements BlockAntiAfkHandler {
     private final MysteryBlock mysteryBlock;
 
     private boolean enabled = false;
+    private double chance = 0.0;
     private AntiAfkType type = AntiAfkType.NONE;
     private AntiAfkMethod method = null;
 
@@ -34,9 +35,11 @@ public class BlockAntiAfkHandlerImpl implements BlockAntiAfkHandler {
         }
 
         switch (type) {
-            case KNOCKBACK -> method = new KnockbackMethod(plugin, mysteryBlock);
-            case CAPTCHA -> method = new CaptchaMethod(plugin, mysteryBlock);
+            case KNOCKBACK -> method = new KnockbackMethod(this,plugin, mysteryBlock);
+            case CAPTCHA -> method = new CaptchaMethod(this,plugin, mysteryBlock);
         }
+
+        this.chance = mysteryBlock.getConfig().getDouble("AntiAFK.Chance");
     }
 
     @Override
@@ -52,5 +55,10 @@ public class BlockAntiAfkHandlerImpl implements BlockAntiAfkHandler {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public double getChance() {
+        return chance;
     }
 }

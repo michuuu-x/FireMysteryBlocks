@@ -77,5 +77,7 @@ public interface MysteryBlock {
 
     long getCooldownCurrent();
 
+    long getCooldown();
+
     boolean isUnderCooldown();
 }

@@ -72,7 +72,7 @@ public class MysteryBlockImpl implements MysteryBlock {
             if (!this.configFile.exists()) this.configFile.createNewFile();
 
             this.config = ConfigImpl.loadConfiguration(this.configFile);
-            this.config.syncWithConfig(this.configFile, plugin.getResource("blocks/first.yml"), "Action.OnDestroy.PerPlace");
+            this.config.syncWithConfig(this.configFile, plugin.getResource("blocks/first.yml"), "Action.OnDestroy.PerPlace", "AntiCheat.Action");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -395,7 +395,7 @@ public class MysteryBlockImpl implements MysteryBlock {
             config.set("Block.Location", Utils.locationToString(location));
             config.save(configFile);
 
-            config.syncWithConfig(this.configFile, plugin.getResource("blocks/first.yml"), "Action.OnDestroy.PerPlace");
+            config.syncWithConfig(this.configFile, plugin.getResource("blocks/first.yml"), "Action.OnDestroy.PerPlace", "AntiCheat.Action");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -495,6 +495,10 @@ public class MysteryBlockImpl implements MysteryBlock {
 
     public long getCooldownCurrent() {
         return cooldownCurrent;
+    }
+
+    public long getCooldown() {
+        return cooldownCurrent + cooldownRequired - System.currentTimeMillis();
     }
 
     public boolean isUnderCooldown() {

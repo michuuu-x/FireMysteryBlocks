@@ -17,7 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class CMIHologramProvider extends BaseHologramProvider implements BlockHologram {
+public class CMIHologramProvider extends BaseHologramProvider {
     private final CMI cmi = CMI.getInstance();
     private CMILocation location;
     private CMIHologram hologram;
@@ -27,7 +27,7 @@ public class CMIHologramProvider extends BaseHologramProvider implements BlockHo
     }
 
     public void create() {
-        location = new CMILocation(mysteryBlock.getLocation().clone());
+        location = new CMILocation(mysteryBlock.getLocation());
         hologram = new CMIHologram(name,location);
 
         ConfigurationSection settings = hologramHandler.getConfig(HologramProvider.CMI);
@@ -43,15 +43,10 @@ public class CMIHologramProvider extends BaseHologramProvider implements BlockHo
         cmi.getHologramManager().addHologram(hologram);
     }
 
-    public void recreate() {
-        destroy();
-        create();
-    }
-
     public void update() {
         List<String> hologramLines = getLines();
 
-        location = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2 + hologramHandler.getOffset(),0.5D));
+        location = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D));
         hologram.setLoc(location);
         hologram.setLines(hologramLines);
         hologram.update();

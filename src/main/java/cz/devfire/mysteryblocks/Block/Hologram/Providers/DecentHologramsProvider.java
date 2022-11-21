@@ -1,11 +1,13 @@
 package cz.devfire.mysteryblocks.Block.Hologram.Providers;
 
+import com.google.common.collect.Lists;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.api.Block.Hologram.Handlers.BlockHologramHandler;
 import cz.devfire.mysteryblocks.api.Block.Hologram.Providers.HologramProvider;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -20,7 +22,7 @@ public class DecentHologramsProvider extends BaseHologramProvider {
     }
 
     public void create() {
-        location = mysteryBlock.getLocation().add(0.5,2 + hologramHandler.getOffset(), 0.5);
+        location = mysteryBlock.getLocation();
         hologram = DHAPI.createHologram(name, location);
 
         ConfigurationSection settings = hologramHandler.getConfig(HologramProvider.DecentHolograms);
@@ -32,21 +34,14 @@ public class DecentHologramsProvider extends BaseHologramProvider {
         hologram.setFacing((float) settings.getDouble("Facing",0));
         hologram.setUpdateInterval(settings.getInt("UpdateInterval",2));
 
-        hologram.updateAll();
-    }
-
-    public void recreate() {
-        destroy();
-        create();
     }
 
     public void update() {
         List<String> hologramLines = getLines();
 
-        location = mysteryBlock.getLocation().add(0.5,2 + hologramHandler.getOffset(),0.5);
+        location = mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D);
         hologram.setLocation(location);
         DHAPI.setHologramLines(hologram, hologramLines);
-        // hologram.update();
     }
 
     public void destroy() {

@@ -69,15 +69,16 @@ public class BlocksPlaceholdersExpansion extends PlaceholderExpansion {
                 case "COOLDOWN" -> {
                     switch (args[2].toUpperCase()) {
                         case "ACTIVE" -> {
-                            return (mysteryBlock.getCooldownCurrent() != 0) + "";
+                            return (mysteryBlock.getCooldownHandler().getCurrent() != 0) + "";
                         }
 
                         case "CURRENT" -> {
-                            Long time = mysteryBlock.getCooldownCurrent() + mysteryBlock.getCooldownRequired() - System.currentTimeMillis();
+                            long time = mysteryBlock.getCooldownHandler().getTime();
+                            long current = mysteryBlock.getCooldownHandler().getCurrent();
 
                             switch (args[3].toUpperCase()) {
                                 case "FORMATTED" -> {
-                                    if (time < 0 || mysteryBlock.getCooldownCurrent() == 0) {
+                                    if (time < 0 || time == 0) {
                                         return "00:00:00";
                                     } else {
                                         return Utils.translateTime(time);
@@ -85,7 +86,7 @@ public class BlocksPlaceholdersExpansion extends PlaceholderExpansion {
                                 }
 
                                 case "SHORT" -> {
-                                    if (time < 0 || mysteryBlock.getCooldownCurrent() == 0) {
+                                    if (time < 0 || time == 0) {
                                         return "0s";
                                     } else {
                                         return Utils.setTimeSecondsToString(time / 1000);
@@ -93,7 +94,7 @@ public class BlocksPlaceholdersExpansion extends PlaceholderExpansion {
                                 }
 
                                 case "PLAIN" -> {
-                                    if (time < 0 || mysteryBlock.getCooldownCurrent() == 0) {
+                                    if (time < 0 || time == 0) {
                                         return 0 + "";
                                     } else {
                                         return ((int) (time / 1000)) + "";

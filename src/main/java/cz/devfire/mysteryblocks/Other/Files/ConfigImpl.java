@@ -55,6 +55,31 @@ public final class ConfigImpl extends YamlConfiguration implements Config {
      * Custom
      */
 
+
+    /**
+     * Returns list of keys under path
+     *
+     * @param path Path to section
+     * @return Collection of keys under sections
+     */
+    public Collection<String> getKeys(String path) {
+        if (isConfigurationSection(path)) {
+            return getConfigurationSection(path).getKeys(false);
+        } else {
+            return Lists.newArrayList();
+        }
+    }
+
+    /**
+     * Alias for testing is path is set in config
+     *
+     * @param path Path to section
+     * @return True or false statement
+     */
+    public boolean exists(String path) {
+        return isConfigurationSection(path);
+    }
+
     /**
      * Load a config from a file.
      *
@@ -238,30 +263,6 @@ public final class ConfigImpl extends YamlConfiguration implements Config {
     private static void clearConfiguration(ConfigurationSection section) {
         for (String key : section.getKeys(false))
             section.set(key, null);
-    }
-
-    /**
-     * Returns list of keys under path
-     *
-     * @param path Path to section
-     * @return Collection of keys under sections
-     */
-    public Collection<String> getKeys(String path) {
-        if (isConfigurationSection(path)) {
-            return getConfigurationSection(path).getKeys(false);
-        } else {
-            return Lists.newArrayList();
-        }
-    }
-
-    /**
-     * Alias for testing is path is set in config
-     *
-     * @param path Path to section
-     * @return True or false statement
-     */
-    public boolean exists(String path) {
-        return isConfigurationSection(path);
     }
 
     /**

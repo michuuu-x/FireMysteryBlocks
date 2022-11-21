@@ -2,9 +2,12 @@ package cz.devfire.mysteryblocks.Block.Listener;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
+import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -21,21 +24,18 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import java.util.*;
 
 public class BlockMineListener implements Listener {
     private final MysteryBlocksPluginImpl plugin;
-
-    private final HashMap<Player, List<Long>> mineMap = Maps.newHashMap();
 
     public BlockMineListener(MysteryBlocksPluginImpl plugin) {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(
+            ignoreCancelled = true,
+            priority = EventPriority.LOWEST)
     public void onMineStart(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
         Block block = player.getTargetBlockExact(4, FluidCollisionMode.NEVER);
@@ -43,8 +43,8 @@ public class BlockMineListener implements Listener {
         if (block != null) {
             MysteryBlock mysteryBlock = plugin.getBlockHandler().getBlockAt(block.getLocation());
 
-            if (mysteryBlock != null && mysteryBlock.isMiningEffectsEnabled()) {
-                for (String effect : mysteryBlock.getMiningEffects().keySet()) {
+            if (mysteryBlock != null && mysteryBlock.getMiningEffectsHandler().isEnabled()) {
+                for (String effect : mysteryBlock.getMiningEffectsHandler().getList().keySet()) {
                     PotionEffectType potion = PotionEffectType.getByName(effect);
 
                     if (potion != null) {
@@ -60,7 +60,7 @@ public class BlockMineListener implements Listener {
                             }.runTaskLater(plugin, 2);
                         }
 
-                        player.addPotionEffect(new PotionEffect(potion, 5, mysteryBlock.getMiningEffects().get(effect) - 1, true, false));
+                        player.addPotionEffect(new PotionEffect(potion,5,mysteryBlock.getMiningEffectsHandler().getList().get(effect) - 1,true,false));
                     }
                 }
             }
@@ -78,32 +78,36 @@ public class BlockMineListener implements Listener {
         if (mysteryBlock != null) {
             event.setCancelled(true);
 
-            List<Long> timeList = mineMap.getOrDefault(player, Lists.newArrayList());
-            timeList.add(System.currentTimeMillis());
-            mineMap.put(player, timeList);
+            if (mysteryBlock.getAntiCheatHandler().isEnabled()) {
+                Set<Long> playerMap = mysteryBlock.getAntiCheatHandler().getMineMap().get(player);
 
-            if (timeList.size() > 100) {
-                // Actions
-                return;
+                if (playerMap == null) {
+                    playerMap = Sets.newHashSet();
+                    mysteryBlock.getAntiCheatHandler().getMineMap().put(player, playerMap);
+                }
+
+                Bukkit.broadcastMessage(playerMap.size() +"");
+
+                playerMap.add(System.currentTimeMillis());
             }
 
-            if (mysteryBlock.isCooldownEnabled() && mysteryBlock.getCooldownCurrent() != 0) {
+            if (mysteryBlock.getCooldownHandler().isEnabled() && mysteryBlock.getCooldownHandler().getCurrent() != 0) {
                 Language.BLOCK_COOLDOWN.send(player);
                 return;
             }
 
-            if (mysteryBlock.isPermissionEnabled() && !player.hasPermission(mysteryBlock.getPermission())) {
+            if (mysteryBlock.isPermissionRequired() && !player.hasPermission("firemysteryblocks.mine."+ mysteryBlock.getName())) {
                 Language.BLOCK_PERMISSION.send(player);
                 return;
             }
 
-            if (mysteryBlock.isEnchantLimitEnabled()) {
+            if (mysteryBlock.getEnchantLimitHandler().isEnabled()) {
                 if (tool != null && tool.getType() != Material.AIR && player.getGameMode() != GameMode.CREATIVE) {
                     for (Enchantment enchantment : tool.getEnchantments().keySet()) {
                         int level = tool.getEnchantmentLevel(enchantment);
                         String ench = enchantment.getKey().toString().split(":")[1].toUpperCase();
 
-                        int allowedLevel = mysteryBlock.getEnchantLimits().getOrDefault(enchantment.getName(), Integer.MAX_VALUE);
+                        int allowedLevel = mysteryBlock.getEnchantLimitHandler().getList().getOrDefault(enchantment.getName(), Integer.MAX_VALUE);
 
                         if (allowedLevel < level) {
                             Language.ENCHANT_LIMIT.send(player, ench, level, allowedLevel);
@@ -113,12 +117,12 @@ public class BlockMineListener implements Listener {
                 }
             }
 
-            if (mysteryBlock.isDurabilityEnabled()) {
+            if (mysteryBlock.getItemDamage() != 0) {
                 if (tool != null && tool.getType() != Material.AIR && player.getGameMode() != GameMode.CREATIVE) {
                     short durability = tool.getDurability();
                     short maxDurability = tool.getType().getMaxDurability();
 
-                    if (durability + mysteryBlock.getDurabilityDamage() >= maxDurability) {
+                    if (durability + mysteryBlock.getItemDamage() >= maxDurability) {
                         // TODO: Simulate item break
                         player.setItemInHand(null);
                     } else {
@@ -133,10 +137,10 @@ public class BlockMineListener implements Listener {
                             }
 
                             if (prc >= hit) {
-                                tool.setDurability((short) (tool.getDurability() + mysteryBlock.getDurabilityDamage()));
+                                tool.setDurability((short) (tool.getDurability() + mysteryBlock.getItemDamage()));
                             }
                         } else {
-                            tool.setDurability((short) (tool.getDurability() + mysteryBlock.getDurabilityDamage()));
+                            tool.setDurability((short) (tool.getDurability() + mysteryBlock.getItemDamage()));
                         }
                     }
                 }

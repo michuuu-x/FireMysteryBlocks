@@ -131,15 +131,16 @@ public class Utils {
     public static void doPlaceActions(MysteryBlocksPluginImpl plugin, MysteryBlock block, List<String> actions, List<String> playerList) {
         for (String placeAction : actions) {
             String[] placeActionArgs = placeAction.split(" ", 3);
-
             String place = placeActionArgs[0];
             String actionType = placeActionArgs[1];
             String action = placeActionArgs[2];
 
             if (place.contains("~")) {
                 String[] placeArgs = placeActionArgs[0].split("~");
+                int start = Integer.parseInt(placeArgs[0]);
+                int end = Integer.parseInt(placeArgs[1]);
 
-                for (int pos = Integer.parseInt(placeArgs[0]); pos < Integer.parseInt(placeArgs[1]) + 1; pos++) {
+                for (int pos = start; pos < end + 1; pos++) {
                     if (pos * 2 > playerList.size()) continue;
 
                     String playerName = playerList.get(pos * 2 - 2);
@@ -163,7 +164,7 @@ public class Utils {
     }
 
     public static void doActions(MysteryBlocksPluginImpl plugin, MysteryBlock block, List<String> actions) {
-        doActions(plugin, block, actions, "null");
+        doActions(plugin, block, actions,"null");
     }
 
     public static void doActions(MysteryBlocksPluginImpl plugin, MysteryBlock block, List<String> actions, String playerName, String... add) {
@@ -306,6 +307,16 @@ public class Utils {
                     }
 
                     player.sendMessage(Utils.cc(action));
+                }
+
+                break;
+            }
+
+            case "[WARN]": {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (p.hasPermission("firemysteryblocks.warn")) {
+                        p.sendMessage(Utils.cc(action));
+                    }
                 }
 
                 break;
@@ -565,7 +576,7 @@ public class Utils {
         ItemStack stack = new ItemStack(Material.valueOf(section.getString("Material","BEDROCK")));
         ItemMeta meta = stack.getItemMeta();
 
-        meta.setDisplayName(Utils.cc(section.getString("Name","&cError")));
+        meta.setDisplayName(Utils.cc(section.getString("DisplayName","&cError")));
         meta.setLore(Utils.ccl(section.getStringList("Lore")));
         stack.setItemMeta(meta);
 

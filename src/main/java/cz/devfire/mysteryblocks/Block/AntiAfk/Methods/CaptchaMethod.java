@@ -4,11 +4,9 @@ import com.google.common.collect.Lists;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.Other.Utils;
-import cz.devfire.mysteryblocks.api.Block.AntiAfk.AntiAfkMethod;
 import cz.devfire.mysteryblocks.api.Block.AntiAfk.BlockAntiAfkHandler;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,10 +16,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class CaptchaMethod extends BaseAntiAfkMethod implements Listener {
@@ -36,10 +32,10 @@ public class CaptchaMethod extends BaseAntiAfkMethod implements Listener {
     public CaptchaMethod(BlockAntiAfkHandler handler, MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
         super(plugin, handler, mysteryBlock);
 
-        this.size = mysteryBlock.getConfig().getInt("AntiAFK.Methods.Captcha.Size");
+        this.size = mysteryBlock.getConfig().getInt("AntiAFK.Methods.Captcha.Inventory.Size");
         this.fillEnabled = mysteryBlock.getConfig().getBoolean("AntiAFK.Methods.Captcha.Inventory.Fill.Enabled");
         this.activeItem = Utils.getItemFromSection(mysteryBlock.getConfig().getConfigurationSection("AntiAFK.Methods.Captcha.Inventory.Active"));
-        this.fillItem = Utils.getItemFromSection(mysteryBlock.getConfig().getConfigurationSection("AntiAFK.Methods.Captcha.Inventory.Fill"));
+        this.fillItem = Utils.getItemFromSection(mysteryBlock.getConfig().getConfigurationSection("AntiAFK.Methods.Captcha.Inventory.Fill.Item"));
         this.onFailActions.addAll(mysteryBlock.getConfig().getStringList("AntiAFK.Methods.Captcha.Action.OnFail"));
         this.onSuccessActions.addAll(mysteryBlock.getConfig().getStringList("AntiAFK.Methods.Captcha.Action.OnSuccess"));
 
@@ -78,7 +74,7 @@ public class CaptchaMethod extends BaseAntiAfkMethod implements Listener {
             }
         }
 
-        inventory.setItem((new Random().nextInt(size) + 1), activeItem);
+        inventory.setItem((new Random().nextInt(size)), activeItem);
 
         checkingPlayers.add(player.getName());
         player.openInventory(inventory);
@@ -92,7 +88,7 @@ public class CaptchaMethod extends BaseAntiAfkMethod implements Listener {
             checkingPlayers.remove(event.getWhoClicked().getName());
             event.getWhoClicked().closeInventory();
 
-            Utils.doActions(plugin, mysteryBlock, event.getCurrentItem() == activeItem ?  onSuccessActions : onFailActions, event.getWhoClicked().getName());
+            Utils.doActions(plugin, mysteryBlock, event.getCurrentItem().isSimilar(activeItem) ? onSuccessActions : onFailActions, event.getWhoClicked().getName());
         }
 
         event.setCancelled(true);

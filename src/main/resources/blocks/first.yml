@@ -30,24 +30,17 @@
 #  - {pos-1-name} and {pos-1-value} - First position name and mine count. | Works only in OnDestroy-Global
 #
 # ! To disable any of events place [] instead of list
-#
+
 Block:
   Material: STONE
   Location: world/0/100/0
   # Count of block mines required to destroy block and get rewards.
   Limit: 10
-
-Permissions:
-  # If enabled, player will need specific permission to be able to
-  # mine this block. Permission can be changed bellow.
-  Enabled: false
-  Permission: "firemysteryblocks.mine.first"
-
-Durability:
-  # If enabled, player items will get damaged after mining block
-  # Damage is used in % with their un-breaking enchantment on item
-  Enabled: true
-  Damage: 1
+  # To disable item damage, set this to 0
+  ItemDamage: 1
+  # If enabled, player will need specific permission to be able to mine this block
+  # Perm: "firemysteryblocks.mine.BLOCKNAME"
+  Permission: false
 
 EnchantLimit:
   # If enabled, player items will be limited from mining with higher enchants then allowed once
@@ -69,6 +62,8 @@ AntiCheat:
   Enabled: true
   # Time in millisecond that time will count
   Time: 1000
+  # Time in millisecond after what will actions check be repeated
+  Cooldown: 30000
   # Action performer after player reach limit
   Action:
     50:
@@ -104,7 +99,7 @@ AntiAFK:
         Fill:
           Enabled: false
           Item:
-            Material: "WHITE_STAINED_GLASS_PLANE"
+            Material: "WHITE_STAINED_GLASS_PANE"
             DisplayName: "&r"
             Lore: []
       Action:

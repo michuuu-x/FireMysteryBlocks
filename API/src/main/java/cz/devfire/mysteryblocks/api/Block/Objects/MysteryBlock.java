@@ -1,6 +1,10 @@
 package cz.devfire.mysteryblocks.api.Block.Objects;
 
 import cz.devfire.mysteryblocks.api.Block.AntiAfk.BlockAntiAfkHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockAntiCheatHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockCooldownHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockEnchantLimitHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockMiningEffectsHandler;
 import cz.devfire.mysteryblocks.api.Block.Hologram.Handlers.BlockHologramHandler;
 import cz.devfire.mysteryblocks.api.Other.Config;
 import org.bukkit.Location;
@@ -9,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 
 public interface MysteryBlock {
     void load();
@@ -31,53 +36,40 @@ public interface MysteryBlock {
 
     void redefine(Location location);
 
-    Config getConfig();
-
     Material getMaterial();
 
     String getName();
+
+    HashMap<String, Integer> getMineMap();
+
+    HashMap<String, List<String>> getActionMap();
+
+    int getItemDamage();
+
+    boolean isPermissionRequired();
 
     Location getLocation();
 
     Block getBlock();
 
-    HashMap<String, Integer> getMineMap();
-
     int getRequiredMines();
-
-    int getTotalDestroys();
 
     int getCurrentMines();
 
-    boolean isPermissionEnabled();
-
-    String getPermission();
+    int getTotalDestroys();
 
     BlockAntiAfkHandler getAntiAfkHandler();
 
     BlockHologramHandler getHologramHandler();
 
-    boolean isDurabilityEnabled();
+    BlockAntiCheatHandler getAntiCheatHandler();
 
-    boolean isEnchantLimitEnabled();
+    BlockCooldownHandler getCooldownHandler();
 
-    HashMap<String, Integer> getEnchantLimits();
+    BlockEnchantLimitHandler getEnchantLimitHandler();
 
-    boolean isMiningEffectsEnabled();
+    BlockMiningEffectsHandler getMiningEffectsHandler();
 
-    HashMap<String, Integer> getMiningEffects();
-
-    int getDurabilityDamage();
-
-    boolean isCooldownEnabled();
-
-    Material getCooldownBlock();
-
-    long getCooldownRequired();
-
-    long getCooldownCurrent();
-
-    long getCooldown();
-
-    boolean isUnderCooldown();
+    Config getConfig();
 }
+

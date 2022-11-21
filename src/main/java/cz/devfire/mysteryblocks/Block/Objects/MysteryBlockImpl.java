@@ -3,6 +3,14 @@ package cz.devfire.mysteryblocks.Block.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.AntiAfk.BlockAntiAfkHandlerImpl;
+import cz.devfire.mysteryblocks.Block.Handlers.BlockAntiCheatHandlerImpl;
+import cz.devfire.mysteryblocks.Block.Handlers.BlockCooldownHandlerImpl;
+import cz.devfire.mysteryblocks.Block.Handlers.BlockEnchantLimitHandlerImpl;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockAntiCheatHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockCooldownHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockEnchantLimitHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockMiningEffectsHandler;
+import cz.devfire.mysteryblocks.Block.Handlers.BlockMiningEffectsHandlerImpl;
 import cz.devfire.mysteryblocks.Block.Hologram.Handlers.BlockHologramHandlerImpl;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.ConfigImpl;
@@ -27,41 +35,36 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class MysteryBlockImpl implements MysteryBlock {
     private final MysteryBlockImpl mysBlock;
     private final MysteryBlocksPluginImpl plugin;
+
     private final Material material;
     private final String name;
     private final HashMap<String, Integer> mineMap = Maps.newHashMap();
-    private final int requiredMines;
-    private final boolean durabilityEnabled;
-    private final int durabilityDamage;
-    private final boolean permissionEnabled;
-    private final String permission;
-    private final BlockAntiAfkHandler antiAfkHandler;
-    private final BlockHologramHandler hologramHandler;
-    private final boolean cooldownEnabled;
-    private final Material cooldownBlock;
-    private final long cooldownRequired;
-    private final boolean enchantLimitEnabled;
-    private final HashMap<String, Integer> enchantLimitList = Maps.newHashMap();
-    private final boolean miningEffectsEnabled;
-    private final HashMap<String, Integer> miningEffectsList = Maps.newHashMap();
-    private final ArrayList<String> onResetActions = Lists.newArrayList();
-    private final ArrayList<String> onMineActions = Lists.newArrayList();
-    private final ArrayList<String> onDestroyGlobalActions = Lists.newArrayList();
-    private final ArrayList<String> onDestroyPlaceActions = Lists.newArrayList();
-    private final ArrayList<String> onDestroyEveryPlaceActions = Lists.newArrayList();
-    private ConfigImpl config;
-    private File configFile;
+    private final HashMap<String, List<String>> actionMap = Maps.newHashMap();
+    private final int itemDamage;
+    private final boolean permission;
     private Location location;
-    private Block block;
+
+    private final int requiredMines;
     private int currentMines;
     private int totalDestroys;
-    private long cooldownCurrent = 0;
+
+    private final BlockAntiAfkHandler antiAfkHandler;
+    private final BlockHologramHandler hologramHandler;
+    private final BlockAntiCheatHandler antiCheatHandler;
+    private final BlockCooldownHandler cooldownHandler;
+    private final BlockEnchantLimitHandler enchantLimitHandler;
+    private final BlockMiningEffectsHandler miningEffectsHandler;
+
+    private ConfigImpl config;
+    private File configFile;
 
     public MysteryBlockImpl(MysteryBlocksPluginImpl plugin, String name) {
         this.plugin = plugin;
@@ -80,63 +83,33 @@ public class MysteryBlockImpl implements MysteryBlock {
         // Block
         this.material = Material.valueOf(config.getString("Block.Material"));
         this.name = name;
+        this.itemDamage = config.getInt("Block.ItemDamage");
+        this.permission = config.getBoolean("Block.Permission");
         this.location = null;
-        this.block = null;
 
         // Breaks
         this.requiredMines = config.getInt("Block.Limit");
         this.totalDestroys = 0;
         this.currentMines = 0;
 
-        // Durability
-        this.durabilityEnabled = config.getBoolean("Durability.Enabled");
-        this.durabilityDamage = config.getInt("Durability.Damage");
-
-        // Permissions
-        this.permissionEnabled = config.getBoolean("Permissions.Enabled");
-        this.permission = config.getString("Permissions.Permission");
-
-        // AntiAfk
-        this.antiAfkHandler = new BlockAntiAfkHandlerImpl(plugin, this);
-        this.antiAfkHandler.load();
-
-        // Hologram
-        this.hologramHandler = new BlockHologramHandlerImpl(plugin, this);
-        this.hologramHandler.init();
-
-        // Cooldown
-        this.cooldownEnabled = config.getBoolean("Cooldown.Enabled");
-        this.cooldownBlock = Material.valueOf(config.getString("Cooldown.Material"));
-        this.cooldownRequired = config.getLong("Cooldown.Time");
-        this.cooldownCurrent = 0;
-
-        // EnchantLimit
-        this.enchantLimitEnabled = config.getBoolean("EnchantLimit.Enabled");
-
-        for (String enchant : config.getStringList("EnchantLimit.List")) {
-            String[] enchantArgs = enchant.split(":");
-
-            this.enchantLimitList.put(enchantArgs[0].toUpperCase(), Integer.parseInt(enchantArgs[1]));
-        }
-
-        // MiningEffects
-        this.miningEffectsEnabled = config.getBoolean("MiningEffects.Enabled");
-
-        for (String effect : config.getStringList("MiningEffects.List")) {
-            String[] effectArgs = effect.split(":");
-
-            this.miningEffectsList.put(effectArgs[0].toUpperCase(), Integer.parseInt(effectArgs[1]));
-        }
+        // Handlers
+        this.antiAfkHandler = new BlockAntiAfkHandlerImpl(plugin,this);
+        this.antiCheatHandler = new BlockAntiCheatHandlerImpl(plugin, this);
+        this.hologramHandler = new BlockHologramHandlerImpl(plugin,this);
+        this.cooldownHandler = new BlockCooldownHandlerImpl(plugin,this);
+        this.enchantLimitHandler = new BlockEnchantLimitHandlerImpl(plugin,this);
+        this.miningEffectsHandler = new BlockMiningEffectsHandlerImpl(plugin,this);
 
         // Actions
-        this.onResetActions.addAll(config.getStringList("Action.OnReset"));
-        this.onMineActions.addAll(config.getStringList("Action.OnMine"));
-        this.onDestroyGlobalActions.addAll(config.getStringList("Action.OnDestroy.Global"));
-        this.onDestroyEveryPlaceActions.addAll(config.getStringList("Action.OnDestroy.EveryPlace"));
+        this.actionMap.put("onReset", config.getStringList("Action.OnReset"));
+        this.actionMap.put("onMine", config.getStringList("Action.OnMine"));
+        this.actionMap.put("onDestroyGlobal", config.getStringList("Action.OnDestroy.Global"));
+        this.actionMap.put("onDestroyEveryPlace", config.getStringList("Action.OnDestroy.EveryPlace"));
+        this.actionMap.put("onDestroyPerPlace", Lists.newArrayList());
 
         for (String place : config.getKeys("Action.OnDestroy.PerPlace")) {
             for (String action : config.getStringList("Action.OnDestroy.PerPlace." + place)) {
-                this.onDestroyPlaceActions.add(place + " " + action);
+                this.actionMap.get("onDestroyPerPlace").add(place + " " + action);
             }
         }
 
@@ -148,6 +121,7 @@ public class MysteryBlockImpl implements MysteryBlock {
         }.runTaskLaterAsynchronously(plugin, 0);
     }
 
+    @Override
     public void load() {
         String loc = config.getString("Block.Location");
         Location location = Utils.getLocationFromString(loc);
@@ -166,24 +140,17 @@ public class MysteryBlockImpl implements MysteryBlock {
             }
         }
 
-        this.location = location;
-        this.block = location.getBlock();
-
         try {
             ResultSet rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData WHERE name = '" + name + "'");
 
             if (rs.next()) {
-                this.cooldownCurrent = rs.getLong("cooldown");
-                this.totalDestroys = rs.getInt("destroys");
-                this.currentMines = rs.getInt("mines");
+                cooldownHandler.setCurrent(rs.getLong("cooldown"));
+                totalDestroys = rs.getInt("destroys");
+                currentMines = rs.getInt("mines");
 
-                String playerDataLine = rs.getString("playerMines");
-
-                if (!playerDataLine.isEmpty()) {
-                    for (String playerData : playerDataLine.split("\\|")) {
-                        String[] dataArgs = playerData.split("-");
-                        this.mineMap.put(dataArgs[0], Integer.parseInt(dataArgs[1]));
-                    }
+                for (String playerData : rs.getString("playerMines").split("\\|")) {
+                    String[] dataArgs = playerData.split("-");
+                    mineMap.put(dataArgs[0], Integer.parseInt(dataArgs[1]));
                 }
             }
         } catch (Exception e) {
@@ -192,13 +159,15 @@ public class MysteryBlockImpl implements MysteryBlock {
             }
         }
 
+        this.location = location;
         hologramHandler.load();
 
+        Block block = location.getBlock();
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (cooldownCurrent != 0) {
-                    block.setType(cooldownBlock);
+                if (cooldownHandler.getCurrent() != 0) {
+                    block.setType(cooldownHandler.getMaterial());
                 } else {
                     block.setType(material);
                 }
@@ -212,26 +181,23 @@ public class MysteryBlockImpl implements MysteryBlock {
         }.runTask(plugin);
     }
 
-    public void save() {
-        save(true);
-    }
+    @Override
+    public void save() { save(true); }
 
+    @Override
     public void save(boolean full) {
-        String playerMap = "";
-
-        for (String playerName : mineMap.keySet()) {
-            playerMap += "|" + playerName + "-" + mineMap.get(playerName);
-        }
-
-        if (playerMap.startsWith("|")) {
-            playerMap = playerMap.substring(1);
-        }
+        String playerMap = mineMap.keySet().stream().map(p -> p +"-"+ mineMap.get(p)).collect(Collectors.joining("|"));
 
         if (plugin.getDatabaseHandler().getDatabaseType() == DatabaseType.SQLITE) {
-            plugin.getDatabaseHandler().getDatabase().update("REPLACE INTO MysteryBlocksData VALUES (NULL, '" + name + "', " + cooldownCurrent + ", " + totalDestroys + ", " + currentMines + ", '" + playerMap + "')");
+            plugin.getDatabaseHandler().getDatabase().update("" +
+                    "REPLACE INTO MysteryBlocksData " +
+                    "VALUES (NULL, '" + name + "', " + cooldownHandler.getCurrent() + ", " + totalDestroys + ", " + currentMines + ", '" + playerMap + "')");
         } else {
-            plugin.getDatabaseHandler().getDatabase().update("INSERT INTO MysteryBlocksData VALUES (NULL, '" + name + "', " + cooldownCurrent + ", " + totalDestroys + ", " + currentMines + ", '" + playerMap + "') " +
-                    "ON DUPLICATE KEY UPDATE cooldown = " + cooldownCurrent + ", destroys = " + totalDestroys + ", mines = " + currentMines + ", playerMines = '" + playerMap + "'");
+            plugin.getDatabaseHandler().getDatabase().update("" +
+                    "INSERT INTO MysteryBlocksData " +
+                    "VALUES (NULL, '" + name + "', " + cooldownHandler.getCurrent() + ", " + totalDestroys + ", " + currentMines + ", '" + playerMap + "') " +
+                    "ON DUPLICATE KEY " +
+                    "UPDATE cooldown = " + cooldownHandler.getCurrent() + ", destroys = " + totalDestroys + ", mines = " + currentMines + ", playerMines = '" + playerMap + "'");
         }
 
         if (full && hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
@@ -239,8 +205,9 @@ public class MysteryBlockImpl implements MysteryBlock {
         }
     }
 
+    @Override
     public void remove() {
-        block.setType(Material.AIR);
+        location.getBlock().setType(Material.AIR);
 
         if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
             hologramHandler.getHologram().destroy();
@@ -249,21 +216,23 @@ public class MysteryBlockImpl implements MysteryBlock {
         Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockUnloadEvent(this));
     }
 
+    @Override
     public void reset() {
         reset(true);
     }
 
+    @Override
     public void reset(boolean full) {
-        block.setType(material);
+        location.getBlock().setType(material);
 
         mineMap.clear();
         currentMines = 0;
-        cooldownCurrent = 0;
+        cooldownHandler.setCurrent(0);
 
         if (full) {
             try {
                 Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockRespawnEvent(this));
-                Utils.doActions(plugin, this, onResetActions);
+                Utils.doActions(plugin,this, actionMap.get("onReset"));
             } catch (Exception e) {
                 plugin.getLogger().log(Level.SEVERE, "[FireMysteryBlocks] " + name + " | onResetActions is wrongly configured! Check your config!");
 
@@ -278,6 +247,7 @@ public class MysteryBlockImpl implements MysteryBlock {
         }
     }
 
+    @Override
     public void mine(Player player) {
         mineMap.put(player.getName(), mineMap.getOrDefault(player.getName(), 0) + 1);
         currentMines++;
@@ -285,7 +255,7 @@ public class MysteryBlockImpl implements MysteryBlock {
         Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockMineEvent(this, player));
 
         try {
-            Utils.doActions(plugin, this, onMineActions, player.getName(), mineMap.get(player.getName()) + "");
+            Utils.doActions(plugin, this, actionMap.get("onMine"), player.getName(), mineMap.get(player.getName()) + "");
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "[FireMysteryBlocks] " + name + " | onMineActions is wrongly configured! Check your config!");
 
@@ -303,8 +273,9 @@ public class MysteryBlockImpl implements MysteryBlock {
         }
     }
 
+    @Override
     public void destroy() {
-        Map<String, Integer> map = Utils.sortMapByValue(mineMap, false);
+        Map<String, Integer> map = Utils.sortMapByValue(mineMap,false);
         ArrayList<String> playerList = Lists.newArrayList();
         String playerListString = "$";
         String empty = Language.EMPTY.getMessage();
@@ -318,7 +289,7 @@ public class MysteryBlockImpl implements MysteryBlock {
             playerListString += "=" + playerName + "|" + map.get(playerName);
         }
 
-        for (int i = playerList.size() / 2; i < 10; i++) {
+        for (int i = playerList.size(); i < 10; i++) {
             playerList.add(empty);
             playerList.add("0");
 
@@ -326,44 +297,34 @@ public class MysteryBlockImpl implements MysteryBlock {
         }
 
         try {
-            Utils.doActions(plugin, this, onDestroyGlobalActions, playerListString);
+            Utils.doActions(plugin,this, actionMap.get("onDestroyGlobal"), playerListString);
         } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "[FireMysteryBlocks] " + name + " | onDestroyGlobalActions is wrongly configured! Check your config!");
+            plugin.getLogger().log(Level.SEVERE,"[FireMysteryBlocks] " + name + " | onDestroyGlobalActions is wrongly configured! Check your config!");
 
-            if (plugin.isDebugEnabled()) {
-                e.printStackTrace();
-            }
+            if (plugin.isDebugEnabled()) e.printStackTrace();
         }
 
         try {
             for (String playerName : map.keySet()) {
-                Utils.doActions(plugin, this, onDestroyEveryPlaceActions, playerName);
+                Utils.doActions(plugin,this, actionMap.get("onDestroyEveryPlace"), playerName);
             }
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "[FireMysteryBlocks] " + name + " | onDestroyEveryPlaceActions is wrongly configured! Check your config!");
 
-            if (plugin.isDebugEnabled()) {
-                e.printStackTrace();
-            }
+            if (plugin.isDebugEnabled()) e.printStackTrace();
         }
 
         try {
-            Utils.doPlaceActions(plugin, this, onDestroyPlaceActions, playerList);
+            Utils.doPlaceActions(plugin, this, actionMap.get("onDestroyPerPlace"), playerList);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "[FireMysteryBlocks] " + name + " | onDestroyPlaceActions is wrongly configured! Check your config!");
 
-            if (plugin.isDebugEnabled()) {
-                e.printStackTrace();
-            }
+            if (plugin.isDebugEnabled()) e.printStackTrace();
         }
 
-        if (cooldownEnabled) {
-            block.setType(cooldownBlock);
-            cooldownCurrent = System.currentTimeMillis();
-
-            if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
-                hologramHandler.getHologram().update();
-            }
+        if (cooldownHandler.isEnabled()) {
+            location.getBlock().setType(cooldownHandler.getMaterial());
+            cooldownHandler.setCurrent(System.currentTimeMillis());
         } else {
             reset();
         }
@@ -371,20 +332,20 @@ public class MysteryBlockImpl implements MysteryBlock {
         totalDestroys++;
     }
 
+    @Override
     public void redefine(Block block) {
         redefine(block.getLocation());
     }
 
+    @Override
     public void redefine(Location location) {
-        this.block.setType(Material.AIR);
-
+        this.location.getBlock().setType(Material.AIR);
         this.location = location;
-        this.block = location.getBlock();
 
-        if (cooldownEnabled && cooldownCurrent != 0) {
-            block.setType(cooldownBlock);
+        if (cooldownHandler.isEnabled() && cooldownHandler.getCurrent() != 0) {
+            this.location.getBlock().setType(cooldownHandler.getMaterial());
         } else {
-            block.setType(material);
+            this.location.getBlock().setType(material);
         }
 
         if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
@@ -405,105 +366,94 @@ public class MysteryBlockImpl implements MysteryBlock {
     // --- --- --- --- --- ---- ---
     //
 
-    public Config getConfig() {
-        return config;
-    }
 
+    @Override
     public Material getMaterial() {
         return material;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public Block getBlock() {
-        return block;
-    }
-
+    @Override
     public HashMap<String, Integer> getMineMap() {
         return mineMap;
     }
 
+    @Override
+    public HashMap<String, List<String>> getActionMap() {
+        return actionMap;
+    }
+
+    @Override
+    public int getItemDamage() {
+        return itemDamage;
+    }
+
+    @Override
+    public boolean isPermissionRequired() {
+        return permission;
+    }
+
+    @Override
+    public Location getLocation() {
+        return location;
+    }
+
+    @Override
+    public Block getBlock() {
+        return location.getBlock();
+    }
+
+    @Override
     public int getRequiredMines() {
         return requiredMines;
     }
 
-    public int getTotalDestroys() {
-        return totalDestroys;
-    }
-
+    @Override
     public int getCurrentMines() {
         return currentMines;
     }
 
-    public boolean isPermissionEnabled() {
-        return permissionEnabled;
+    @Override
+    public int getTotalDestroys() {
+        return totalDestroys;
     }
 
-    public String getPermission() {
-        return permission;
-    }
-
+    @Override
     public BlockAntiAfkHandler getAntiAfkHandler() {
         return antiAfkHandler;
     }
 
+    @Override
     public BlockHologramHandler getHologramHandler() {
         return hologramHandler;
     }
 
-    public boolean isEnchantLimitEnabled() {
-        return enchantLimitEnabled;
+    @Override
+    public BlockAntiCheatHandler getAntiCheatHandler() {
+        return antiCheatHandler;
     }
 
-    public HashMap<String, Integer> getEnchantLimits() {
-        return enchantLimitList;
+    @Override
+    public BlockCooldownHandler getCooldownHandler() {
+        return cooldownHandler;
     }
 
-    public boolean isMiningEffectsEnabled() {
-        return miningEffectsEnabled;
+    @Override
+    public BlockEnchantLimitHandler getEnchantLimitHandler() {
+        return enchantLimitHandler;
     }
 
-    public HashMap<String, Integer> getMiningEffects() {
-        return miningEffectsList;
+    @Override
+    public BlockMiningEffectsHandler getMiningEffectsHandler() {
+        return miningEffectsHandler;
     }
 
-    public boolean isDurabilityEnabled() {
-        return durabilityEnabled;
-    }
-
-    public int getDurabilityDamage() {
-        return durabilityDamage;
-    }
-
-    public boolean isCooldownEnabled() {
-        return cooldownEnabled;
-    }
-
-    public Material getCooldownBlock() {
-        return cooldownBlock;
-    }
-
-    public long getCooldownRequired() {
-        return cooldownRequired;
-    }
-
-    public long getCooldownCurrent() {
-        return cooldownCurrent;
-    }
-
-    public long getCooldown() {
-        return cooldownCurrent + cooldownRequired - System.currentTimeMillis();
-    }
-
-    public boolean isUnderCooldown() {
-        if (!cooldownEnabled) return false;
-
-        return cooldownCurrent + cooldownRequired - System.currentTimeMillis() > 0;
+    @Override
+    public Config getConfig() {
+        return config;
     }
 }

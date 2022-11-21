@@ -30,22 +30,17 @@ public class HolographicDisplaysProvider extends BaseHologramProvider {
     }
 
     public void create() {
-        location = mysteryBlock.getLocation().clone().add(0.5,2 + hologramHandler.getOffset(),0.5);
+        location = mysteryBlock.getLocation();
         hologram = HologramsAPI.createHologram(hologramHandler.getPlugin(), location);
 
         ConfigurationSection settings = hologramHandler.getConfig(HologramProvider.HolographicDisplays);
         hologram.setAllowPlaceholders(settings.getBoolean("AllowPlaceholders",false));
     }
 
-    public void recreate() {
-        destroy();
-        create();
-    }
-
     public void update() {
         List<String> hologramLines = getLines();
 
-        location = mysteryBlock.getLocation().add(0.5,2 + hologramHandler.getOffset(),0.5);
+        location = mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D);
         hologram.getLocation().setY(location.getY());
 
         if (lines.isEmpty()) {

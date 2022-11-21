@@ -20,6 +20,8 @@ public class BlockAntiAfkHandlerImpl implements BlockAntiAfkHandler {
     public BlockAntiAfkHandlerImpl(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
         this.plugin = plugin;
         this.mysteryBlock = mysteryBlock;
+
+        load();
     }
 
     @Override

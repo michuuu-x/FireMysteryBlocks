@@ -1,6 +1,7 @@
 package cz.devfire.mysteryblocks.Block.Hologram.Providers;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.Hologram.BlockHologram;
@@ -25,14 +26,20 @@ public abstract class BaseHologramProvider implements BlockHologram {
         return name;
     }
 
+    public void recreate() {
+        destroy();
+        create();
+        update();
+    }
+
     public List<String> getLines() {
-        LinkedHashMap<String, Integer> list = Utils.sortMapByValue(mysteryBlock.getMineMap(),false);
+        LinkedHashMap<String, Integer> list = Utils.sortMapByValue(Maps.newHashMap(mysteryBlock.getMineMap()),false);
         List<String> hologramLines = Lists.newArrayList();
 
-        long time = mysteryBlock.isCooldownEnabled() ? mysteryBlock.getCooldown() : 0;
+        long time = mysteryBlock.getCooldownHandler().isUnder() ? mysteryBlock.getCooldownHandler().getTime() : 0;
         boolean under = time > 0;
 
-        for (String line : getLines()) {
+        for (String line : hologramHandler.getLines()) {
             line = Utils.parseArgs(line,
                     mysteryBlock.getName(),
                     mysteryBlock.getCurrentMines() + "",

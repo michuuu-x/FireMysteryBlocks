@@ -31,6 +31,8 @@ public class BlockHologramHandlerImpl implements BlockHologramHandler {
     public BlockHologramHandlerImpl(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
         this.plugin = plugin;
         this.mysteryBlock = mysteryBlock;
+
+        init();
     }
 
     public void init() {
@@ -63,11 +65,11 @@ public class BlockHologramHandlerImpl implements BlockHologramHandler {
     }
 
     public List<String> getLines() {
-        return mysteryBlock.isUnderCooldown() ? inactiveLines : activeLines;
+        return mysteryBlock.getCooldownHandler().isUnder() ? inactiveLines : activeLines;
     }
 
     public double getOffset() {
-        return mysteryBlock.isUnderCooldown() ? inactiveOffset : activeOffset;
+        return mysteryBlock.getCooldownHandler().isUnder() ? inactiveOffset : activeOffset;
     }
 
     public ConfigurationSection getConfig(HologramProvider provider) {

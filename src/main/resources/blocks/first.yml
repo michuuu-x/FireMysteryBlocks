@@ -27,6 +27,7 @@
 #  - {4} - Current mines DESC
 #  - {5} - Required mines
 #  - {6} - Player mines actual
+#  - {7} - Mine speed
 #  - {pos-1-name} and {pos-1-value} - First position name and mine count. | Works only in OnDestroy-Global
 #
 # ! To disable any of events place [] instead of list
@@ -57,18 +58,28 @@ MiningEffects:
     - "SLOW_DIGGING:1"
 
 AntiCheat:
-  # If enabled, player that are mining block faster than allowed mines per millisecond
-  # will be actioned from list bellow
+  # If enabled, player mining speed per interval will be checked,
+  # when mining speed is above specified limit, actions will be performer
+  # This tries to detect player with fastbreak, for every block,
+  # you NEED TO CONFIGURE IT by yourself for how fast player can normally mine!
   Enabled: true
-  # Time in millisecond that time will count
+  # Time in millis for witch mine counts
+  # Example. 1000 -> 20 mines per 1000 milliseconds with Effi 5 and Haste 2
   Time: 1000
-  # Time in millisecond after what will actions check be repeated
+  # Time in milliseconds after which commands will be repeated.
+  # If player has over 2 mines/second, WARN command will be executed every 30s till player stops mining
+  # If action is 0, cooldown is bypassed
   Cooldown: 30000
+  # If player have minespeed above 8, all block breaks will be ignored
+  # Set to -1 if you want to ignore it
+  Break: 6
   # Action performer after player reach limit
   Action:
-    50:
+    0:
+      - "[ACTIONBAR] Your minespeed is {0}/s"
+    2:
       - "[WARN] {2} is mining block {0} too fast!"
-    100:
+    6:
       - "[COMMAND] kick {2} You are mining block {0} too fast!"
 
 AntiAFK:

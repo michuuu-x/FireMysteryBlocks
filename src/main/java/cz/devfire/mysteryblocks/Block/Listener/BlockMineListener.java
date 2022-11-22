@@ -57,10 +57,10 @@ public class BlockMineListener implements Listener {
                                 public void run() {
                                     player.getInventory().setItemInMainHand(itemStack);
                                 }
-                            }.runTaskLater(plugin, 2);
+                            }.runTaskLater(plugin,2);
                         }
 
-                        player.addPotionEffect(new PotionEffect(potion,5,mysteryBlock.getMiningEffectsHandler().getList().get(effect) - 1,true,false));
+                        player.addPotionEffect(new PotionEffect(potion,20,mysteryBlock.getMiningEffectsHandler().getList().get(effect) - 1,true,false));
                     }
                 }
             }
@@ -79,16 +79,7 @@ public class BlockMineListener implements Listener {
             event.setCancelled(true);
 
             if (mysteryBlock.getAntiCheatHandler().isEnabled()) {
-                Set<Long> playerMap = mysteryBlock.getAntiCheatHandler().getMineMap().get(player);
-
-                if (playerMap == null) {
-                    playerMap = Sets.newHashSet();
-                    mysteryBlock.getAntiCheatHandler().getMineMap().put(player, playerMap);
-                }
-
-                Bukkit.broadcastMessage(playerMap.size() +"");
-
-                playerMap.add(System.currentTimeMillis());
+                if (mysteryBlock.getAntiCheatHandler().mine(player)) return;
             }
 
             if (mysteryBlock.getCooldownHandler().isEnabled() && mysteryBlock.getCooldownHandler().getCurrent() != 0) {

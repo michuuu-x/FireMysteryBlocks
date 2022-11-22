@@ -19,4 +19,6 @@ public interface BlockAntiCheatHandler extends Runnable {
 
     @Override
     void run();
+
+    boolean mine(Player player);
 }

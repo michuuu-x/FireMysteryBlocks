@@ -20,6 +20,7 @@ public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAn
     private boolean enabled;
     private long checkMillis;
     private long cooldown;
+    private int breakLimit;
     private HashMap<Integer, List<String>> actions = Maps.newLinkedHashMap();
     private HashMap<Player, Set<Long>> mineMap = Maps.newHashMap();
     private HashMap<String, Long> warnCooldown = Maps.newHashMap();
@@ -39,6 +40,7 @@ public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAn
         enabled = mysteryBlock.getConfig().getBoolean("AntiCheat.Enabled");
         checkMillis = mysteryBlock.getConfig().getLong("AntiCheat.Time");
         cooldown = mysteryBlock.getConfig().getLong("AntiCheat.Cooldown");
+        breakLimit = mysteryBlock.getConfig().getInt("AntiCheat.Break");
 
         for (String key : mysteryBlock.getConfig().getKeys("AntiCheat.Action")) {
             actions.put(Integer.parseInt(key), mysteryBlock.getConfig().getStringList("AntiCheat.Action."+ key));
@@ -74,9 +76,9 @@ public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAn
         for (Player player : Lists.newArrayList(mineMap.keySet())) {
             Set<Long> playerMap = Sets.newHashSet(mineMap.get(player));
 
-            if (warnCooldown.getOrDefault(player.getName().toLowerCase(),0L) + cooldown < System.currentTimeMillis()) {
-                for (Integer actionPoint : actionKeyList) {
-                    if (playerMap.size() > actionPoint) {
+            for (Integer actionPoint : actionKeyList) {
+                if (playerMap.size() > actionPoint) {
+                    if (warnCooldown.getOrDefault(actionPoint +"-"+ player.getName().toLowerCase(),0L) + cooldown < System.currentTimeMillis() || actionPoint == 0) {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
@@ -84,9 +86,10 @@ public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAn
                             }
                         }.runTask(plugin);
 
-                        warnCooldown.put(player.getName().toLowerCase(), System.currentTimeMillis());
-                        break;
+                        warnCooldown.put(actionPoint +"-"+ player.getName().toLowerCase(), System.currentTimeMillis());
                     }
+
+                    break;
                 }
             }
 
@@ -96,9 +99,29 @@ public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAn
                 }
             }
 
-            if (playerMap.size() == 0) {
+            if (playerMap.size() == 0 || player == null || !player.isOnline()) {
                 mineMap.remove(player);
+
+                for (String warn : Lists.newArrayList(warnCooldown.keySet())) {
+                    if (warn.endsWith(player.getName().toLowerCase())) {
+                        warnCooldown.remove(warn);
+                    }
+                }
             }
         }
+    }
+
+    @Override
+    public boolean mine(Player player) {
+        Set<Long> playerMap = mysteryBlock.getAntiCheatHandler().getMineMap().get(player);
+
+        if (playerMap == null) {
+            playerMap = Sets.newHashSet();
+            mysteryBlock.getAntiCheatHandler().getMineMap().put(player, playerMap);
+        }
+
+        playerMap.add(System.currentTimeMillis());
+
+        return playerMap.size() > breakLimit && breakLimit > 0;
     }
 }

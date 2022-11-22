@@ -1,6 +1,7 @@
 package cz.devfire.mysteryblocks.Other;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.iridium.iridiumcolorapi.IridiumColorAPI;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
@@ -209,6 +210,7 @@ public class Utils {
                 block == null ? "null" : block.getCurrentMines() + "",
                 block == null ? "null" : (block.getRequiredMines() - block.getCurrentMines()) + "",
                 block == null ? "null" : block.getRequiredMines() + "",
+                block == null ? "null" : block.getAntiCheatHandler().getMineMap().getOrDefault(player, Sets.newHashSet()).size() +"",
                 add.length == 0 ? "null" : add[0]);
 
         switch (actionType) {
@@ -575,7 +577,6 @@ public class Utils {
     public static ItemStack getItemFromSection(ConfigurationSection section) {
         ItemStack stack = new ItemStack(Material.valueOf(section.getString("Material","BEDROCK")));
         ItemMeta meta = stack.getItemMeta();
-
         meta.setDisplayName(Utils.cc(section.getString("DisplayName","&cError")));
         meta.setLore(Utils.ccl(section.getStringList("Lore")));
         stack.setItemMeta(meta);

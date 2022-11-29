@@ -12,7 +12,9 @@ import cz.devfire.mysteryblocks.api.Block.Hologram.Handlers.BlockHologramHandler
 import cz.devfire.mysteryblocks.api.Block.Hologram.Providers.HologramProvider;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import net.Zrips.CMILib.Container.CMILocation;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,6 +47,10 @@ public class CMIHologramProvider extends BaseHologramProvider {
 
     public void update() {
         List<String> hologramLines = getLines();
+
+        for (int i = hologramLines.size(); i < hologram.getLines().size(); i++) {
+            hologramLines.add(null);
+        }
 
         location = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D));
         hologram.setLoc(location);

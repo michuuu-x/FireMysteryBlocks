@@ -43,6 +43,16 @@ Block:
   # Perm: "firemysteryblocks.mine.BLOCKNAME"
   Permission: false
 
+Cooldown:
+  # If enabled, block will be unminable for specific time.
+  # After that time, block will be regenerated back.
+  # After is mined, block will to turn to material specific bellow.
+  Enabled: true
+  # Time is set in milliseconds
+  Time: 300000
+  # Material that will block be set when is inactive
+  Material: BEDROCK
+
 EnchantLimit:
   # If enabled, player items will be limited from mining with higher enchants then allowed once
   # Enchantments must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
@@ -166,7 +176,7 @@ Hologram:
       RequirePerms: false
       # Set LOSInterval to 0 to disable
       LOSInterval: 0
-      TextDownOrder: false
+      TextDownOrder: true
       TextSpacing: 0.25
       IconSpacing: 0.5
       ShowRange: 8
@@ -186,16 +196,6 @@ Hologram:
       Facing: 0
       # Set UpdateInterval to 0 to disable
       UpdateInterval: 2
-
-Cooldown:
-  # If enabled, block will be unminable for specific time.
-  # After that time, block will be regenerated back.
-  # After is mined, block will to turn to material specific bellow.
-  Enabled: true
-  # Time is set in milliseconds
-  Time: 300000
-  # Material that will block be set when is inactive
-  Material: BEDROCK
 
 Action:
   OnReset:

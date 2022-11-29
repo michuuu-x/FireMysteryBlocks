@@ -41,7 +41,7 @@ public class HolographicDisplaysProvider extends BaseHologramProvider {
         List<String> hologramLines = getLines();
 
         location = mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D);
-        hologram.getLocation().setY(location.getY());
+        hologram.teleport(location);
 
         if (lines.isEmpty()) {
             for (String line : hologramLines) {

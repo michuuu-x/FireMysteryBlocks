@@ -33,7 +33,7 @@ public abstract class BaseHologramProvider implements BlockHologram {
     }
 
     public List<String> getLines() {
-        LinkedHashMap<String, Integer> list = Utils.sortMapByValue(Maps.newHashMap(mysteryBlock.getMineMap()),false);
+        LinkedHashMap<String, Integer> list = Utils.sortMapByValue(Maps.newHashMap(mysteryBlock.getMineMap()), false);
         List<String> hologramLines = Lists.newArrayList();
 
         long time = mysteryBlock.getCooldownHandler().isUnder() ? mysteryBlock.getCooldownHandler().getTime() : 0;
@@ -54,7 +54,7 @@ public abstract class BaseHologramProvider implements BlockHologram {
                     String pos = i + 1 > list.size() ? Language.EMPTY.getMessage() : (String) list.keySet().toArray()[i];
 
                     line = line.replace("{pos-" + (i + 1) + "-name}", pos);
-                    line = line.replace("{pos-" + (i + 1) + "-value}","" + list.getOrDefault(pos,0));
+                    line = line.replace("{pos-" + (i + 1) + "-value}", "" + list.getOrDefault(pos, 0));
                 }
             }
 

@@ -10,9 +10,8 @@ import java.util.HashMap;
 public class BlockMiningEffectsHandlerImpl implements BlockMiningEffectsHandler {
     private final MysteryBlocksPluginImpl plugin;
     private final MysteryBlock mysteryBlock;
-
-    private boolean enabled;
     private final HashMap<String, Integer> list = Maps.newHashMap();
+    private boolean enabled;
 
     public BlockMiningEffectsHandlerImpl(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
         this.plugin = plugin;

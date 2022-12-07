@@ -7,7 +7,6 @@ import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.Handlers.BlockAntiCheatHandler;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -16,21 +15,20 @@ import java.util.*;
 public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAntiCheatHandler {
     private final MysteryBlocksPluginImpl plugin;
     private final MysteryBlock mysteryBlock;
-
+    private final LinkedList<Integer> actionKeyList = Lists.newLinkedList();
     private boolean enabled;
     private long checkMillis;
     private long cooldown;
     private int breakLimit;
-    private HashMap<Integer, List<String>> actions = Maps.newLinkedHashMap();
-    private HashMap<Player, Set<Long>> mineMap = Maps.newHashMap();
-    private HashMap<String, Long> warnCooldown = Maps.newHashMap();
-    private final LinkedList<Integer> actionKeyList = Lists.newLinkedList();
+    private final HashMap<Integer, List<String>> actions = Maps.newLinkedHashMap();
+    private final HashMap<Player, Set<Long>> mineMap = Maps.newHashMap();
+    private final HashMap<String, Long> warnCooldown = Maps.newHashMap();
 
     public BlockAntiCheatHandlerImpl(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
         this.plugin = plugin;
         this.mysteryBlock = mysteryBlock;
 
-        this.runTaskTimerAsynchronously(plugin,0,1);
+        this.runTaskTimerAsynchronously(plugin, 0, 1);
 
         load();
     }
@@ -43,7 +41,7 @@ public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAn
         breakLimit = mysteryBlock.getConfig().getInt("AntiCheat.Break");
 
         for (String key : mysteryBlock.getConfig().getKeys("AntiCheat.Action")) {
-            actions.put(Integer.parseInt(key), mysteryBlock.getConfig().getStringList("AntiCheat.Action."+ key));
+            actions.put(Integer.parseInt(key), mysteryBlock.getConfig().getStringList("AntiCheat.Action." + key));
         }
 
         actionKeyList.addAll(actions.keySet());
@@ -78,7 +76,7 @@ public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAn
 
             for (Integer actionPoint : actionKeyList) {
                 if (playerMap.size() > actionPoint) {
-                    if (warnCooldown.getOrDefault(actionPoint +"-"+ player.getName().toLowerCase(),0L) + cooldown < System.currentTimeMillis() || actionPoint == 0) {
+                    if (warnCooldown.getOrDefault(actionPoint + "-" + player.getName().toLowerCase(), 0L) + cooldown < System.currentTimeMillis() || actionPoint == 0) {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
@@ -86,7 +84,7 @@ public class BlockAntiCheatHandlerImpl extends BukkitRunnable implements BlockAn
                             }
                         }.runTask(plugin);
 
-                        warnCooldown.put(actionPoint +"-"+ player.getName().toLowerCase(), System.currentTimeMillis());
+                        warnCooldown.put(actionPoint + "-" + player.getName().toLowerCase(), System.currentTimeMillis());
                     }
 
                     break;

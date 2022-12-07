@@ -37,8 +37,15 @@ public class BlockAntiAfkHandlerImpl implements BlockAntiAfkHandler {
         }
 
         switch (type) {
-            case KNOCKBACK -> method = new KnockbackMethod(this,plugin, mysteryBlock);
-            case CAPTCHA -> method = new CaptchaMethod(this,plugin, mysteryBlock);
+            case KNOCKBACK: {
+                method = new KnockbackMethod(this, plugin, mysteryBlock);
+                break;
+            }
+
+            case CAPTCHA: {
+                method = new CaptchaMethod(this, plugin, mysteryBlock);
+                break;
+            }
         }
 
         this.chance = mysteryBlock.getConfig().getDouble("AntiAFK.Chance");

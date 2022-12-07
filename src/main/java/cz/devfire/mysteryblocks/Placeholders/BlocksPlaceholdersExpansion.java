@@ -49,35 +49,37 @@ public class BlocksPlaceholdersExpansion extends PlaceholderExpansion {
             if (mysteryBlock == null) return null;
 
             switch (args[0].toUpperCase()) {
-                case "REQUIRED" -> {
+                case "REQUIRED": {
                     return mysteryBlock.getRequiredMines() + "";
                 }
 
-                case "TOTAL" -> {
+                case "TOTAL": {
                     switch (args[2].toUpperCase()) {
                         case "ASC":
                             return mysteryBlock.getCurrentMines() + "";
                         case "DESC":
                             return (mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines()) + "";
                     }
+
+                    break;
                 }
 
-                case "DESTROYS" -> {
+                case "DESTROYS": {
                     return mysteryBlock.getTotalDestroys() + "";
                 }
 
-                case "COOLDOWN" -> {
+                case "COOLDOWN": {
                     switch (args[2].toUpperCase()) {
-                        case "ACTIVE" -> {
+                        case "ACTIVE": {
                             return (mysteryBlock.getCooldownHandler().getCurrent() != 0) + "";
                         }
 
-                        case "CURRENT" -> {
+                        case "CURRENT": {
                             long time = mysteryBlock.getCooldownHandler().getTime();
                             long current = mysteryBlock.getCooldownHandler().getCurrent();
 
                             switch (args[3].toUpperCase()) {
-                                case "FORMATTED" -> {
+                                case "FORMATTED": {
                                     if (time < 0 || time == 0) {
                                         return "00:00:00";
                                     } else {
@@ -85,7 +87,7 @@ public class BlocksPlaceholdersExpansion extends PlaceholderExpansion {
                                     }
                                 }
 
-                                case "SHORT" -> {
+                                case "SHORT": {
                                     if (time < 0 || time == 0) {
                                         return "0s";
                                     } else {
@@ -93,7 +95,7 @@ public class BlocksPlaceholdersExpansion extends PlaceholderExpansion {
                                     }
                                 }
 
-                                case "PLAIN" -> {
+                                case "PLAIN": {
                                     if (time < 0 || time == 0) {
                                         return 0 + "";
                                     } else {
@@ -101,29 +103,33 @@ public class BlocksPlaceholdersExpansion extends PlaceholderExpansion {
                                     }
                                 }
                             }
+
+                            break;
                         }
                     }
                 }
 
-                case "GET" -> {
+                case "GET": {
                     switch (args[2].toUpperCase()) {
-                        case "PLAYER" -> {
+                        case "PLAYER": {
                             return "" + mysteryBlock.getMineMap().getOrDefault(player.getName(), 0);
                         }
 
-                        case "POSITION" -> {
+                        case "POSITION": {
                             LinkedHashMap<String, Integer> list = Maps.newLinkedHashMap(mysteryBlock.getMineMap());
                             list = Utils.sortMapByValue(list, false);
 
                             switch (args[4].toUpperCase()) {
-                                case "NAME" -> {
+                                case "NAME": {
                                     return "" + list.keySet().toArray()[Integer.parseInt(args[3]) - 1];
                                 }
 
-                                case "MINES" -> {
+                                case "MINES": {
                                     return "" + mysteryBlock.getMineMap().getOrDefault((String) list.keySet().toArray()[Integer.parseInt(args[3]) - 1], 0);
                                 }
                             }
+
+                            break;
                         }
                     }
                 }

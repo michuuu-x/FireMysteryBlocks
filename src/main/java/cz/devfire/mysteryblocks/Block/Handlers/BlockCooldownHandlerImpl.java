@@ -24,7 +24,7 @@ public class BlockCooldownHandlerImpl implements BlockCooldownHandler {
     @Override
     public void load() {
         enabled = mysteryBlock.getConfig().getBoolean("Cooldown.Enabled");
-        material = Material.valueOf( mysteryBlock.getConfig().getString("Cooldown.Material"));
+        material = Material.valueOf(mysteryBlock.getConfig().getString("Cooldown.Material"));
         required = mysteryBlock.getConfig().getLong("Cooldown.Time");
         current = 0;
     }
@@ -50,6 +50,11 @@ public class BlockCooldownHandlerImpl implements BlockCooldownHandler {
     }
 
     @Override
+    public void setCurrent(long current) {
+        this.current = current;
+    }
+
+    @Override
     public long getTime() {
         return current + required - System.currentTimeMillis();
     }
@@ -57,10 +62,5 @@ public class BlockCooldownHandlerImpl implements BlockCooldownHandler {
     @Override
     public long getRequired() {
         return required;
-    }
-
-    @Override
-    public void setCurrent(long current) {
-        this.current = current;
     }
 }

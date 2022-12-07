@@ -165,7 +165,7 @@ public class Utils {
     }
 
     public static void doActions(MysteryBlocksPluginImpl plugin, MysteryBlock block, List<String> actions) {
-        doActions(plugin, block, actions,"null");
+        doActions(plugin, block, actions, "null");
     }
 
     public static void doActions(MysteryBlocksPluginImpl plugin, MysteryBlock block, List<String> actions, String playerName, String... add) {
@@ -210,7 +210,7 @@ public class Utils {
                 block == null ? "null" : block.getCurrentMines() + "",
                 block == null ? "null" : (block.getRequiredMines() - block.getCurrentMines()) + "",
                 block == null ? "null" : block.getRequiredMines() + "",
-                block == null ? "null" : block.getAntiCheatHandler().getMineMap().getOrDefault(player, Sets.newHashSet()).size() +"",
+                block == null ? "null" : block.getAntiCheatHandler().getMineMap().getOrDefault(player, Sets.newHashSet()).size() + "",
                 add.length == 0 ? "null" : add[0]);
 
         switch (actionType) {
@@ -575,9 +575,9 @@ public class Utils {
     }
 
     public static ItemStack getItemFromSection(ConfigurationSection section) {
-        ItemStack stack = new ItemStack(Material.valueOf(section.getString("Material","BEDROCK")));
+        ItemStack stack = new ItemStack(Material.valueOf(section.getString("Material", "BEDROCK")));
         ItemMeta meta = stack.getItemMeta();
-        meta.setDisplayName(Utils.cc(section.getString("DisplayName","&cError")));
+        meta.setDisplayName(Utils.cc(section.getString("DisplayName", "&cError")));
         meta.setLore(Utils.ccl(section.getStringList("Lore")));
         stack.setItemMeta(meta);
 

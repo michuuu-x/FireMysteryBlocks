@@ -46,10 +46,12 @@ public final class CmdTeleport implements ICommand {
 
     @Override
     public void perform(MysteryBlocksPlugin plugin, CommandSender sender, String[] args) {
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             Language.PLAYER_ONLY_COMMAND.send(sender);
             return;
         }
+
+        Player player = (Player) sender;
 
         if (args.length == 1) {
             Language.USAGE.send(player, getUsage());

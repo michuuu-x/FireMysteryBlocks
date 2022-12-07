@@ -27,7 +27,7 @@ public class PlayerCommandListener implements Listener {
                     public void run() {
                         plugin.reload();
                     }
-                }.runTaskLater(plugin,10L);
+                }.runTaskLater(plugin, 10L);
             }
         }
     }

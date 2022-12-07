@@ -14,7 +14,6 @@ import cz.devfire.mysteryblocks.Other.Metrics;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandlerImpl;
 import cz.devfire.mysteryblocks.api.MysteryBlocksPlugin;
-import org.bstats.charts.CustomChart;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -49,8 +48,8 @@ public final class MysteryBlocksPluginImpl extends JavaPlugin implements Mystery
 
         Language.reload(this);
 
-        Metrics metrics = new Metrics(this,16913);
-        metrics.addCustomChart(new Metrics.SimplePie("hologramtype", () -> config.getString("Settings.Holograms.Provider","NONE")));
+        Metrics metrics = new Metrics(this, 16913);
+        metrics.addCustomChart(new Metrics.SimplePie("hologramtype", () -> config.getString("Settings.Holograms.Provider", "NONE")));
 
         try {
             configFile = new File(this.getDataFolder(), "config.yml");

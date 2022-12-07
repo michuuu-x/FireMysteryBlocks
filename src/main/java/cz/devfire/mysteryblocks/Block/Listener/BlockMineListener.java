@@ -1,13 +1,8 @@
 package cz.devfire.mysteryblocks.Block.Listener;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
-import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
-import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -24,7 +19,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.Random;
 
 public class BlockMineListener implements Listener {
     private final MysteryBlocksPluginImpl plugin;
@@ -57,10 +52,10 @@ public class BlockMineListener implements Listener {
                                 public void run() {
                                     player.getInventory().setItemInMainHand(itemStack);
                                 }
-                            }.runTaskLater(plugin,2);
+                            }.runTaskLater(plugin, 2);
                         }
 
-                        player.addPotionEffect(new PotionEffect(potion,20,mysteryBlock.getMiningEffectsHandler().getList().get(effect) - 1,true,false));
+                        player.addPotionEffect(new PotionEffect(potion, 20, mysteryBlock.getMiningEffectsHandler().getList().get(effect) - 1, true, false));
                     }
                 }
             }
@@ -87,7 +82,7 @@ public class BlockMineListener implements Listener {
                 return;
             }
 
-            if (mysteryBlock.isPermissionRequired() && !player.hasPermission("firemysteryblocks.mine."+ mysteryBlock.getName())) {
+            if (mysteryBlock.isPermissionRequired() && !player.hasPermission("firemysteryblocks.mine." + mysteryBlock.getName())) {
                 Language.BLOCK_PERMISSION.send(player);
                 return;
             }

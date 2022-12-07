@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CaptchaMethod extends BaseAntiAfkMethod implements Listener {
-    private int size;
     private final boolean fillEnabled;
     private final ItemStack activeItem;
     private final ItemStack fillItem;
     private final ArrayList<String> checkingPlayers = Lists.newArrayList();
     private final ArrayList<String> onFailActions = Lists.newArrayList();
     private final ArrayList<String> onSuccessActions = Lists.newArrayList();
+    private int size;
 
     public CaptchaMethod(BlockAntiAfkHandler handler, MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
         super(plugin, handler, mysteryBlock);

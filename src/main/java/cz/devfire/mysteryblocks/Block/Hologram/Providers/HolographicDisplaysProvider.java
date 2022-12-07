@@ -4,11 +4,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
-import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.Other.Utils;
-import cz.devfire.mysteryblocks.api.Block.Hologram.BlockHologram;
 import cz.devfire.mysteryblocks.api.Block.Hologram.Handlers.BlockHologramHandler;
 import cz.devfire.mysteryblocks.api.Block.Hologram.Providers.HologramProvider;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
@@ -16,17 +12,15 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class HolographicDisplaysProvider extends BaseHologramProvider {
+    private final ArrayList<TextLine> lines = Lists.newArrayList();
     private Location location;
     private Hologram hologram;
 
-    private final ArrayList<TextLine> lines = Lists.newArrayList();
-
     public HolographicDisplaysProvider(BlockHologramHandler handler, MysteryBlock mysteryBlock) {
-        super(handler, mysteryBlock,"FMB-"+ mysteryBlock.getName());
+        super(handler, mysteryBlock, "FMB-" + mysteryBlock.getName());
     }
 
     public void create() {
@@ -34,13 +28,13 @@ public class HolographicDisplaysProvider extends BaseHologramProvider {
         hologram = HologramsAPI.createHologram(hologramHandler.getPlugin(), location);
 
         ConfigurationSection settings = hologramHandler.getConfig(HologramProvider.HolographicDisplays);
-        hologram.setAllowPlaceholders(settings.getBoolean("AllowPlaceholders",false));
+        hologram.setAllowPlaceholders(settings.getBoolean("AllowPlaceholders", false));
     }
 
     public void update() {
         List<String> hologramLines = getLines();
 
-        location = mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D);
+        location = mysteryBlock.getLocation().clone().add(0.5D, 2D + hologramHandler.getOffset(), 0.5D);
         hologram.teleport(location);
 
         if (lines.isEmpty()) {

@@ -4,7 +4,6 @@ import cz.devfire.mysteryblocks.Block.BlockHandlerImpl;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.api.Block.Hologram.BlockHologram;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BlockCooldownScheduler extends BukkitRunnable {

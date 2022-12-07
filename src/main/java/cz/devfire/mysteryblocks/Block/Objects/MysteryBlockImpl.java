@@ -6,10 +6,6 @@ import cz.devfire.mysteryblocks.Block.AntiAfk.BlockAntiAfkHandlerImpl;
 import cz.devfire.mysteryblocks.Block.Handlers.BlockAntiCheatHandlerImpl;
 import cz.devfire.mysteryblocks.Block.Handlers.BlockCooldownHandlerImpl;
 import cz.devfire.mysteryblocks.Block.Handlers.BlockEnchantLimitHandlerImpl;
-import cz.devfire.mysteryblocks.api.Block.Handlers.BlockAntiCheatHandler;
-import cz.devfire.mysteryblocks.api.Block.Handlers.BlockCooldownHandler;
-import cz.devfire.mysteryblocks.api.Block.Handlers.BlockEnchantLimitHandler;
-import cz.devfire.mysteryblocks.api.Block.Handlers.BlockMiningEffectsHandler;
 import cz.devfire.mysteryblocks.Block.Handlers.BlockMiningEffectsHandlerImpl;
 import cz.devfire.mysteryblocks.Block.Hologram.Handlers.BlockHologramHandlerImpl;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
@@ -17,6 +13,10 @@ import cz.devfire.mysteryblocks.Other.Files.ConfigImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.AntiAfk.BlockAntiAfkHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockAntiCheatHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockCooldownHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockEnchantLimitHandler;
+import cz.devfire.mysteryblocks.api.Block.Handlers.BlockMiningEffectsHandler;
 import cz.devfire.mysteryblocks.api.Block.Hologram.Handlers.BlockHologramHandler;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import cz.devfire.mysteryblocks.api.Events.*;
@@ -50,19 +50,16 @@ public class MysteryBlockImpl implements MysteryBlock {
     private final HashMap<String, List<String>> actionMap = Maps.newHashMap();
     private final int itemDamage;
     private final boolean permission;
-    private Location location;
-
     private final int requiredMines;
-    private int currentMines;
-    private int totalDestroys;
-
     private final BlockAntiAfkHandler antiAfkHandler;
     private final BlockHologramHandler hologramHandler;
     private final BlockAntiCheatHandler antiCheatHandler;
     private final BlockCooldownHandler cooldownHandler;
     private final BlockEnchantLimitHandler enchantLimitHandler;
     private final BlockMiningEffectsHandler miningEffectsHandler;
-
+    private Location location;
+    private int currentMines;
+    private int totalDestroys;
     private ConfigImpl config;
     private File configFile;
 
@@ -71,7 +68,7 @@ public class MysteryBlockImpl implements MysteryBlock {
         this.mysBlock = this;
 
         try {
-            this.configFile = new File(plugin.getDataFolder(),"blocks/" + name + ".yml");
+            this.configFile = new File(plugin.getDataFolder(), "blocks/" + name + ".yml");
             if (!this.configFile.exists()) this.configFile.createNewFile();
 
             this.config = ConfigImpl.loadConfiguration(this.configFile);
@@ -93,12 +90,12 @@ public class MysteryBlockImpl implements MysteryBlock {
         this.currentMines = 0;
 
         // Handlers
-        this.antiAfkHandler = new BlockAntiAfkHandlerImpl(plugin,this);
+        this.antiAfkHandler = new BlockAntiAfkHandlerImpl(plugin, this);
         this.antiCheatHandler = new BlockAntiCheatHandlerImpl(plugin, this);
-        this.hologramHandler = new BlockHologramHandlerImpl(plugin,this);
-        this.cooldownHandler = new BlockCooldownHandlerImpl(plugin,this);
-        this.enchantLimitHandler = new BlockEnchantLimitHandlerImpl(plugin,this);
-        this.miningEffectsHandler = new BlockMiningEffectsHandlerImpl(plugin,this);
+        this.hologramHandler = new BlockHologramHandlerImpl(plugin, this);
+        this.cooldownHandler = new BlockCooldownHandlerImpl(plugin, this);
+        this.enchantLimitHandler = new BlockEnchantLimitHandlerImpl(plugin, this);
+        this.miningEffectsHandler = new BlockMiningEffectsHandlerImpl(plugin, this);
 
         // Actions
         this.actionMap.put("onReset", config.getStringList("Action.OnReset"));
@@ -182,11 +179,13 @@ public class MysteryBlockImpl implements MysteryBlock {
     }
 
     @Override
-    public void save() { save(true); }
+    public void save() {
+        save(true);
+    }
 
     @Override
     public void save(boolean full) {
-        String playerMap = mineMap.keySet().stream().map(p -> p +"-"+ mineMap.get(p)).collect(Collectors.joining("|"));
+        String playerMap = mineMap.keySet().stream().map(p -> p + "-" + mineMap.get(p)).collect(Collectors.joining("|"));
 
         if (plugin.getDatabaseHandler().getDatabaseType() == DatabaseType.SQLITE) {
             plugin.getDatabaseHandler().getDatabase().update("" +
@@ -232,7 +231,7 @@ public class MysteryBlockImpl implements MysteryBlock {
         if (full) {
             try {
                 Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockRespawnEvent(this));
-                Utils.doActions(plugin,this, actionMap.get("onReset"));
+                Utils.doActions(plugin, this, actionMap.get("onReset"));
             } catch (Exception e) {
                 plugin.getLogger().log(Level.SEVERE, "[FireMysteryBlocks] " + name + " | onResetActions is wrongly configured! Check your config!");
 
@@ -275,7 +274,7 @@ public class MysteryBlockImpl implements MysteryBlock {
 
     @Override
     public void destroy() {
-        Map<String, Integer> map = Utils.sortMapByValue(mineMap,false);
+        Map<String, Integer> map = Utils.sortMapByValue(mineMap, false);
         ArrayList<String> playerList = Lists.newArrayList();
         String playerListString = "$";
         String empty = Language.EMPTY.getMessage();
@@ -297,16 +296,16 @@ public class MysteryBlockImpl implements MysteryBlock {
         }
 
         try {
-            Utils.doActions(plugin,this, actionMap.get("onDestroyGlobal"), playerListString);
+            Utils.doActions(plugin, this, actionMap.get("onDestroyGlobal"), playerListString);
         } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE,"[FireMysteryBlocks] " + name + " | onDestroyGlobalActions is wrongly configured! Check your config!");
+            plugin.getLogger().log(Level.SEVERE, "[FireMysteryBlocks] " + name + " | onDestroyGlobalActions is wrongly configured! Check your config!");
 
             if (plugin.isDebugEnabled()) e.printStackTrace();
         }
 
         try {
             for (String playerName : map.keySet()) {
-                Utils.doActions(plugin,this, actionMap.get("onDestroyEveryPlace"), playerName);
+                Utils.doActions(plugin, this, actionMap.get("onDestroyEveryPlace"), playerName);
             }
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "[FireMysteryBlocks] " + name + " | onDestroyEveryPlaceActions is wrongly configured! Check your config!");

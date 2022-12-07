@@ -74,7 +74,7 @@ public final class CmdCreate implements ICommand {
                         public void run() {
                             try {
                                 mysteryBlock.redefine(location);
-                                ((Player) sender).teleport(((Player) sender).getLocation().getBlock().getLocation().add(0,2,0));
+                                ((Player) sender).teleport(((Player) sender).getLocation().getBlock().getLocation().add(0, 2, 0));
                             } catch (Exception e) { /* */ }
                         }
                     }.runTaskLater(plugin, 2L);

@@ -18,14 +18,11 @@ import java.util.List;
 public class BlockHologramHandlerImpl implements BlockHologramHandler {
     private final MysteryBlocksPluginImpl plugin;
     private final MysteryBlock mysteryBlock;
-
+    private final ArrayList<String> inactiveLines = Lists.newArrayList();
+    private final ArrayList<String> activeLines = Lists.newArrayList();
     private boolean hologramEnabled;
     private BlockHologram hologram;
-
-    private final ArrayList<String> inactiveLines = Lists.newArrayList();
     private double inactiveOffset;
-
-    private final ArrayList<String> activeLines = Lists.newArrayList();
     private double activeOffset;
 
     public BlockHologramHandlerImpl(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
@@ -49,9 +46,20 @@ public class BlockHologramHandlerImpl implements BlockHologramHandler {
     public void load() {
         if (hologramEnabled && plugin.getHologramHandler().isEnabled()) {
             switch (plugin.getHologramHandler().getProvider()) {
-                case CMI -> this.hologram = new CMIHologramProvider(this, mysteryBlock);
-                case HolographicDisplays -> this.hologram = new HolographicDisplaysProvider(this, mysteryBlock);
-                case DecentHolograms -> this.hologram = new DecentHologramsProvider(this, mysteryBlock);
+                case CMI: {
+                    this.hologram = new CMIHologramProvider(this, mysteryBlock);
+                    break;
+                }
+
+                case HolographicDisplays: {
+                    this.hologram = new HolographicDisplaysProvider(this, mysteryBlock);
+                    break;
+                }
+
+                case DecentHolograms: {
+                    this.hologram = new DecentHologramsProvider(this, mysteryBlock);
+                    break;
+                }
             }
         }
     }
@@ -73,7 +81,7 @@ public class BlockHologramHandlerImpl implements BlockHologramHandler {
     }
 
     public ConfigurationSection getConfig(HologramProvider provider) {
-        return mysteryBlock.getConfig().getConfigurationSection("Hologram.Providers."+ provider.name());
+        return mysteryBlock.getConfig().getConfigurationSection("Hologram.Providers." + provider.name());
     }
 
     public MysteryBlocksPlugin getPlugin() {

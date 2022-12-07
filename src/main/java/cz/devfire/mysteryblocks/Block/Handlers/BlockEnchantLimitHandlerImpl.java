@@ -10,9 +10,8 @@ import java.util.HashMap;
 public class BlockEnchantLimitHandlerImpl implements BlockEnchantLimitHandler {
     private final MysteryBlocksPluginImpl plugin;
     private final MysteryBlock mysteryBlock;
-
-    private boolean enabled;
     private final HashMap<String, Integer> list = Maps.newHashMap();
+    private boolean enabled;
 
     public BlockEnchantLimitHandlerImpl(MysteryBlocksPluginImpl plugin, MysteryBlock mysteryBlock) {
         this.plugin = plugin;

@@ -5,6 +5,7 @@ import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;
@@ -112,7 +113,7 @@ public class BlocksPlaceholdersExpansion extends PlaceholderExpansion {
                 case "GET": {
                     switch (args[2].toUpperCase()) {
                         case "PLAYER": {
-                            return "" + mysteryBlock.getMineMap().getOrDefault(player.getName(), 0);
+                            return "" + mysteryBlock.getMineMap().getOrDefault(player.getName(),0);
                         }
 
                         case "POSITION": {

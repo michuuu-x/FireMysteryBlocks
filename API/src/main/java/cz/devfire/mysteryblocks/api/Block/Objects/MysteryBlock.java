@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface MysteryBlock {
     void load();
@@ -40,7 +41,7 @@ public interface MysteryBlock {
 
     String getName();
 
-    HashMap<String, Integer> getMineMap();
+    Map<String, Integer> getMineMap();
 
     HashMap<String, List<String>> getActionMap();
 

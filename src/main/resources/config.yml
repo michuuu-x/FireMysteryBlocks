@@ -11,7 +11,7 @@ Settings:
   AutoSave:
     # If enabled, plugin will save block data to database per some time
     # denying plugin data loss on server crash. There will be rollback still
-    # rollback, but smaller then full block data gone.
+    # rollback, but smaller than full block data gone.
     Enabled: true
     # Time in seconds between saves. Lower time = lower rollback on crash
     # Recommended time is 5 minutes (300s), same as bukkit autosave time

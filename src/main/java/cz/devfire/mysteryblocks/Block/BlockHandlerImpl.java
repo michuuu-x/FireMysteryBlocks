@@ -139,7 +139,7 @@ public class BlockHandlerImpl implements BlockHandler {
 
     public MysteryBlock getBlockAt(Location location) {
         for (MysteryBlock block : plugin.getBlockHandler().getBlocks()) {
-            if (location.getBlock().equals(block.getBlock())) {
+            if (block.getLocation() != null && location.getBlock().equals(block.getBlock())) {
                 return block;
             }
         }

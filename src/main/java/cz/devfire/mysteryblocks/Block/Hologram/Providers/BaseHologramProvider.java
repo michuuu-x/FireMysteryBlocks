@@ -7,6 +7,8 @@ import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.Hologram.BlockHologram;
 import cz.devfire.mysteryblocks.api.Block.Hologram.Handlers.BlockHologramHandler;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,10 +18,18 @@ public abstract class BaseHologramProvider implements BlockHologram {
     protected final MysteryBlock mysteryBlock;
     protected final String name;
 
+    private final boolean vaultEnabled;
+    private final String prefixInjection;
+    private final String suffixInjection;
+
     public BaseHologramProvider(BlockHologramHandler hologramHandler, MysteryBlock mysteryBlock, String name) {
         this.hologramHandler = hologramHandler;
         this.mysteryBlock = mysteryBlock;
         this.name = name;
+
+        this.vaultEnabled = mysteryBlock.getConfig().getBoolean("Hologram.NameInjection.Enabled");
+        this.prefixInjection = mysteryBlock.getConfig().getString("Hologram.NameInjection.Inject.Prefix");
+        this.suffixInjection = mysteryBlock.getConfig().getString("Hologram.NameInjection.Inject.Suffix");
     }
 
     public String getName() {
@@ -36,25 +46,20 @@ public abstract class BaseHologramProvider implements BlockHologram {
         LinkedHashMap<String, Integer> list = Utils.sortMapByValue(Maps.newHashMap(mysteryBlock.getMineMap()), false);
         List<String> hologramLines = Lists.newArrayList();
 
-        long time = mysteryBlock.getCooldownHandler().isUnder() ? mysteryBlock.getCooldownHandler().getTime() : 0;
-        boolean under = time > 0;
-
         for (String line : hologramHandler.getLines()) {
-            line = Utils.parseArgs(line,
-                    mysteryBlock.getName(),
-                    mysteryBlock.getCurrentMines() + "",
-                    (mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines()) + "",
-                    mysteryBlock.getRequiredMines() + "",
-                    under ? Utils.translateTime(time) + "" : "00:00:00",
-                    under ? Utils.setTimeSecondsToString(time / 1000) + "" : "0s",
-                    under ? ((int) (time / 1000)) + "" : "0");
+            line = Utils.parseBlockPlaceholders(mysteryBlock,null, line);
 
             if (line.contains("{pos-") && (line.contains("-name}") || line.contains("-value}"))) {
                 for (int i = 0; i < 10; i++) {
-                    String pos = i + 1 > list.size() ? Language.EMPTY.getMessage() : (String) list.keySet().toArray()[i];
+                    String playerName = i + 1 > list.size() ? Language.EMPTY.getMessage() : (String) list.keySet().toArray()[i];
+                    String parsedPlayerName = playerName;
 
-                    line = line.replace("{pos-" + (i + 1) + "-name}", pos);
-                    line = line.replace("{pos-" + (i + 1) + "-value}", "" + list.getOrDefault(pos, 0));
+                    if (vaultEnabled && Bukkit.getPluginManager().isPluginEnabled("Vault") && list.size() > i) {
+                        parsedPlayerName = PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(playerName),prefixInjection + playerName + suffixInjection +"§r");
+                    }
+
+                    line = line.replace("{pos-" + (i + 1) + "-name}", parsedPlayerName);
+                    line = line.replace("{pos-" + (i + 1) + "-value}", "" + list.getOrDefault(playerName, 0));
                 }
             }
 

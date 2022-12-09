@@ -46,7 +46,7 @@ public class MysteryBlockImpl implements MysteryBlock {
 
     private final Material material;
     private final String name;
-    private final HashMap<String, Integer> mineMap = Maps.newHashMap();
+    private final Map<String, Integer> mineMap = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
     private final HashMap<String, List<String>> actionMap = Maps.newHashMap();
     private final int itemDamage;
     private final boolean permission;
@@ -145,9 +145,11 @@ public class MysteryBlockImpl implements MysteryBlock {
                 totalDestroys = rs.getInt("destroys");
                 currentMines = rs.getInt("mines");
 
-                for (String playerData : rs.getString("playerMines").split("\\|")) {
-                    String[] dataArgs = playerData.split("-");
-                    mineMap.put(dataArgs[0], Integer.parseInt(dataArgs[1]));
+                if (!rs.getString("playerMines").isEmpty()) {
+                    for (String playerData : rs.getString("playerMines").split("\\|")) {
+                        String[] dataArgs = playerData.split("-");
+                        mineMap.put(dataArgs[0], Integer.parseInt(dataArgs[1]));
+                    }
                 }
             }
         } catch (Exception e) {
@@ -377,7 +379,7 @@ public class MysteryBlockImpl implements MysteryBlock {
     }
 
     @Override
-    public HashMap<String, Integer> getMineMap() {
+    public Map<String, Integer> getMineMap() {
         return mineMap;
     }
 

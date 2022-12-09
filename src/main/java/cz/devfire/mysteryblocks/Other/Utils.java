@@ -3,6 +3,7 @@ package cz.devfire.mysteryblocks.Other;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.iridium.iridiumcolorapi.IridiumColorAPI;
+import cz.devfire.mysteryblocks.Block.Objects.MysteryBlockImpl;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
@@ -178,6 +179,28 @@ public class Utils {
         doAction(plugin, block, actionArgs[0], actionArgs[1], playerName, add);
     }
 
+    public static String parseBlockPlaceholders(MysteryBlock mysteryBlock, Player player, String line) {
+        boolean blockNull = mysteryBlock == null;
+        boolean playerNull = player == null;
+
+        long time = mysteryBlock.getCooldownHandler().isUnder() ? mysteryBlock.getCooldownHandler().getTime() : 0;
+        boolean under = time > 0;
+
+        return Utils.parseArgs(line,
+                /* 0  - Block Name             */ blockNull  ? "null" : mysteryBlock.getName(),
+                /* 1  - Block Material         */ blockNull  ? "null" : mysteryBlock.getMaterial().name(),
+                /* 2  - Player Name            */ playerNull ? "null" : player.getName(),
+                /* 3  - Block Mines ASC        */ blockNull  ? "null" : mysteryBlock.getCurrentMines() + "",
+                /* 4  - Block Mines DESC       */ blockNull  ? "null" : (mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines()) + "",
+                /* 5  - Block Required Mines   */ blockNull  ? "null" : mysteryBlock.getRequiredMines() + "",
+                /* 6  - Player Current Mines   */ blockNull  ? "null" : playerNull ?  "0" : mysteryBlock.getMineMap().getOrDefault(player.getName(),0) +"",
+                /* 7  - Player Mine Speed      */ blockNull  ? "null" : playerNull ? "-1" : mysteryBlock.getAntiCheatHandler().getMineMap().getOrDefault(player, Sets.newHashSet()).size() +"",
+                /* 8  - Block Cooldown FORMAT  */ blockNull  ? "null" : under ? Utils.translateTime(time) + "" : "00:00:00",
+                /* 9  - Block Cooldown SHORT   */ blockNull  ? "null" : under ? Utils.setTimeSecondsToString(time / 1000) + "" : "0s",
+                /* 10 - Block Cooldown PLAIN   */ blockNull  ? "null" : under ? ((int) (time / 1000)) + "" : "0"
+                );
+    }
+
     public static void doAction(MysteryBlocksPluginImpl plugin, MysteryBlock block, String actionType, String action, String playerName, String... add) {
         Player player = Bukkit.getPlayer(playerName);
         boolean cache = false;
@@ -203,15 +226,7 @@ public class Utils {
             }
         }
 
-        action = Utils.parseArgs(action,
-                block == null ? "null" : block.getName(),
-                block == null ? "null" : block.getMaterial().name(),
-                playerName,
-                block == null ? "null" : block.getCurrentMines() + "",
-                block == null ? "null" : (block.getRequiredMines() - block.getCurrentMines()) + "",
-                block == null ? "null" : block.getRequiredMines() + "",
-                block == null ? "null" : block.getAntiCheatHandler().getMineMap().getOrDefault(player, Sets.newHashSet()).size() + "",
-                add.length == 0 ? "null" : add[0]);
+        action = Utils.parseBlockPlaceholders(block, player, action);
 
         switch (actionType) {
             case "[COMMAND]": {

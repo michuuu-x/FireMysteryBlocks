@@ -22,13 +22,15 @@
 # Placeholders:
 #  - {0} - Block name
 #  - {1} - Block material
-#  - {2} - Player name
-#  - {3} - Current mines ASC
-#  - {4} - Current mines DESC
-#  - {5} - Required mines
-#  - {6} - Player mines actual
-#  - {7} - Mine speed
-#  - {pos-1-name} and {pos-1-value} - First position name and mine count. | Works only in OnDestroy-Global
+#  - {2} - Player Name
+#  - {3} - Block Current mines ASC
+#  - {4} - Block Current mines DESC
+#  - {5} - Block Required mines
+#  - {6} - Player Current Mines
+#  - {7} - Player Current Mine speed
+#  - {8}, {9}, {10} - Cooldown time .. FORMATTED, SHORT, PLAIN
+#  - {pos-1-name} and {pos-1-value} - First position name and mine count.
+#        !! MAX 10 Values !!        - Works only in OnDestroy-Global and Holograms
 #
 # ! To disable any of events place [] instead of list
 
@@ -85,8 +87,6 @@ AntiCheat:
   Break: 6
   # Action performer after player reach limit
   Action:
-    0:
-      - "[ACTIONBAR] Your minespeed is {0}/s"
     2:
       - "[WARN] {2} is mining block {0} too fast!"
     6:
@@ -105,9 +105,16 @@ AntiAFK:
       # How much you want to throw player away...
       Power: 1
     Captcha:
+      # When enabled, players that won't complete captcha under limit, will be treated as they failed.
+      Time:
+        Enabled: true
+        # Time in milliseconds
+        Limit: 30000
       Inventory:
         # Sizes allowed: 5, 9, 18, 27, 36, 45, 56
         Size: 5
+        # Enabling this, will ignore if player clicks on empty item in inventory
+        SkipBank: false
         # Material that will be used in menu
         Active:
           Material: "BEDROCK"
@@ -133,34 +140,33 @@ Hologram:
   # If enabled, holograms will be placed above this block
   # Its required to have holograms enabled in settings and right provider selected!
   Enabled: true
+  # Vault Injection
+  # If set to true, placeholder {pos-1-name} will be injected with prefix and suffix of supported vault plugin
+  NameInjection:
+    Enabled: false
+    Inject:
+      Prefix: "%vault_prefix% "
+      Suffix: " %vault_suffix%"
   # Active is set when there is no cooldown on block
   # Inactive is set when cooldown is active
-  #
-  # Placeholders:
-  #   {0} - Block name
-  #   {1} - Current mine count ASC
-  #   {2} - Current mine count DESC
-  #   {3} - Required mines
-  #   {4}, {5}, {6} - Cooldown time .. FORMATTED, SHORT, PLAIN
-  #   {pos-1-name}, {pos-1-value} - Show mine data for specific position. MAX 10!
   State:
     Inactive:
       Lines:
         - "&6&lThis is {0} block"
         - ""
-        - "Current mines: &e{1}/{3}"
+        - "Current mines: &e{3}/{5}"
         - ""
         - "1. {pos-1-name} - {pos-1-value}x"
         - "2. {pos-2-name} - {pos-2-value}x"
         - "3. {pos-3-name} - {pos-3-value}x"
         - ""
-        - "&7*Block will regenerate after.. &a{5}&7*"
+        - "&7*Block will regenerate after.. &a{9}&7*"
       Y-Offset: 2
     Active:
       Lines:
         - "&6&lThis is {0} block"
         - ""
-        - "Current mines: &e{1}/{3}"
+        - "Current mines: &e{3}/{5}"
         - ""
         - "1. {pos-1-name} - {pos-1-value}x"
         - "2. {pos-2-name} - {pos-2-value}x"
@@ -203,6 +209,7 @@ Action:
     - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7is now regenerated!"
   OnMine:
     - "[SOUND] BLOCK_ANVIL_LAND-1-1"
+    - "[ACTIONBAR] Your minespeed is {7}/s"
     - "[MESSAGE] &6&lMysteryBlocks &8&l» &7You mined &e{0} &7block. (&6{6}x&7)."
   OnDestroy:
     Global:
@@ -213,7 +220,7 @@ Action:
       \ \n&6&lMysteryBlocks &8&l» &r &f4. &e{pos-4-name} &7mined &6{pos-4-value}&7x\
       \ \n&6&lMysteryBlocks &8&l» &r &f5. &e{pos-5-name} &7mined &6{pos-5-value}&7x"
     EveryPlace:
-      - "[MESSAGE] &6&lMysteryBlocks &8&l» &7You mined &e{0} &7blocks."
+      - "[MESSAGE] &6&lMysteryBlocks &8&l» &7You mined &e{6} &7blocks."
     PerPlace:
       1:
         - "[CONSOLE-COMMAND] say {2} mined most of the stone. Total: {6}x"

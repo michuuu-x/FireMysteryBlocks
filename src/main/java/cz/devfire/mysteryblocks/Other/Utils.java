@@ -490,20 +490,16 @@ public class Utils {
         return a;
     }
 
-    public static String translateTime(Long millis) {
+    public static String translateTime(long millis) {
         String s = "";
-        Long amount = 0L;
 
-        amount /= 3600000L;
-        millis %= 3600000L;
-        s = s + ((amount < 10L) ? "0" : "") + amount + ":";
+        int hours = (int) (millis / (1000 * 60 * 60));
+        int minutes = (int) (millis % (1000 * 60 * 60)) / (1000 * 60);
+        int seconds = (int) ((millis % (1000 * 60 * 60)) % (1000 * 60) / 1000);
 
-        amount /= 60000L;
-        millis %= 60000L;
-        s = s + ((amount < 10L) ? "0" : "") + amount + ":";
-
-        amount = millis / 1000L;
-        s = s + ((amount < 10L) ? "0" : "") + amount;
+        s = s + ((hours < 10L) ? "0" : "") + hours + ":";
+        s = s + ((minutes < 10L) ? "0" : "") + minutes + ":";
+        s = s + ((seconds < 10L) ? "0" : "") + seconds;
 
         return s;
     }

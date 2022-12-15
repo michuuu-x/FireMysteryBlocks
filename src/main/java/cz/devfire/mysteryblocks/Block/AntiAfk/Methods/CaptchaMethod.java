@@ -108,9 +108,9 @@ public class CaptchaMethod extends BaseAntiAfkMethod implements Listener {
     public void onClick(InventoryClickEvent event) {
         if (!checkingPlayers.keySet().contains(event.getWhoClicked().getName())) return;
 
-        if (event.getCurrentItem() != null && event.getClickedInventory() != event.getWhoClicked().getInventory()) {
+        if (event.getClickedInventory() != event.getWhoClicked().getInventory()) {
             if (skipBlank) {
-                if (event.getCurrentItem().isSimilar(activeItem)) {
+                if (event.getCurrentItem() != null && event.getCurrentItem().isSimilar(activeItem)) {
                     checkingPlayers.remove(event.getWhoClicked().getName());
                     event.getWhoClicked().closeInventory();
 
@@ -120,7 +120,7 @@ public class CaptchaMethod extends BaseAntiAfkMethod implements Listener {
                 checkingPlayers.remove(event.getWhoClicked().getName());
                 event.getWhoClicked().closeInventory();
 
-                Utils.doActions(plugin, mysteryBlock, event.getCurrentItem().isSimilar(activeItem) ? onSuccessActions : onFailActions, event.getWhoClicked().getName());
+                Utils.doActions(plugin, mysteryBlock, event.getCurrentItem() != null && event.getCurrentItem().isSimilar(activeItem) ? onSuccessActions : onFailActions, event.getWhoClicked().getName());
             }
         }
 

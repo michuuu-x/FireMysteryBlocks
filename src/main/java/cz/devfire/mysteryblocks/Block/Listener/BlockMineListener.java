@@ -33,7 +33,7 @@ public class BlockMineListener implements Listener {
             priority = EventPriority.LOWEST)
     public void onMineStart(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
-        Block block = player.getTargetBlockExact(4, FluidCollisionMode.NEVER);
+        Block block = player.getTargetBlockExact(4);
 
         if (block != null) {
             MysteryBlock mysteryBlock = plugin.getBlockHandler().getBlockAt(block.getLocation());
@@ -73,10 +73,6 @@ public class BlockMineListener implements Listener {
         if (mysteryBlock != null) {
             event.setCancelled(true);
 
-            if (mysteryBlock.getAntiCheatHandler().isEnabled()) {
-                if (mysteryBlock.getAntiCheatHandler().mine(player)) return;
-            }
-
             if (mysteryBlock.getCooldownHandler().isEnabled() && mysteryBlock.getCooldownHandler().getCurrent() != 0) {
                 Language.BLOCK_COOLDOWN.send(player);
                 return;
@@ -101,6 +97,10 @@ public class BlockMineListener implements Listener {
                         }
                     }
                 }
+            }
+
+            if (mysteryBlock.getAntiCheatHandler().isEnabled()) {
+                if (mysteryBlock.getAntiCheatHandler().mine(player)) return;
             }
 
             if (mysteryBlock.getItemDamage() != 0) {

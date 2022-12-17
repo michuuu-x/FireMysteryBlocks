@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
-import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -45,13 +44,13 @@ public class BlockMineListener implements Listener {
 
                     if (potion != null) {
                         if (!player.hasPotionEffect(potion)) {
-                            ItemStack itemStack = player.getInventory().getItemInMainHand();
-                            player.getInventory().setItemInMainHand(null);
+                            ItemStack itemStack = player.getInventory().getItemInHand();
+                            player.getInventory().setItemInHand(null);
 
                             new BukkitRunnable() {
                                 @Override
                                 public void run() {
-                                    player.getInventory().setItemInMainHand(itemStack);
+                                    player.getInventory().setItemInHand(itemStack);
                                 }
                             }.runTaskLater(plugin, 2);
                         }
@@ -88,12 +87,10 @@ public class BlockMineListener implements Listener {
                 if (tool != null && tool.getType() != Material.AIR && player.getGameMode() != GameMode.CREATIVE) {
                     for (Enchantment enchantment : tool.getEnchantments().keySet()) {
                         int level = tool.getEnchantmentLevel(enchantment);
-                        String ench = enchantment.getKey().toString().split(":")[1].toUpperCase();
-
                         int allowedLevel = mysteryBlock.getEnchantLimitHandler().getList().getOrDefault(enchantment.getName(), Integer.MAX_VALUE);
 
                         if (allowedLevel < level) {
-                            Language.ENCHANT_LIMIT.send(player, ench, level, allowedLevel);
+                            Language.ENCHANT_LIMIT.send(player, enchantment.getName(), level, allowedLevel);
                             return;
                         }
                     }
@@ -138,7 +135,6 @@ public class BlockMineListener implements Listener {
             }
 
             mysteryBlock.mine(player);
-            event.setDropItems(false);
         }
     }
 }

@@ -161,10 +161,12 @@ public class MysteryBlockImpl implements MysteryBlock {
         this.location = location;
         hologramHandler.load();
 
-        Block block = location.getBlock();
+        Location finalLocation = location;
         new BukkitRunnable() {
             @Override
             public void run() {
+                Block block = finalLocation.getBlock();
+
                 if (cooldownHandler.getCurrent() != 0) {
                     block.setType(cooldownHandler.getMaterial());
                 } else {

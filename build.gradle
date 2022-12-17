@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'FireMysteryBlocks'
-version = "2.1.7"
+version = "2.1.8"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -52,6 +52,8 @@ allprojects {
         // Spigot jars
         compileOnly "net.minecraft:server:1.18.1"
         compileOnly "org.spigotmc:v1_18_R2:b3450-2"
+        //compileOnly "net.minecraft:server:1.8"
+        //compileOnly "org.spigotmc:v1_8_R1:latest"
 
         // Addons
         compileOnly "me.clip:placeholderapi:2.10.9"

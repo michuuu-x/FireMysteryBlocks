@@ -1,6 +1,7 @@
 package cz.devfire.mysteryblocks.Commands.List;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.Other.Utils;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
@@ -12,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public final class CmdSet implements ICommand {
@@ -58,7 +60,7 @@ public final class CmdSet implements ICommand {
         if (args.length == 1) {
             Language.USAGE.send(player, getUsage());
         } else {
-            Block targetBlock = player.getTargetBlock(null, 5);
+            Block targetBlock = player.getTargetBlock(Sets.newHashSet(), 5);
             String mysteryBlock = args[1];
 
             if (targetBlock.getType() == Material.AIR) {

@@ -19,6 +19,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Utils {
+    private Utils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 
     public static String stripBrackets(String string) {
         return string.replace("[", "").replace("]", "");
@@ -445,7 +448,8 @@ public class Utils {
                         }
                     }
 
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Utils.cc(action)));
+                    ActionBar.sendActionBar(player, Utils.cc(action));
+                    //player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText());
                 }
 
                 break;

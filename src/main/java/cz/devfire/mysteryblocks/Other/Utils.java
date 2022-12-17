@@ -183,7 +183,7 @@ public class Utils {
         boolean blockNull = mysteryBlock == null;
         boolean playerNull = player == null;
 
-        long time = mysteryBlock.getCooldownHandler().isUnder() ? mysteryBlock.getCooldownHandler().getTime() : 0;
+        long time = blockNull ? 0 : mysteryBlock.getCooldownHandler().isUnder() ? mysteryBlock.getCooldownHandler().getTime() : 0;
         boolean under = time > 0;
 
         return Utils.parseArgs(line,

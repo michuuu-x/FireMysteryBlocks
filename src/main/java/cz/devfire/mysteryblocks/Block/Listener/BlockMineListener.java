@@ -1,5 +1,6 @@
 package cz.devfire.mysteryblocks.Block.Listener;
 
+import com.google.common.collect.Sets;
 import cz.devfire.mysteryblocks.MysteryBlocksPluginImpl;
 import cz.devfire.mysteryblocks.Other.Files.Language;
 import cz.devfire.mysteryblocks.api.Block.Objects.MysteryBlock;
@@ -33,7 +34,7 @@ public class BlockMineListener implements Listener {
             priority = EventPriority.LOWEST)
     public void onMineStart(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
-        Block block = player.getTargetBlockExact(4);
+        Block block = player.getTargetBlock(Sets.newHashSet(),4);
 
         if (block != null) {
             MysteryBlock mysteryBlock = plugin.getBlockHandler().getBlockAt(block.getLocation());

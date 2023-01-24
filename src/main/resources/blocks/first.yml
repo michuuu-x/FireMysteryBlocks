@@ -1,90 +1,179 @@
 #
 # Action types:
-#   [COMMAND]         - Execute command as player
-#   [OP-COMMAND]      - Execute command as oped player
-#   [CONSOLE-COMMAND] - Execute command from console
-#   [MESSAGE]         - Sends player message
-#   [BROADCAST]       - Sends everyone message
-#   [SOUND]           - Play a sound to player... Format: SOUND-VOLUME-PITCH
-#   [ACTIONBAR]       - Show player action bar message
-# !! - Format: [TYPE] [VALUE]
-#
-# Cache (Offline rewards system):
-#   If command starts with $ and player is offline, that command
-#   will be saved and then executed after player is back online.
-#   When player is online, action will work like normal
-#    - Example: [COMMAND] $give {0} diamond 5
-#    - Example: [SOUND] $BLOCK_ANVIL_LAND-1-1
-#
-# Percentage:
-#   If command starts with @number@, that command will be executed
-#   only with certain percentage
-#    - Example: [COMMAND] $@10@give {0} diamond 5
-#    - Example: [MESSAGE] $@50@You doing well!
+#   [COMMAND]         - Executes a command as player
+#   [OP-COMMAND]      - Executes a command as oped player
+#   [CONSOLE-COMMAND] - Executes a command from console
+#   [MESSAGE]         - Sends a message to a player
+#   [BROADCAST]       - Sends a message to everyone
+#   [SOUND]           - Plays a sound to player. Format: SOUND-VOLUME-PITCH
+#   [ACTIONBAR]       - Shows an action bar message to a player
+#   [WARN]            - Shows specific message to a player with the permission "firemysteryblocks.warn"
+#   [TITLE]           - Shows a title message to a player, \n for second line
+# !! - Format: [TYPE] [VALUE], Sequence is required in Cache, Delay, Percentage order!
 #
 # Placeholders:
 #  - {0} - Block name
 #  - {1} - Block material
-#  - {2} - Player Name
-#  - {3} - Block Current mines ASC
-#  - {4} - Block Current mines DESC
-#  - {5} - Block Required mines
-#  - {6} - Player Current Mines
-#  - {7} - Player Current Mine speed
+#  - {2} - Player name
+#  - {3} - Block current mines
+#  - {4} - Block remaining mines
+#  - {5} - Block required mines
+#  - {6} - Player current mines
+#  - {7} - Player current mine speed
 #  - {8}, {9}, {10} - Cooldown time .. FORMATTED, SHORT, PLAIN
-#  - {pos-1-name} and {pos-1-value} - First position name and mine count.
-#        !! MAX 10 Values !!        - Works only in OnDestroy-Global and Holograms
+#  - {11} - Block mine percentage
+#  - {12} - Block mine progress (in progress bar format)
+#  - {pos-1-name} and {pos-1-value} - First position name and mine count. !! MAX TOP 10 !!
+#  - {history-1-pos-1-name} and {history-1-pos-1-value} - History 1 backwards, position 1 !! MAX TOP 10 !!
+#  - {history-1-date} - Date of history block break in format "YYYY-MM-dd HH:mm"
+#
+# Cache (Offline rewards system):
+#   If a command starts with $ and the affected player is offline, that
+#   command will be saved and then executed after the player is back online.
+#   When the player is online, the action will work as normal.
+#    - Example: [CONSOLE-COMMAND] $give {2} diamond 5
+#    - Example: [SOUND] $BLOCK_ANVIL_LAND-1-1
+#
+# Delay (Delayed command execution)
+#   If a command starts with @timeInMilliseconds@, its execution is delayed.
+#   Use this if you need to delay a command until other dependencies are loaded.
+#   Useful in combination with cached commands.
+#    - Example: [CONSOLE-COMMAND] @1000@give {2} diamond 5
+#    - Example: [CONSOLE-COMMAND] $@500@say {2} is running delay and cached command
+#
+# Percentage:
+#   If a command starts with %percentage%, that command will be executed
+#   only with a certain percentage.
+#   Range 0 - 100, decimals are supported
+#    - Example: [CONSOLE-COMMAND] %10%give {2} diamond 5
+#    - Example: [MESSAGE] $%50%You're doing well!
 #
 # ! To disable any of events place [] instead of list
 
 Block:
   Material: STONE
   Location: world/0/100/0
-  # Total block mines required to destroy block and get rewards.
+  # Total block mines required to destroy the block and get rewards.
   Limit: 10
   # Item durability taken by mining. To disable itemDamage set this to 0.
   ItemDamage: 1
-  # If enabled, player will need specific permission to be able to mine this block
-  # Perm: "firemysteryblocks.mine.BLOCKNAME"
+  # If enabled, the player will need specific permission to be able to mine this block.
+  # Perm: "firemysteryblocks.BLOCKNAME.mine"
   Permission: false
 
 Cooldown:
-  # If enabled, after block is fully mined. Block will turn into specified Material bellow.
-  # After specified time, block will be regenerated back.
+  # If enabled, the block will temporarily change into an unbreakable material specified bellow.
+  # After the specified time, the block is changed back to a normal breakable block.
   Enabled: true
   Material: BEDROCK
   # Cooldown time in milliseconds
   Time: 300000
 
 EnchantLimit:
-  # If enabled, player items will be limited from mining with higher enchants then allowed once
+  # If enabled, player items will be limited to those equal or lower to the specified enchantment limit.
   # Enchantments must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
   Enabled: false
   List:
     - "DIG_SPEED:5"
 
 MiningEffects:
-  # If enabled, player will have specific effect when mining this block
+  # If enabled, player will have a specific effect applied to them when mining this block.
   # Effect must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
   Enabled: false
   List:
     - "SLOW_DIGGING:1"
 
-AntiCheat:
-  # If enabled, player mining speed per specified interval will be checked.
-  # If speed is above specified limits bellow, actions will be taken.
-  # For every block, you need to find the max mine speed players can achieve without cheats!
+# If enabled, block destroys will be saved into history.
+History:
   Enabled: true
-  # Period for which mine speed is calculated. Set in milliseconds
-  # Example. 1000 -> 2 mines per 1000 milliseconds with Effi 5
+  Count: 5
+  # If GUI enabled, this is item that will be placed in history slots
+  # {history-id} gets replaced by current id, only in this section
+  Item:
+    Material: BOOK
+    DisplayName: "&f&lHistory {history-id}."
+    Amount: 1
+    ModelData: 0
+    Lore:
+      - ""
+      - " &f&lDate:"
+      - "  &f&l» &e{history-{history-id}-date}"
+      - ""
+      - " &f&lPosition:"
+      - "  &f&l» &61. &7{history-{history-id}-pos-1-name} &8- &e{history-{history-id}-pos-1-value}x"
+      - "  &f&l» &62. &7{history-{history-id}-pos-2-name} &8- &e{history-{history-id}-pos-2-value}x"
+      - "  &f&l» &63. &7{history-{history-id}-pos-3-name} &8- &e{history-{history-id}-pos-3-value}x"
+      - ""
+  # If GUI is enabled, this is slot numbers where history items will be placed
+  Slots: "21,22,23,24,25"
+
+# If enabled, GUI for this block gets created. Using /fmb open <blockName> can be opened.
+GUI:
+  Enabled: true
+  # Size from 9 to 54
+  Size: 45
+  Title: "MysteryBlock - {0}"
+  Items:
+    0~8:
+      Material: "BLACK_STAINED_GLASS_PANE"
+      DisplayName: "&r"
+      Lore: []
+    36~44:
+      Material: "BLACK_STAINED_GLASS_PANE"
+      DisplayName: "&r"
+      Lore: []
+    19:
+      Material: "STONE"
+      DisplayName: "&c&l{0} Block - Stats"
+      Lore:
+        - ""
+        - " &f&lCurrent:"
+        - "  &f&l» &61. &7{pos-1-name} &8- &e{pos-1-value}x"
+        - "  &f&l» &62. &7{pos-2-name} &8- &e{pos-2-value}x"
+        - "  &f&l» &63. &7{pos-3-name} &8- &e{pos-3-value}x"
+        - ""
+        - " &f&lRewards:"
+        - "  &f&l» &750% &65x &eDiamond"
+        - ""
+        - " &7*Break this block, get rewards!*"
+        - ""
+    40:
+      Material: "BARRIER"
+      DisplayName: "&cClose"
+      Lore: []
+  Actions:
+    40:
+      # If close set to true will close inventory on click
+      Close: true
+      List:
+        - "[MESSAGE] &6&lMysteryBlocks &8&l» &7Closing.."
+    21~25:
+      Close: false
+      List:
+        - "[MESSAGE] &6&lMysteryBlocks &8&l» &7This is history click action.."
+
+# If enabled, player that left click this block, will be affected by actions specified down bellow.
+Click:
+  Enabled: true
+  Actions:
+    - "[MESSAGE] &6&lMysteryBlocks &8&l» &7Opening GUI of &e{0}&7."
+    - "[CONSOLE-COMMAND] fmb open {0} {2}"
+
+AntiCheat:
+  # If enabled, player mining speed is measured and if it exceeds the limit,
+  # actions specified under this limit will be executed.
+  # !! For every block, you will need to find out the max mine speed a player can achieve without cheating! !!
+  Enabled: true
+  # Period for which mine speed is calculated. Set in milliseconds.
+  # Example. 1000 -> 2 mines per 1000 milliseconds
   Time: 1000
-  # Specific cooldown for actions, if action was already executed.
-  # Same action will be executed after cooldown time specified bellow.
+  # Specific cooldown for actions, if an action was already executed.
+  # The same action will be executed repeatedly in this time period.
   Cooldown: 30000
-  # If player have mine speed above this limit, all block breaks will be ignored
-  # Set to -1 if you want to ignore it
+  # If the player has mine speed above this limit, all block breaks will be ignored.
+  # Set to -1 if you want to ignore it.
   Break: 6
-  # Actions performer after player reach above limit
+  # Actions performed after the player reaches the above limit.
   Action:
     2:
       - "[WARN] {2} is mining block {0} too fast!"
@@ -92,8 +181,8 @@ AntiCheat:
       - "[CONSOLE-COMMAND] kick {2} You are mining block {0} too fast!"
 
 AntiAFK:
-  # If enabled, players that are mining will be randomly blocked depends on method
-  # to stop them from afk mining.
+  # If enabled, players that are mining will be randomly interrupted
+  # depending on method to stop them from afk mining.
   Enabled: false
   # Type: KNOCKBACK, CAPTCHA
   Selected: NONE
@@ -101,10 +190,10 @@ AntiAFK:
   Chance: 10
   Methods:
     Knockback:
-      # How much you want to throw player away...
+      # How much you want to throw the player away.
       Power: 1
     Captcha:
-      # When enabled, players that won't complete captcha under limit, will be treated as they failed.
+      # When enabled, players that won't complete the captcha under limit, will be treated as if they failed.
       Time:
         Enabled: true
         # Time in milliseconds
@@ -112,15 +201,15 @@ AntiAFK:
       Inventory:
         # Sizes allowed: 5, 9, 18, 27, 36, 45, 56
         Size: 5
-        # Enabling this, will ignore if player clicks on empty item in inventory
-        SkipBank: false
+        # Enabling this will ignore if the player clicks on an empty item in inventory
+        SkipBlank: false
         # Material that will be used in menu
         Active:
           Material: "BEDROCK"
           DisplayName: "&c&lCAPTCHA ITEM"
           Lore:
             - "&r"
-            - "&7 Click this item to verify you there &r"
+            - "&7 Click this item to verify you aren't afk &r"
             - "&r"
         # Material that will be filled in all other slots
         Fill:
@@ -136,22 +225,25 @@ AntiAFK:
           - "[MESSAGE] &c&lFireMysteryBlocks &8&l» &7Captcha was successfully checked!"
 
 Hologram:
-  # If enabled, holograms will be placed above this block
-  # Its required to have holograms enabled in main config and right provider selected!
+  # If enabled, holograms will be placed above this block.
+  # It's required to have holograms enabled in the main config and the right provider selected!
   Enabled: true
-  # Placeholder Injection to positions
-  # If enabled, placeholder {pos-1-name} will be injected with prefix and suffix placeholders or text
+  # Placeholder injection to positions.
+  # If enabled, placeholder {pos-1-name} will be injected with prefix and suffix placeholders or text.
   NameInjection:
     Enabled: false
     Inject:
       Prefix: "%vault_prefix% "
       Suffix: " %vault_suffix%"
-  # Active is set when there is no cooldown on block
-  # Inactive is set when cooldown is active
+  # If enabled, for every changeable placeholder you will need to use placeholder from PAPI.
+  Static:
+    Enabled: false
+  # Active is set when there is no cooldown on the block.
+  # Inactive is set when the cooldown is active.
   State:
     Inactive:
       Lines:
-        - "&6&lThis is {0} block"
+        - "&6&lThis is an {0} block"
         - ""
         - "Current mines: &e{3}/{5}"
         - ""
@@ -163,7 +255,7 @@ Hologram:
       Y-Offset: 2
     Active:
       Lines:
-        - "&6&lThis is {0} block"
+        - "&6&lThis is an {0} block"
         - ""
         - "Current mines: &e{3}/{5}"
         - ""
@@ -205,23 +297,25 @@ Hologram:
 Action:
   OnReset:
     - "[SOUND] UI_TOAST_CHALLENGE_COMPLETE-1-1"
-    - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7is now regenerated!"
+    - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has been regenerated!"
   OnMine:
     - "[SOUND] BLOCK_ANVIL_LAND-1-1"
-    - "[ACTIONBAR] Your minespeed is {7}/s"
+    - "[ACTIONBAR] &7Your mine speed is {7}/s"
     - "[MESSAGE] &6&lMysteryBlocks &8&l» &7You mined &e{0} &7block. (&6{6}x&7)."
   OnDestroy:
     Global:
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &b{0} &7was mined! Miners:\
-      \ \n&6&lMysteryBlocks &8&l» &r &f1. &e{pos-1-name} &7mined &6{pos-1-value}&7x\
-      \ \n&6&lMysteryBlocks &8&l» &r &f2. &e{pos-2-name} &7mined &6{pos-2-value}&7x\
-      \ \n&6&lMysteryBlocks &8&l» &r &f3. &e{pos-3-name} &7mined &6{pos-3-value}&7x\
-      \ \n&6&lMysteryBlocks &8&l» &r &f4. &e{pos-4-name} &7mined &6{pos-4-value}&7x\
-      \ \n&6&lMysteryBlocks &8&l» &r &f5. &e{pos-5-name} &7mined &6{pos-5-value}&7x"
+      - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &b{0} &7was mined! Miners: "
+      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f1. &e{pos-1-name} &7mined &6{pos-1-value}&7x"
+      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f2. &e{pos-2-name} &7mined &6{pos-2-value}&7x"
+      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f3. &e{pos-3-name} &7mined &6{pos-3-value}&7x"
+      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f4. &e{pos-4-name} &7mined &6{pos-4-value}&7x"
+      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f5. &e{pos-5-name} &7mined &6{pos-5-value}&7x"
     EveryPlace:
       - "[MESSAGE] &6&lMysteryBlocks &8&l» &7You mined &e{6} &7blocks."
     PerPlace:
       1:
         - "[CONSOLE-COMMAND] say {2} mined most of the stone. Total: {6}x"
+        - "[CONSOLE-COMMAND] $give {2} diamond 5"
       2~3:
         - "[CONSOLE-COMMAND] say {2} was on second or third place"
+        - "[CONSOLE-COMMAND] $%50%give {2} gold 5"

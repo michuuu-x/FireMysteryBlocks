@@ -4,22 +4,22 @@
 #  - <RAINBOW>This is rainbow text</RAINBOW>
 
 Settings:
-  # Used to see debug values. If you dont know why plugin is not working and
-  # you know at least something about java and bukkit-api. Feel free to find that problem.
   Debug: false
 
+  # Please do not change this in case to auto-updating! Thanks
+  Version: 2.2.0
+
   AutoSave:
-    # If enabled, plugin will save block data to database per some time
-    # denying plugin data loss on server crash. There will be rollback still
-    # rollback, but smaller than full block data gone.
+    # If enabled, plugin will save block data automatically to database per some time
+    # denying plugin data loss on server crash.
     Enabled: true
     # Time in seconds between saves. Lower time = lower rollback on crash
-    # Recommended time is 5 minutes (300s), same as bukkit autosave time
+    # Recommended time is 5 minutes (300s), same as bukkit auto-save time
     Time: 300
 
   Database:
-    # Types: SQLITE | MYSQL
-    # If using SQLITE ignore login values bellow.
+    # Types: SQLITE | MYSQL | HIKARI
+    # If using SQLITE ignore everything bellow
     Type: SQLITE
     Login:
       Host: localhost
@@ -27,9 +27,12 @@ Settings:
       Pass: password
       Port: 3306
       DB: database
+    Hikari:
+      MaximumPoolSize: 10
+      KeepAliveMs: 0
 
   Holograms:
-    # If enabled, plugin will try to hook into other plugin hologram system.
+    # If enabled, plugin will try to hook into hologram provider.
     Enabled: false
     # Providers: CMI, HolographicDisplays, DecentHolograms
     # If you know any other ones. Feel free to contact me about hooking them.
@@ -37,3 +40,10 @@ Settings:
 
   Placeholders:
     Enabled: true
+    # Configuration for percentage placeholder
+    Percentage:
+      Total: 5
+      Tiles:
+        Low: "&c■"
+        Half: "&a■"
+        Full: "&2⬛"

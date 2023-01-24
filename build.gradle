@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'FireMysteryBlocks'
-version = "2.1.8"
+version = "2.2.0"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -29,6 +29,7 @@ allprojects {
     repositories {
         maven { url 'https://jitpack.io' }
         maven { url 'https://repo.bg-software.com/repository/nms/' }
+        maven { url 'https://repo1.maven.org/maven2/' }
         maven {
             url 'http://nexus.basicland.cz:8081/repository/dev-nms/'
             allowInsecureProtocol = true
@@ -62,6 +63,7 @@ allprojects {
         compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
         compileOnly 'com.github.decentsoftware-eu:decentholograms:2.5.1'
         implementation "com.iridium:IridiumColorAPI:1.0.5"
+        implementation 'com.zaxxer:HikariCP:4.0.3'
     }
 
     build {
@@ -72,14 +74,6 @@ allprojects {
 dependencies {
     implementation project(":API")
     implementation fileTree("archive")
-
-    // Addons
-    compileOnly "me.clip:placeholderapi:2.10.9"
-    compileOnly "com.zrips:cmi:9.0.4.4"
-    compileOnly "com.zrips:cmiLib:1.0.3.10"
-    compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
-    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.5.1'
-    implementation "com.iridium:IridiumColorAPI:1.0.5"
 }
 
 subprojects {

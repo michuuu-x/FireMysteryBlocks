@@ -1,19 +1,17 @@
 package cz.devfire.mysteryblocks.Block;
 
 import com.google.common.collect.Maps;
-import cz.devfire.mysteryblocks.Block.Handler.BlockCooldownHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
+import cz.devfire.mysteryblocks.Database.Object.Results;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Scheduler.BlockCooldownShedule;
 import cz.devfire.mysteryblocks.Scheduler.BlockSaveSchedule;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
 import cz.devfire.mysteryblocks.Util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
-import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -113,7 +111,9 @@ public class BlockHandler extends AbstractHandler {
     public void removeOld() {
         Utils.log(" §e- Removing old blocks");
 
-        try (ResultSet rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData")) {
+        try {
+            Results rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData");
+
             while (rs.next()) {
                 String name = rs.getString("name");
 

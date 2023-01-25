@@ -77,7 +77,7 @@ public class PlaceholderExpansion extends me.clip.placeholderapi.expansion.Place
                 case "PROGRESS": {
                     switch (args[2].toUpperCase()) {
                         case "BAR": {
-                            return Utils.createPercentageString(mysteryBlock.getCurrentMines(), mysteryBlock.getRequiredMines());
+                            return Utils.createPercentageString((int) mysteryBlock.getCurrentMines(), mysteryBlock.getRequiredMines());
                         }
 
                         case "PERCENTAGE": {

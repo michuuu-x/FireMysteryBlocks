@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'FireMysteryBlocks'
-version = "2.2.0"
+version = "2.2.1"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"

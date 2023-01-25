@@ -1,14 +1,20 @@
 package cz.devfire.mysteryblocks.Database.Type;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
 import cz.devfire.mysteryblocks.Database.Interface.Database;
+import cz.devfire.mysteryblocks.Database.Object.Results;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DatabaseHikariCP implements Database {
     private final HikariDataSource ds;
@@ -65,6 +71,7 @@ public class DatabaseHikariCP implements Database {
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        config.addDataSourceProperty("useServerPrepStmts", "true");
         config.setMaximumPoolSize(section.getInt("Hikari.MaximumPoolSize"));
         config.setKeepaliveTime(section.getInt("Hikari.KeepAliveMs"));
 
@@ -74,6 +81,10 @@ public class DatabaseHikariCP implements Database {
     @Override
     public DatabaseType getType() {
         return DatabaseType.MYSQL;
+    }
+
+    public HikariDataSource getSource() {
+        return ds;
     }
 
     @Override
@@ -114,11 +125,9 @@ public class DatabaseHikariCP implements Database {
 
     @Override
     public void update(String query, Object... args) {
-        try (Connection conn = ds.getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement(query)) {
-                parseStatement(ps, args);
-                ps.executeUpdate();
-            }
+        try (Connection conn = ds.getConnection(); PreparedStatement ps = conn.prepareStatement(query);) {
+            parseStatement(ps, args);
+            ps.executeUpdate();
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage("");
             Bukkit.getConsoleSender().sendMessage("§c - Update failed! §4" + query);
@@ -128,41 +137,22 @@ public class DatabaseHikariCP implements Database {
     }
 
     @Override
-    public ResultSet query(String query, Object... args) {
-        try {
-            Connection conn = ds.getConnection();
-            PreparedStatement ps = conn.prepareStatement(query);
+    public Results query(String query, Object... args) {
+        try (Connection conn = ds.getConnection(); PreparedStatement ps = conn.prepareStatement(query);) {
             parseStatement(ps, args);
-            return ps.executeQuery();
+
+            try (ResultSet rs = ps.executeQuery();) {
+                return new Results(rs);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
             Bukkit.getConsoleSender().sendMessage("");
             Bukkit.getConsoleSender().sendMessage("§c - Query failed! §4" + query);
             Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
             throw new RuntimeException(e);
         }
-    }
 
-    private void parseStatement(PreparedStatement ps, Object[] args) throws SQLException {
-        int i = 1;
-
-        for (Object arg : args) {
-            if (arg instanceof Integer) {
-                ps.setInt(i, (int) arg);
-            } else if (arg instanceof String) {
-                ps.setString(i, (String) arg);
-            } else if (arg instanceof Long) {
-                ps.setLong(i, (long) arg);
-            } else if (arg instanceof Double) {
-                ps.setDouble(i, (double) arg);
-            } else if (arg instanceof Boolean) {
-                ps.setBoolean(i, (boolean) arg);
-            } else if (arg instanceof Float) {
-                ps.setFloat(i, (float) arg);
-            } else if (arg instanceof Date) {
-                ps.setDate(i, (Date) arg);
-            }
-
-            i++;
-        }
+        return null;
     }
 }

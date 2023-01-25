@@ -50,7 +50,7 @@ public class PlayerBlockMineListener implements Listener {
             if (mysteryBlock != null) {
                 BlockMiningEffectsHandler miningEffectsHandler = mysteryBlock.getMiningEffectsHandler();
 
-                if (miningEffectsHandler != null && miningEffectsHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.miningeffect")) {
+                if (miningEffectsHandler != null && miningEffectsHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.mining-effect")) {
                     miningEffectsHandler.apply(player);
                 }
             }
@@ -81,7 +81,7 @@ public class PlayerBlockMineListener implements Listener {
             }
 
             BlockEnchantLimitHandler enchantLimitHandler = mysteryBlock.getEnchantLimitHandler();
-            if (enchantLimitHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.enchantlimit")) {
+            if (enchantLimitHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.enchant-limit")) {
                 if (tool != null && tool.getType() != Material.AIR && player.getGameMode() != GameMode.CREATIVE) {
                     List<String> badEnchants = enchantLimitHandler.isValid(tool);
 
@@ -103,7 +103,7 @@ public class PlayerBlockMineListener implements Listener {
             }
 
             BlockAntiAfkHandler antiAfkHandler = mysteryBlock.getAntiAfkHandler();
-            if (antiAfkHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.antiafk")) {
+            if (antiAfkHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.anti-afk")) {
                 AntiAfkMethod antiAfkMethod = antiAfkHandler.getMethod();
 
                 if (antiAfkMethod.canCheck(player)) {
@@ -111,7 +111,7 @@ public class PlayerBlockMineListener implements Listener {
                 }
             }
 
-            if (mysteryBlock.getItemDamage() != 0) {
+            if (mysteryBlock.getItemDamage() != 0 && !player.hasPermission(mysteryBlock.getPermission() +".bypass.item-damage")) {
                 if (tool != null && tool.getType() != Material.AIR && player.getGameMode() != GameMode.CREATIVE) {
                     short durability = tool.getDurability();
                     short maxDurability = tool.getType().getMaxDurability();

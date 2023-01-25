@@ -11,6 +11,7 @@ import cz.devfire.mysteryblocks.Block.Handler.*;
 import cz.devfire.mysteryblocks.Block.Handler.BlockHologramHandler;
 import cz.devfire.mysteryblocks.Block.History.BlockHistoryHandler;
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
+import cz.devfire.mysteryblocks.Database.Object.Results;
 import cz.devfire.mysteryblocks.Listener.Event.*;
 import cz.devfire.mysteryblocks.Files.Config;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
@@ -24,7 +25,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -118,11 +118,13 @@ public class MysteryBlock {
             location = Utils.getLocationFromString(stringLocation);
         }
 
-        try (ResultSet rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData WHERE name = ?", name)) {
+        try {
+            Results rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData WHERE name = ?", name);
+
             if (rs.next()) {
                 cooldownHandler.setCurrentTime(rs.getLong("cooldown"));
-                totalDestroys = rs.getInt("destroys");
-                currentMines = rs.getInt("mines");
+                totalDestroys = (int) rs.getLong("destroys");
+                currentMines = (int) rs.getLong("mines");
 
                 if (!rs.getString("playerMines").isEmpty()) {
                     for (String playerData : rs.getString("playerMines").split("\\|")) {

@@ -31,7 +31,7 @@ public class BlockAntiCheatHandler extends AbstractBlockHandler {
                 for (Player player : Lists.newArrayList(mineMap.keySet())) {
                     Set<Long> playerMap = Sets.newHashSet(mineMap.get(player));
 
-                    if (!player.hasPermission(mysteryBlock.getPermission() +".bypass.anticheat")) {
+                    if (!player.hasPermission(mysteryBlock.getPermission() +".bypass.anti-cheat")) {
                         for (Integer actionPoint : actionKeyList) {
                             if (playerMap.size() > actionPoint) {
                                 if (warnCooldown.getOrDefault(actionPoint + "-" + player.getName().toLowerCase(), 0L) + cooldown < System.currentTimeMillis() || actionPoint == 0) {

@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import java.sql.*;
 
 public interface Database {
-    Connection conn = null;
 
     DatabaseType getType();
 
@@ -17,30 +16,9 @@ public interface Database {
 
     boolean isConnected();
 
-    default void update(String query, Object... args) {
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
-            parseStatement(ps, args);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("");
-            Bukkit.getConsoleSender().sendMessage("§c - Update failed! §4" + query);
-            Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
+    void update(String query, Object... args);
 
-    default Results query(String query, Object... args) {
-        try {
-            PreparedStatement ps = conn.prepareStatement(query);
-            parseStatement(ps, args);
-            return new Results(ps.executeQuery());
-        } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("");
-            Bukkit.getConsoleSender().sendMessage("§c - Query failed! §4" + query);
-            Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
+    Results query(String query, Object... args);
 
     default void parseStatement(PreparedStatement ps, Object[] args) throws SQLException {
         int i = 1;

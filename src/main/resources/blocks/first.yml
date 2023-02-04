@@ -9,6 +9,7 @@
 #   [ACTIONBAR]       - Shows an action bar message to a player
 #   [WARN]            - Shows specific message to a player with the permission "firemysteryblocks.warn"
 #   [TITLE]           - Shows a title message to a player, \n for second line
+#   [EFFECT]          - Adds an effect to player. Format: EFFECT-AMPLIFIER-DURATION
 # !! - Format: [TYPE] [VALUE], Sequence is required in Cache, Delay, Percentage order!
 #
 # Placeholders:
@@ -69,6 +70,17 @@ Cooldown:
   # Cooldown time in milliseconds
   Time: 300000
 
+Schedule:
+  # If enabled, the block will respawn only in specific time. In this case, cooldown is ignored.
+  Enabled: false
+  Table:
+    - "12:00"
+    - "16:00"
+  AutoDestroy:
+    # If enabled, block is automatically destroyed, if not mined under specific time
+    Enabled: false
+    Time: 3600000
+
 EnchantLimit:
   # If enabled, player items will be limited to those equal or lower to the specified enchantment limit.
   # Enchantments must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
@@ -77,17 +89,31 @@ EnchantLimit:
     - "DIG_SPEED:5"
 
 MiningEffects:
-  # If enabled, player will have a specific effect applied to them when mining this block.
+  # If enabled, player will have a specific effects applied to them while mining this block.
   # Effect must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
   Enabled: false
-  List:
-    - "SLOW_DIGGING:1"
+  # These effects are added constantly every tick.
+  Constant:
+    # Format: EFFECT:AMPLIFIER
+    List:
+      - "SLOW_DIGGING:1"
+  # These effects have a chance to be added under set cooldown
+  Percentage:
+    Cooldown: 30000
+    # Format: PERCENTAGE-EFFECT:AMPLIFIER:DURATION
+    List:
+      - "0.5-HARM:1:10" # 0.5% that player receives damage
+      - "5-FAST_DIGGING:1:20" # 5% that player gets HASTE 1 for 20 ticks (1 second)
+      - "10-BLINDNESS:1:100" # 10% that player gets BLINDNESS 1 for 100 ticks (5 seconds)
 
-# If enabled, block destroys will be saved into history.
 History:
+  # If enabled, after block is destroyed. Date and player mines are saved into history.
   Enabled: true
+  # Amount of saves stored
   Count: 5
-  # If GUI enabled, this is item that will be placed in history slots
+  # Format for date placeholder
+  Format: "YYYY-MM-dd HH:mm"
+  # If GUI is enabled, this is the item that will be placed in history slots
   # {history-id} gets replaced by current id, only in this section
   Item:
     Material: BOOK
@@ -107,8 +133,8 @@ History:
   # If GUI is enabled, this is slot numbers where history items will be placed
   Slots: "21,22,23,24,25"
 
-# If enabled, GUI for this block gets created. Using /fmb open <blockName> can be opened.
 GUI:
+# If enabled, GUI for this block gets created. Using /fmb open <blockName> can be opened.
   Enabled: true
   # Size from 9 to 54
   Size: 45

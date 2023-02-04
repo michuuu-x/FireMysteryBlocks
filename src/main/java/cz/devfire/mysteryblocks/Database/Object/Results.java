@@ -2,6 +2,7 @@ package cz.devfire.mysteryblocks.Database.Object;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -52,65 +53,37 @@ public class Results {
     public int getInt(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        if (o instanceof Integer) {
-            return (int) o;
-        } else if (o instanceof Double) {
-            return (int) ((double) o);
-        } else {
-            return 0;
-        }
+        return ((Number) o).intValue();
     }
 
     public double getDouble(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        if (o instanceof Integer) {
-            return (double) ((int) o);
-        } else if (o instanceof Double) {
-            return (double) o;
-        } else {
-            return 0;
-        }
+        return ((Number) o).doubleValue();
     }
 
     public byte getByte(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        if (o instanceof Byte) {
-            return (byte) o;
-        } else {
-            return 0;
-        }
+        return ((Number) o).byteValue();
     }
 
     public short getShort(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        if (o instanceof Short) {
-            return (short) o;
-        } else {
-            return 0;
-        }
+        return ((Number) o).shortValue();
     }
 
     public long getLong(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        if (o instanceof Long) {
-            return (long) o;
-        } else {
-            return 0;
-        }
+        return ((Number) o).longValue();
     }
 
     public float getFloat(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        if (o instanceof Float) {
-            return (float) o;
-        } else {
-            return 0;
-        }
+        return ((Number) o).floatValue();
     }
 
     public boolean getBoolean(String columnLabel) {

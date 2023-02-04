@@ -6,6 +6,7 @@ import cz.devfire.mysteryblocks.Block.Handler.BlockHologramHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Hologram.Enum.HologramProviderType;
 import net.Zrips.CMILib.Container.CMILocation;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class CMIHologramProvider extends AbstractHologramProvider {
 
         CMILocation newLoc = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D));
         if (!hologram.getLocation().equals(newLoc)) {
-            hologram.setLoc(location);
+            hologram.setLoc(newLoc);
         }
 
         if (checkStatic()) return;

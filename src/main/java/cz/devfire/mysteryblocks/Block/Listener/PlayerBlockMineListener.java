@@ -1,5 +1,6 @@
 package cz.devfire.mysteryblocks.Block.Listener;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import cz.devfire.mysteryblocks.Block.AntiAfk.Interface.AntiAfkMethod;
 import cz.devfire.mysteryblocks.Block.AntiAfk.BlockAntiAfkHandler;
@@ -27,11 +28,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class PlayerBlockMineListener implements Listener {
     private final MysteryBlocksPlugin plugin;
+
+    private final HashMap<Player, Long> cooldown = Maps.newHashMap();
 
     public PlayerBlockMineListener(MysteryBlocksPlugin plugin) {
         this.plugin = plugin;
@@ -89,7 +93,10 @@ public class PlayerBlockMineListener implements Listener {
                         for (String ench : badEnchants) {
                             String[] enchArgs = ench.split("\\|");
 
-                            Language.ENCHANT_LIMIT.send(player, enchArgs[0], enchArgs[1], enchArgs[2]);
+                            if (cooldown.getOrDefault(player, Long.MAX_VALUE) + 1000 < System.currentTimeMillis()) {
+                                Language.ENCHANT_LIMIT.send(player, enchArgs[0], enchArgs[1], enchArgs[2]);
+                                cooldown.put(player, System.currentTimeMillis());
+                            }
                         }
 
                         return;

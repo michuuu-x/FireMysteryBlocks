@@ -131,7 +131,6 @@ public class MysteryBlock {
                         String[] dataArgs = playerData.split("-");
                         mineMap.put(dataArgs[0], Integer.parseInt(dataArgs[1]));
                     }
-
                 }
             }
 

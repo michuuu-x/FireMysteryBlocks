@@ -21,6 +21,7 @@ public class BlockHistoryHandler extends AbstractBlockHandler {
     private final ArrayList<History> history = Lists.newArrayList();
     private ItemStack item = new ItemStack(Material.STONE);
     private Integer[] slots = new Integer[]{};
+    public static String format = "YYYY-MM-dd HH:mm";
 
     public BlockHistoryHandler(MysteryBlocksPlugin plugin, MysteryBlock mysteryBlock) {
         super(plugin, mysteryBlock);
@@ -40,6 +41,7 @@ public class BlockHistoryHandler extends AbstractBlockHandler {
 
             item = Utils.getItemFromSection(section.getConfigurationSection("Item"));
             slots = Arrays.stream(section.getString("Slots").isEmpty() ? new String[]{} : section.getString("Slots").split(",")).map(Integer::parseInt).toArray(Integer[]::new);
+            format = section.getString("Format");
         }
 
         return true;

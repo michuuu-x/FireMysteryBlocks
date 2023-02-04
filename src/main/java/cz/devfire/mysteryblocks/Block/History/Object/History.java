@@ -1,6 +1,7 @@
 package cz.devfire.mysteryblocks.Block.History.Object;
 
 import com.google.common.collect.Lists;
+import cz.devfire.mysteryblocks.Block.History.BlockHistoryHandler;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Util.Pair;
 
@@ -47,6 +48,6 @@ public class History {
     }
 
     public String getDateString() {
-        return date == null ? Language.EMPTY.getMessage() : new SimpleDateFormat("YYYY-MM-dd HH:mm").format(date);
+        return date == null ? Language.EMPTY.getMessage() : new SimpleDateFormat(BlockHistoryHandler.format).format(date);
     }
 }

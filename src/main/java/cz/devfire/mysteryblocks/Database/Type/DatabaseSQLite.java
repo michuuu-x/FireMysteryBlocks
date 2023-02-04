@@ -2,6 +2,7 @@ package cz.devfire.mysteryblocks.Database.Type;
 
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
 import cz.devfire.mysteryblocks.Database.Interface.Database;
+import cz.devfire.mysteryblocks.Database.Object.Results;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 
@@ -54,6 +55,31 @@ public class DatabaseSQLite implements Database {
         try {
             return conn != null && !conn.isClosed();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void update(String query, Object... args) {
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            parseStatement(ps, args);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            Bukkit.getConsoleSender().sendMessage("");
+            Bukkit.getConsoleSender().sendMessage("§c - Update failed! §4" + query);
+            Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Results query(String query, Object... args) {
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            parseStatement(ps, args);
+            return new Results(ps.executeQuery());
+        } catch (SQLException e) {
+            Bukkit.getConsoleSender().sendMessage("");
+            Bukkit.getConsoleSender().sendMessage("§c - Query failed! §4" + query);
+            Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }

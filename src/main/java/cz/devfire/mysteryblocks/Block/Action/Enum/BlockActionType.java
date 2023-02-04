@@ -9,5 +9,6 @@ public enum BlockActionType {
     BROADCAST,
     SOUND,
     ACTIONBAR,
-    TITLE
+    TITLE,
+    EFFECT
 }

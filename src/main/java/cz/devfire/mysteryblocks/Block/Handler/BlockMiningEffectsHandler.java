@@ -110,7 +110,7 @@ public class BlockMiningEffectsHandler extends AbstractBlockHandler {
             for (PotionEffect effect : percentageMap.keySet()) {
                 double percentage = percentageMap.get(effect);
 
-                if (percentage < targetPercentage) {
+                if (percentage > targetPercentage) {
                     player.addPotionEffect(effect);
                 }
             }

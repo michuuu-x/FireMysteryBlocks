@@ -2,9 +2,11 @@ package cz.devfire.mysteryblocks.Block;
 
 import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
+import cz.devfire.mysteryblocks.Block.Regeneration.BlockRegenerationHandler;
 import cz.devfire.mysteryblocks.Database.Object.Results;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
-import cz.devfire.mysteryblocks.Scheduler.BlockCooldownShedule;
+import cz.devfire.mysteryblocks.Scheduler.BlockCooldownSchedule;
+import cz.devfire.mysteryblocks.Scheduler.BlockRegenerationSchedule;
 import cz.devfire.mysteryblocks.Scheduler.BlockSaveSchedule;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
 import cz.devfire.mysteryblocks.Util.Utils;
@@ -18,7 +20,8 @@ import java.util.HashMap;
 public class BlockHandler extends AbstractHandler {
     private final HashMap<String, MysteryBlock> blocks = Maps.newHashMap();
 
-    private BlockCooldownShedule cooldownShedule = null;
+    private BlockRegenerationSchedule regenerationSchedule = null;
+    private BlockCooldownSchedule cooldownShedule = null;
     private BlockSaveSchedule saveSchedule = null;
 
     public BlockHandler(MysteryBlocksPlugin plugin) {
@@ -130,15 +133,18 @@ public class BlockHandler extends AbstractHandler {
     }
 
     public void stopSchedulers() {
+        if (regenerationSchedule != null) regenerationSchedule.cancel();
         if (cooldownShedule != null) cooldownShedule.cancel();
         if (saveSchedule != null) saveSchedule.cancel();
     }
 
     public void startSchedulers() {
-        cooldownShedule = new BlockCooldownShedule(plugin);
+        regenerationSchedule = new BlockRegenerationSchedule(plugin);
+        cooldownShedule = new BlockCooldownSchedule(plugin);
         saveSchedule = new BlockSaveSchedule(plugin);
 
-        cooldownShedule.runTaskTimerAsynchronously(plugin,0,10);
+        cooldownShedule.runTaskTimerAsynchronously(plugin,20,10);
+        regenerationSchedule.runTaskTimerAsynchronously(plugin,20,20);
 
         if (plugin.getConfig().getBoolean("Settings.AutoSave.Enabled")) {
             int delay = plugin.getConfig().getInt("Settings.AutoSave.Time") * 20;

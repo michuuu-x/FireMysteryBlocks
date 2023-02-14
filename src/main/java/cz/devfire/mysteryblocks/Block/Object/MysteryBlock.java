@@ -10,6 +10,7 @@ import cz.devfire.mysteryblocks.Block.Handler.BlockGUIHandler;
 import cz.devfire.mysteryblocks.Block.Handler.*;
 import cz.devfire.mysteryblocks.Block.Handler.BlockHologramHandler;
 import cz.devfire.mysteryblocks.Block.History.BlockHistoryHandler;
+import cz.devfire.mysteryblocks.Block.Regeneration.BlockRegenerationHandler;
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
 import cz.devfire.mysteryblocks.Database.Object.Results;
 import cz.devfire.mysteryblocks.Listener.Event.*;
@@ -42,19 +43,23 @@ public class MysteryBlock {
     private final int itemDamage;
     private final boolean permissionRequired;
     private final int requiredMines;
+    private int requiredTempMines;
     private Location location = null;
     private int currentMines = 0;
     private int totalDestroys = 0;
+    private long lastMine = Long.MAX_VALUE;
 
     private final BlockGUIHandler guiHandler;
     private final BlockClickHandler clickHandler;
     private final BlockAntiAfkHandler antiAfkHandler;
     private final BlockHistoryHandler historyHandler;
     private final BlockCooldownHandler cooldownHandler;
+    private final BlockScheduleHandler scheduleHandler;
     private final BlockHologramHandler hologramHandler;
     private final BlockAntiCheatHandler antiCheatHandler;
     private final BlockMineActionHandler mineActionHandler;
     private final BlockEnchantLimitHandler enchantLimitHandler;
+    private final BlockRegenerationHandler regenerationHandler;
     private final BlockMiningEffectsHandler miningEffectsHandler;
 
     public MysteryBlock(MysteryBlocksPlugin plugin, String blockName) {
@@ -84,11 +89,13 @@ public class MysteryBlock {
         this.clickHandler = new BlockClickHandler(plugin,this);
         this.antiAfkHandler = new BlockAntiAfkHandler(plugin,this);
         this.historyHandler = new BlockHistoryHandler(plugin,this);
-        this.cooldownHandler = new BlockCooldownHandler(plugin,this);
+        this.scheduleHandler = new BlockScheduleHandler(plugin,this);
         this.hologramHandler = new BlockHologramHandler(plugin,this);
+        this.cooldownHandler = new BlockCooldownHandler(plugin,this);
         this.antiCheatHandler = new BlockAntiCheatHandler(plugin,this);
         this.mineActionHandler = new BlockMineActionHandler(plugin,this);
         this.enchantLimitHandler = new BlockEnchantLimitHandler(plugin,this);
+        this.regenerationHandler = new BlockRegenerationHandler(plugin,this);
         this.miningEffectsHandler = new BlockMiningEffectsHandler(plugin,this);
 
         new BukkitRunnable() {
@@ -121,10 +128,15 @@ public class MysteryBlock {
         try {
             Results rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData WHERE name = ?", name);
 
-            if (rs.next()) {
+            if (rs.hasNext()) {
+                rs.next();
                 cooldownHandler.setCurrentTime(rs.getLong("cooldown"));
                 totalDestroys = (int) rs.getLong("destroys");
                 currentMines = (int) rs.getLong("mines");
+
+                if (currentMines != 0) {
+                    lastMine = System.currentTimeMillis();
+                }
 
                 if (!rs.getString("playerMines").isEmpty()) {
                     for (String playerData : rs.getString("playerMines").split("\\|")) {
@@ -145,12 +157,21 @@ public class MysteryBlock {
                 if (cooldownHandler.isEnabled() && cooldownHandler.isUnder()) {
                     location.getBlock().setType(cooldownHandler.getMaterial());
                 } else {
-                    location.getBlock().setType(material);
+                    if (scheduleHandler.isEnabled() && scheduleHandler.isAutoDestroy()) {
+                        if (scheduleHandler.prev().getTime() + scheduleHandler.getDestroyTime() < System.currentTimeMillis()) {
+                            location.getBlock().setType(cooldownHandler.getMaterial());
+                            cooldownHandler.setCurrentTime(System.currentTimeMillis());
+                        } else {
+                            location.getBlock().setType(material);
+                        }
+                    } else {
+                        location.getBlock().setType(material);
+                    }
                 }
-
-                Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockLoadEvent(block));
             }
         }.runTask(plugin);
+
+        Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockLoadEvent(block));
 
         if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
             hologramHandler.getHologram().recreate();
@@ -196,8 +217,11 @@ public class MysteryBlock {
         location.getBlock().setType(material);
 
         mineMap.clear();
+        mineList.clear();
         currentMines = 0;
+        requiredTempMines = 0;
         cooldownHandler.setCurrentTime(0);
+        lastMine = 0;
 
         Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockRespawnEvent(this));
 
@@ -211,7 +235,12 @@ public class MysteryBlock {
         }
 
         if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
-            hologramHandler.getHologram().update();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    hologramHandler.getHologram().update();
+                }
+            }.runTaskAsynchronously(plugin);
         }
     }
 
@@ -219,6 +248,7 @@ public class MysteryBlock {
         mineMap.put(player.getName(), mineMap.getOrDefault(player.getName(),0) + 1);
         update();
         currentMines++;
+        lastMine = System.currentTimeMillis();
 
         Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockMineEvent(this, player));
 
@@ -229,43 +259,50 @@ public class MysteryBlock {
             e.printStackTrace();
         }
 
-        if (currentMines >= requiredMines) {
-            broke();
+        if (currentMines >= requiredMines + requiredTempMines) {
+            broke(false);
         } else {
             if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
-                hologramHandler.getHologram().update();
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        hologramHandler.getHologram().update();
+                    }
+                }.runTaskAsynchronously(plugin);
             }
         }
     }
 
-    public void broke() {
-        totalDestroys++;
-
+    public void broke(boolean force) {
         Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockDestroyEvent(this));
 
-        try {
-            mineActionHandler.perform(BlockActionSection.DESTROY_GLOBAL,null);
-        } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c"+ name +" | onDestroyGlobalActions is wrongly configured! Check your config!");
-            e.printStackTrace();
-        }
+        if (!force) {
+            totalDestroys++;
 
-        try {
-            mineActionHandler.perform(BlockActionSection.DESTROY_EVERY_PLACE,null);
-        } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c"+ name +" | onDestroyEveryPlaceActions is wrongly configured! Check your config!");
-            e.printStackTrace();
-        }
+            try {
+                mineActionHandler.perform(BlockActionSection.DESTROY_GLOBAL, null);
+            } catch (Exception e) {
+                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyGlobalActions is wrongly configured! Check your config!");
+                e.printStackTrace();
+            }
 
-        try {
-            mineActionHandler.perform(BlockActionSection.DESTROY_PER_PLACE,null);
-        } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c"+ name +" | onDestroyPlaceActions is wrongly configured! Check your config!");
-            e.printStackTrace();
-        }
+            try {
+                mineActionHandler.perform(BlockActionSection.DESTROY_EVERY_PLACE, null);
+            } catch (Exception e) {
+                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyEveryPlaceActions is wrongly configured! Check your config!");
+                e.printStackTrace();
+            }
 
-        if (historyHandler.isEnabled()) {
-            historyHandler.save();
+            try {
+                mineActionHandler.perform(BlockActionSection.DESTROY_PER_PLACE, null);
+            } catch (Exception e) {
+                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyPlaceActions is wrongly configured! Check your config!");
+                e.printStackTrace();
+            }
+
+            if (historyHandler.isEnabled()) {
+                historyHandler.save();
+            }
         }
 
         if (cooldownHandler.isEnabled()) {
@@ -332,7 +369,7 @@ public class MysteryBlock {
     }
 
     public int getRequiredMines() {
-        return requiredMines;
+        return requiredMines + requiredTempMines;
     }
 
     public Location getLocation() {
@@ -345,6 +382,22 @@ public class MysteryBlock {
 
     public int getTotalDestroys() {
         return totalDestroys;
+    }
+
+    public void setTempRequired(int mines) {
+        this.requiredTempMines = mines;
+    }
+
+    public void setLastMine(long lastMine) {
+        this.lastMine = lastMine;
+    }
+
+    public int getRequiredTempMines() {
+        return requiredTempMines;
+    }
+
+    public long getLastMine() {
+        return lastMine;
     }
 
     public String getPermission() { return "firemysteryblocks."+ name; }
@@ -373,6 +426,10 @@ public class MysteryBlock {
         return cooldownHandler;
     }
 
+    public BlockScheduleHandler getScheduleHandler() {
+        return scheduleHandler;
+    }
+
     public BlockHologramHandler getHologramHandler() {
         return hologramHandler;
     }
@@ -387,6 +444,10 @@ public class MysteryBlock {
 
     public BlockEnchantLimitHandler getEnchantLimitHandler() {
         return enchantLimitHandler;
+    }
+
+    public BlockRegenerationHandler getRegenerationHandler() {
+        return regenerationHandler;
     }
 
     public BlockMiningEffectsHandler getMiningEffectsHandler() {

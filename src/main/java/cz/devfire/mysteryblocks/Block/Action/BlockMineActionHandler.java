@@ -325,7 +325,6 @@ public class BlockMineActionHandler extends AbstractBlockHandler {
                         player.addPotionEffect(effect);
                     }
                 }
-
             }
         }
     }

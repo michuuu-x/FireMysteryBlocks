@@ -3,18 +3,14 @@ package cz.devfire.mysteryblocks.Block.AntiAfk.Method;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.AntiAfk.BlockAntiAfkHandler;
+import cz.devfire.mysteryblocks.Block.AntiAfk.Listener.PlayerCaptchaListener;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -56,46 +52,7 @@ public class CaptchaMethod extends AbstractAntiAfkMethod {
         } else if (size < 54) { size = 45;
         } else { size = 54; }
 
-        plugin.getServer().getPluginManager().registerEvents(new Listener() {
-
-            @EventHandler
-            public void onClick(InventoryClickEvent event) {
-                if (!checkingPlayers.keySet().contains(event.getWhoClicked().getName())) return;
-
-                if (event.getClickedInventory() != event.getWhoClicked().getInventory()) {
-                    if (skipBlank) {
-                        if (event.getCurrentItem() != null && event.getCurrentItem().isSimilar(activeItem)) {
-                            checkingPlayers.remove(event.getWhoClicked().getName());
-                            event.getWhoClicked().closeInventory();
-
-                            mysteryBlock.getMineActionHandler().perform(onSuccessActions, event.getWhoClicked().getName());
-                        }
-                    } else {
-                        checkingPlayers.remove(event.getWhoClicked().getName());
-                        event.getWhoClicked().closeInventory();
-
-                        mysteryBlock.getMineActionHandler().perform(event.getCurrentItem() != null && event.getCurrentItem().isSimilar(activeItem) ? onSuccessActions : onFailActions, event.getWhoClicked().getName());
-                    }
-                }
-
-                event.setCancelled(true);
-            }
-
-            @EventHandler
-            public void onClose(InventoryCloseEvent event) {
-                if (!checkingPlayers.keySet().contains(event.getPlayer().getName())) return;
-                checkingPlayers.remove(event.getPlayer().getName());
-
-                mysteryBlock.getMineActionHandler().perform(onFailActions, event.getPlayer().getName());
-            }
-
-            @EventHandler
-            public void onDisconnect(PlayerQuitEvent event) {
-                if (!checkingPlayers.keySet().contains(event.getPlayer().getName())) return;
-                checkingPlayers.remove(event.getPlayer().getName());;
-            }
-
-        }, plugin);
+        plugin.getServer().getPluginManager().registerEvents(new PlayerCaptchaListener(plugin, mysteryBlock,this), plugin);
 
         new BukkitRunnable() {
             @Override
@@ -137,5 +94,45 @@ public class CaptchaMethod extends AbstractAntiAfkMethod {
 
         checkingPlayers.put(player.getName(), System.currentTimeMillis());
         player.openInventory(inventory);
+    }
+
+    public ArrayList<String> getOnFailActions() {
+        return onFailActions;
+    }
+
+    public ArrayList<String> getOnSuccessActions() {
+        return onSuccessActions;
+    }
+
+    public HashMap<String, Long> getCheckingPlayers() {
+        return checkingPlayers;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public ItemStack getActiveItem() {
+        return activeItem;
+    }
+
+    public ItemStack getFillItem() {
+        return fillItem;
+    }
+
+    public boolean isFillEnabled() {
+        return fillEnabled;
+    }
+
+    public boolean isLimitEnabled() {
+        return limitEnabled;
+    }
+
+    public boolean isSkipBlank() {
+        return skipBlank;
     }
 }

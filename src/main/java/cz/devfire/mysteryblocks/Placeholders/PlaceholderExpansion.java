@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 
 public class PlaceholderExpansion extends me.clip.placeholderapi.expansion.PlaceholderExpansion {
@@ -86,6 +87,40 @@ public class PlaceholderExpansion extends me.clip.placeholderapi.expansion.Place
                     }
 
                     break;
+                }
+
+                case "SCHEDULE": {
+                    switch (args[2].toUpperCase()) {
+                        case "PREV": {
+                            String format = args.length > 3 ? args[3] : "YYYY-MM-dd HH:mm:ss";
+                            return new SimpleDateFormat(format).format(mysteryBlock.getScheduleHandler().prev());
+                        }
+
+                        case "NEXT": {
+                            String format = args.length > 3 ? args[3] : "YYYY-MM-dd HH:mm:ss";
+                            return new SimpleDateFormat(format).format(mysteryBlock.getScheduleHandler().next());
+                        }
+
+                        case "REMAINING": {
+                            switch (args[3].toUpperCase()) {
+                                case "FORMATTED": {
+                                    return Utils.translateTimeToTimer(Math.abs(System.currentTimeMillis() - mysteryBlock.getScheduleHandler().prev().getTime() - mysteryBlock.getScheduleHandler().getDestroyTime()));
+                                }
+
+                                case "SHORT": {
+                                    return Utils.translateTimeToString(Math.abs(System.currentTimeMillis() - mysteryBlock.getScheduleHandler().prev().getTime() - mysteryBlock.getScheduleHandler().getDestroyTime()));
+                                }
+
+                                case "PLAIN": {
+                                    return ((int) (Math.abs(System.currentTimeMillis() - mysteryBlock.getScheduleHandler().prev().getTime() - mysteryBlock.getScheduleHandler().getDestroyTime()) / 1000)) + "";
+                                }
+                            }
+                        }
+                    }
+                }
+
+                case "REGENERATED": {
+                    return decimal.format(mysteryBlock.getRegenerationHandler().getAmount());
                 }
 
                 case "COOLDOWN": {

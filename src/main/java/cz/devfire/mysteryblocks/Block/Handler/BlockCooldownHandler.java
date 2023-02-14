@@ -2,8 +2,12 @@ package cz.devfire.mysteryblocks.Block.Handler;
 
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.text.SimpleDateFormat;
 
 public class BlockCooldownHandler extends AbstractBlockHandler {
     private Material material = Material.BEDROCK;
@@ -19,7 +23,7 @@ public class BlockCooldownHandler extends AbstractBlockHandler {
     public boolean init(ConfigurationSection section) {
         enabled = section.getBoolean("Enabled");
 
-        if (enabled) {
+        if (true) {
             material = Material.valueOf(section.getString("Material"));
             requiredTime = section.getLong("Time");
             currentTime = 0;
@@ -29,6 +33,10 @@ public class BlockCooldownHandler extends AbstractBlockHandler {
     }
 
     public boolean isUnder() {
+        if (mysteryBlock.getScheduleHandler().isEnabled()) {
+            return currentTime != 0 && currentTime + (mysteryBlock.getScheduleHandler().next().getTime() - currentTime) - System.currentTimeMillis() > 0;
+        }
+
         return currentTime + requiredTime - System.currentTimeMillis() > 0;
     }
 
@@ -45,6 +53,10 @@ public class BlockCooldownHandler extends AbstractBlockHandler {
     }
 
     public long getETA() {
+        if (mysteryBlock.getScheduleHandler().isEnabled()) {
+            return isUnder() ? (currentTime + (mysteryBlock.getScheduleHandler().next().getTime() - currentTime) - System.currentTimeMillis()) : 0;
+        }
+
         return isUnder() ? (currentTime + requiredTime - System.currentTimeMillis()) : 0;
     }
 

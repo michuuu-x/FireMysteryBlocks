@@ -234,6 +234,7 @@ public class Utils {
 
         DecimalFormat decimal = new DecimalFormat("#,###");
         long time = blockIsNull ? 0 : mysteryBlock.getCooldownHandler().getETA();
+        long remaining = blockIsNull ? 0 : Math.abs(System.currentTimeMillis() - mysteryBlock.getScheduleHandler().prev().getTime() - mysteryBlock.getScheduleHandler().getDestroyTime());
 
         if (mysteryBlock != null) {
             for (int i = 1; i < 10; i++) {
@@ -257,19 +258,23 @@ public class Utils {
         }
 
         return Utils.parseArgs(line,
-                /* 0  - Block Name             */ blockIsNull  ? "null" : mysteryBlock.getName(),
-                /* 1  - Block Material         */ blockIsNull  ? "null" : mysteryBlock.getMaterial().name(),
-                /* 2  - Player Name            */ playerIsNull ? "null" : playerName,
-                /* 3  - Block Mines ASC        */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getCurrentMines()),
-                /* 4  - Block Mines DESC       */ blockIsNull  ? "null" : decimal.format((mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines())),
-                /* 5  - Block Required Mines   */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getRequiredMines()),
-                /* 6  - Player Current Mines   */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getMineMap().getOrDefault(playerName,0)),
-                /* 7  - Player Mine Speed      */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getAntiCheatHandler().getSpeed(playerName)),
-                /* 8  - Block Cooldown FORMAT  */ blockIsNull  ? "null" : translateTimeToTimer(time),
-                /* 9  - Block Cooldown SHORT   */ blockIsNull  ? "null" : translateTimeToString(time),
-                /* 10 - Block Cooldown PLAIN   */ blockIsNull  ? "null" : ((int) (time / 1000)) +"",
-                /* 11 - Percentage String      */ blockIsNull  ? "null" : createPercentageString(mysteryBlock.getCurrentMines(), mysteryBlock.getRequiredMines()),
-                /* 12 - Percentage Count       */ blockIsNull  ? "null" : Math.round(((mysteryBlock.getCurrentMines() / (float) mysteryBlock.getRequiredMines()) * 100) * 100F) / 100F +""
+                /* 0  - Block Name                 */ blockIsNull  ? "null" : mysteryBlock.getName(),
+                /* 1  - Block Material             */ blockIsNull  ? "null" : mysteryBlock.getMaterial().name(),
+                /* 2  - Player Name                */ playerIsNull ? "null" : playerName,
+                /* 3  - Block Mines ASC            */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getCurrentMines()),
+                /* 4  - Block Mines DESC           */ blockIsNull  ? "null" : decimal.format((mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines())),
+                /* 5  - Block Required Mines       */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getRequiredMines()),
+                /* 6  - Player Current Mines       */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getMineMap().getOrDefault(playerName,0)),
+                /* 7  - Player Mine Speed          */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getAntiCheatHandler().getSpeed(playerName)),
+                /* 8  - Block Cooldown FORMAT      */ blockIsNull  ? "null" : translateTimeToTimer(time),
+                /* 9  - Block Cooldown SHORT       */ blockIsNull  ? "null" : translateTimeToString(time),
+                /* 10 - Block Cooldown PLAIN       */ blockIsNull  ? "null" : ((int) (time / 1000)) +"",
+                /* 11 - Percentage String          */ blockIsNull  ? "null" : createPercentageString(mysteryBlock.getCurrentMines(), mysteryBlock.getRequiredMines()),
+                /* 12 - Percentage Count           */ blockIsNull  ? "null" : Math.round(((mysteryBlock.getCurrentMines() / (float) mysteryBlock.getRequiredMines()) * 100) * 100F) / 100F +"",
+                /* 13 - Schedule next              */ blockIsNull  ? "null" : new SimpleDateFormat("HH:mm").format(mysteryBlock.getScheduleHandler().next()),
+                /* 14 - Schedule remaining FORMAT  */ blockIsNull  ? "null" : translateTimeToTimer(remaining),
+                /* 15 - Schedule remaining SHORT   */ blockIsNull  ? "null" : translateTimeToString(remaining),
+                /* 16 - Schedule remaining PLAIN   */ blockIsNull  ? "null" : ((int) (remaining / 1000)) +""
         );
     }
 

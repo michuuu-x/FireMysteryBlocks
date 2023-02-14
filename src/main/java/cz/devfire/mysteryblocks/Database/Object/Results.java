@@ -32,6 +32,10 @@ public class Results {
         }
     }
 
+    public boolean hasNext() {
+        return resultList.size() != 0;
+    }
+
     public boolean next() {
         return resultList.size() > index++;
     }

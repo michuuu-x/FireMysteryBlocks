@@ -24,6 +24,8 @@
 #  - {8}, {9}, {10} - Cooldown time .. FORMATTED, SHORT, PLAIN
 #  - {11} - Block mine percentage
 #  - {12} - Block mine progress (in progress bar format)
+#  - {13} - Next schedule time
+#  - {14}, {15}, {16} - Schedule remaining time before autoDestroy .. FORMATTED, SHORT, PLAIN
 #  - {pos-1-name} and {pos-1-value} - First position name and mine count. !! MAX TOP 10 !!
 #  - {history-1-pos-1-name} and {history-1-pos-1-value} - History 1 backwards, position 1 !! MAX TOP 10 !!
 #  - {history-1-date} - Date of history block break in format "YYYY-MM-dd HH:mm"
@@ -52,27 +54,42 @@
 # ! To disable any of events place [] instead of list
 
 Block:
-  Material: STONE
-  Location: world/0/100/0
+  Material: "STONE"
+  Location: "world/0/100/0"
   # Total block mines required to destroy the block and get rewards.
   Limit: 10
   # Item durability taken by mining. To disable itemDamage set this to 0.
+  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.item-damage
   ItemDamage: 1
   # If enabled, the player will need specific permission to be able to mine this block.
   # Perm: "firemysteryblocks.BLOCKNAME.mine"
   Permission: false
 
+Regeneration:
+  # If enabled, block will be regenerated if is not mines under specific time
+  Enabled: true
+  # Time in milliseconds
+  Time: 300000
+  # Methods: FULL, ADD
+  # FULL - After time block is regenerated completely to start
+  # ADD - Amount of mines is temporarily added to block max health
+  Method: FULL
+  Actions:
+    - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has regenerated its damage! Mine it faster!"
+
 Cooldown:
   # If enabled, the block will temporarily change into an unbreakable material specified bellow.
   # After the specified time, the block is changed back to a normal breakable block.
   Enabled: true
-  Material: BEDROCK
+  Material: "BEDROCK"
   # Cooldown time in milliseconds
   Time: 300000
 
 Schedule:
-  # If enabled, the block will respawn only in specific time. In this case, cooldown is ignored.
+  # If enabled, the block will respawn only in specific time.
   Enabled: false
+  # Timezone list available at https://code2care.org/pages/java-timezone-list-utc-gmt-offset
+  TimeZone: "Europe/Prague"
   Table:
     - "12:00"
     - "16:00"
@@ -80,17 +97,26 @@ Schedule:
     # If enabled, block is automatically destroyed, if not mined under specific time
     Enabled: false
     Time: 3600000
+    # If enabled, actions will be made as it was broken, otherwise block will just change into cooldown state
+    Actions: false
 
 EnchantLimit:
   # If enabled, player items will be limited to those equal or lower to the specified enchantment limit.
   # Enchantments must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
+  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.enchant-limit
   Enabled: false
   List:
     - "DIG_SPEED:5"
+  # Bypass works as permission, but need to match specific item description
+  # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE
+  Bypass:
+    - "God's pickaxe"
+    - "This pickaxe name;;This item lore\\nWith next line"
 
 MiningEffects:
   # If enabled, player will have a specific effects applied to them while mining this block.
   # Effect must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.mining-effects
   Enabled: false
   # These effects are added constantly every tick.
   Constant:
@@ -105,6 +131,11 @@ MiningEffects:
       - "0.5-HARM:1:10" # 0.5% that player receives damage
       - "5-FAST_DIGGING:1:20" # 5% that player gets HASTE 1 for 20 ticks (1 second)
       - "10-BLINDNESS:1:100" # 10% that player gets BLINDNESS 1 for 100 ticks (5 seconds)
+  # Bypass works as permission, but need to match specific item description
+  # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE
+  Bypass:
+    - "God's pickaxe"
+    - "This pickaxe name;;This item lore\\nWith next line"
 
 History:
   # If enabled, after block is destroyed. Date and player mines are saved into history.
@@ -116,7 +147,7 @@ History:
   # If GUI is enabled, this is the item that will be placed in history slots
   # {history-id} gets replaced by current id, only in this section
   Item:
-    Material: BOOK
+    Material: "BOOK"
     DisplayName: "&f&lHistory {history-id}."
     Amount: 1
     ModelData: 0
@@ -169,7 +200,7 @@ GUI:
       Lore: []
   Actions:
     40:
-      # If close set to true will close inventory on click
+      # If close is set to true will close inventory on click
       Close: true
       List:
         - "[MESSAGE] &6&lMysteryBlocks &8&l» &7Closing.."
@@ -189,6 +220,7 @@ AntiCheat:
   # If enabled, player mining speed is measured and if it exceeds the limit,
   # actions specified under this limit will be executed.
   # !! For every block, you will need to find out the max mine speed a player can achieve without cheating! !!
+  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.anti-cheat
   Enabled: true
   # Period for which mine speed is calculated. Set in milliseconds.
   # Example. 1000 -> 2 mines per 1000 milliseconds
@@ -209,9 +241,10 @@ AntiCheat:
 AntiAFK:
   # If enabled, players that are mining will be randomly interrupted
   # depending on method to stop them from afk mining.
+  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.anti-afk
   Enabled: false
   # Type: KNOCKBACK, CAPTCHA
-  Selected: NONE
+  Selected: "NONE"
   # Chance from 0.0 to 100
   Chance: 10
   Methods:

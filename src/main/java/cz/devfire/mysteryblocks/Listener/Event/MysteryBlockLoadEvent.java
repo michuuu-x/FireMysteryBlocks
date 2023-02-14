@@ -10,6 +10,7 @@ public class MysteryBlockLoadEvent extends Event {
     private final MysteryBlock mysteryBlock;
 
     public MysteryBlockLoadEvent(MysteryBlock mysteryBlock) {
+        super(true);
         this.mysteryBlock = mysteryBlock;
     }
 

@@ -8,19 +8,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class BlockMiningEffectsHandler extends AbstractBlockHandler {
     private final ArrayList<PotionEffect> constantList = Lists.newArrayList();
     private final HashMap<PotionEffect, Double> percentageMap = Maps.newHashMap();
     private final HashMap<Player, Long> cooldownMap = Maps.newHashMap();
+    private final ArrayList<String> bypassList = Lists.newArrayList();
 
     private Long cooldown = 0L;
 
@@ -34,6 +36,7 @@ public class BlockMiningEffectsHandler extends AbstractBlockHandler {
         enabled = section.getBoolean("Enabled");
 
         if (enabled) {
+            this.bypassList.addAll(section.getStringList("Bypass"));
             this.cooldown = section.getLong("Percentage.Cooldown");
 
             for (String effect : section.getStringList("Constant.List")) {
@@ -87,6 +90,36 @@ public class BlockMiningEffectsHandler extends AbstractBlockHandler {
     }
 
     public void apply(Player player) {
+        if (!bypassList.isEmpty()) {
+            ItemStack itemStack = player.getInventory().getItemInHand();
+
+            if (itemStack.hasItemMeta()) {
+                ItemMeta itemMeta = itemStack.getItemMeta();
+
+                for (String bypass : bypassList) {
+                    String[] bypassArgs = bypass.split(";;");
+
+                    if (bypassArgs.length > 0 && itemMeta.hasDisplayName()) {
+                        String originMatch = bypassArgs[0].replaceAll("§.", "").trim();
+                        String targetMatch = itemMeta.getDisplayName().replaceAll("§.", "").trim();
+
+                        if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
+                            if (bypassArgs.length > 1 && itemMeta.hasLore()) {
+                               originMatch = bypassArgs[1].replaceAll("§.", "");
+                               targetMatch = itemMeta.getLore().stream().map(line -> line.replaceAll("§.","")).collect(Collectors.joining("\\n"));
+
+                                if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
+                                    return;
+                                }
+                            } else {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         for (PotionEffect effect : constantList) {
             if (!player.hasPotionEffect(effect.getType())) {
                 ItemStack itemStack = player.getInventory().getItemInHand();

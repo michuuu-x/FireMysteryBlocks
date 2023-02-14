@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,7 +99,12 @@ public final class BreaksAddCommand implements ICommand {
 
         BlockHologramHandler blockHologramHandler = mysteryBlock.getHologramHandler();
         if (blockHologramHandler.isEnabled() && blockHologramHandler.getHologram() != null) {
-            blockHologramHandler.getHologram().update();
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    blockHologramHandler.getHologram().update();
+                }
+            }.runTaskAsynchronously(plugin);
         }
     }
 

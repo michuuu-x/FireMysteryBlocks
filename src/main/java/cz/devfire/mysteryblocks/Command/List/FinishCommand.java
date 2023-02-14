@@ -54,7 +54,7 @@ public final class FinishCommand implements ICommand {
             if (mysteryBlock == null) {
                 Language.BLOCK_UNKNOWN.send(sender, targetBlock);
             } else {
-                mysteryBlock.broke();
+                mysteryBlock.broke(false);
                 Language.BLOCK_FINISH.send(sender, mysteryBlock.getName());
             }
         }

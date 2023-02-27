@@ -4,7 +4,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.google.common.collect.Lists;
-import cz.devfire.mysteryblocks.Block.Handler.BlockHologramHandler;
+import cz.devfire.mysteryblocks.Block.Handler.Hologram.BlockHologramHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Hologram.Enum.HologramProviderType;
 import cz.devfire.mysteryblocks.Util.Utils;
@@ -16,7 +16,6 @@ import java.util.List;
 
 public class HolographicDisplaysProvider extends AbstractHologramProvider {
     private final ArrayList<TextLine> lines = Lists.newArrayList();
-    private Location location;
     private Hologram hologram;
 
     public HolographicDisplaysProvider(BlockHologramHandler hologramHandler, MysteryBlock mysteryBlock) {
@@ -25,7 +24,7 @@ public class HolographicDisplaysProvider extends AbstractHologramProvider {
 
     @Override
     public void create() {
-        location = mysteryBlock.getLocation();
+        Location location = mysteryBlock.getLocation();
         hologram = HologramsAPI.createHologram(hologramHandler.getPlugin(), location);
 
         ConfigurationSection settings = hologramHandler.getConfig(HologramProviderType.HolographicDisplays);
@@ -34,38 +33,45 @@ public class HolographicDisplaysProvider extends AbstractHologramProvider {
 
     @Override
     public void update() {
-        List<String> hologramLines = getLines();
+        if (hologram == null) return;
+
+        if (updating) return;
+        updating = true;
 
         Location newLoc = mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D);
         if (!hologram.getLocation().equals(newLoc)) {
-            hologram.teleport(location);
+            hologram.teleport(newLoc);
         }
 
-        if (checkStatic()) return;
+        if (!checkStatic()) {
+            List<String> hologramLines = getLines();
 
-        if (lines.isEmpty()) {
-            for (String line : hologramLines) {
-                lines.add(hologram.appendTextLine(Utils.cc(line)));
-            }
-        } else {
-            int i = 0;
+            if (lines.isEmpty()) {
+                for (String line : hologramLines) {
+                    lines.add(hologram.appendTextLine(Utils.cc(line)));
+                }
+            } else {
+                int i = 0;
 
-            while (i < hologramLines.size()) {
-                if (i < lines.size()) {
-                    lines.get(i).setText(Utils.cc(hologramLines.get(i)));
-                } else {
-                    lines.add(hologram.appendTextLine(Utils.cc(hologramLines.get(i))));
+                while (i < hologramLines.size()) {
+                    if (i < lines.size()) {
+                        lines.get(i).setText(Utils.cc(hologramLines.get(i)));
+                    } else {
+                        lines.add(hologram.appendTextLine(Utils.cc(hologramLines.get(i))));
+                    }
+
+                    i++;
                 }
 
-                i++;
-            }
-
-            int to = Lists.newArrayList(lines).size();
-            for (int x = i; x < to; x++) {
-                hologram.removeLine(i);
-                lines.remove(i);
+                int to = Lists.newArrayList(lines).size();
+                for (int x = i; x < to; x++) {
+                    hologram.removeLine(i);
+                    lines.remove(i);
+                }
             }
         }
+
+        updating = false;
     }
 
     @Override

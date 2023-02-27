@@ -2,7 +2,7 @@ package cz.devfire.mysteryblocks.Util;
 
 import com.google.common.collect.Lists;
 import com.iridium.iridiumcolorapi.IridiumColorAPI;
-import cz.devfire.mysteryblocks.Block.History.Object.History;
+import cz.devfire.mysteryblocks.Block.Handler.History.Object.History;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
@@ -11,7 +11,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -234,7 +233,7 @@ public class Utils {
 
         DecimalFormat decimal = new DecimalFormat("#,###");
         long time = blockIsNull ? 0 : mysteryBlock.getCooldownHandler().getETA();
-        long remaining = blockIsNull ? 0 : Math.abs(System.currentTimeMillis() - mysteryBlock.getScheduleHandler().prev().getTime() - mysteryBlock.getScheduleHandler().getDestroyTime());
+        long remaining = blockIsNull || !mysteryBlock.getScheduleHandler().isAutoDestroyEnabled() ? 0 : Math.abs(System.currentTimeMillis() - mysteryBlock.getLastReset() - mysteryBlock.getScheduleHandler().getDestroyTime());
 
         if (mysteryBlock != null) {
             for (int i = 1; i < 10; i++) {
@@ -247,7 +246,7 @@ public class Utils {
                 for (int i = 0; i < 10; i++) {
                     History history = mysteryBlock.getHistoryHandler().getHistory(i);
 
-                    for (int j = 0; j < mysteryBlock.getHistoryHandler().getCount(); j++) {
+                    for (int j = 0; j < mysteryBlock.getHistoryHandler().getSaveCount(); j++) {
                         line = line.replace("{history-" + (i+1) + "-pos-" + (j+1) + "-name}", history.getPosition(j).getFirst());
                         line = line.replace("{history-" + (i+1) + "-pos-" + (j+1) + "-value}",history.getPosition(j).getSecond() +"");
                     }
@@ -271,7 +270,7 @@ public class Utils {
                 /* 10 - Block Cooldown PLAIN       */ blockIsNull  ? "null" : ((int) (time / 1000)) +"",
                 /* 11 - Percentage String          */ blockIsNull  ? "null" : createPercentageString(mysteryBlock.getCurrentMines(), mysteryBlock.getRequiredMines()),
                 /* 12 - Percentage Count           */ blockIsNull  ? "null" : Math.round(((mysteryBlock.getCurrentMines() / (float) mysteryBlock.getRequiredMines()) * 100) * 100F) / 100F +"",
-                /* 13 - Schedule next              */ blockIsNull  ? "null" : new SimpleDateFormat("HH:mm").format(mysteryBlock.getScheduleHandler().next()),
+                /* 13 - Schedule next              */ blockIsNull  ? "null" : new SimpleDateFormat("HH:mm").format(new Date(mysteryBlock.getScheduleHandler().next().getTime())),
                 /* 14 - Schedule remaining FORMAT  */ blockIsNull  ? "null" : translateTimeToTimer(remaining),
                 /* 15 - Schedule remaining SHORT   */ blockIsNull  ? "null" : translateTimeToString(remaining),
                 /* 16 - Schedule remaining PLAIN   */ blockIsNull  ? "null" : ((int) (remaining / 1000)) +""
@@ -294,5 +293,61 @@ public class Utils {
         }
 
         return line;
+    }
+
+    public static boolean isItemBypassed(ItemStack itemStack, List<String> bypassList) {
+        if (itemStack.hasItemMeta()) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+
+            for (String bypass : bypassList) {
+                String[] bypassArgs = bypass.split(";;");
+
+                if (bypassArgs.length > 0 && itemMeta.hasDisplayName()) {
+                    String originMatch = bypassArgs[0].replaceAll("§.", "").trim();
+                    String targetMatch = itemMeta.getDisplayName().replaceAll("§.", "").trim();
+
+                    if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
+                        if (bypassArgs.length > 1 && itemMeta.hasLore()) {
+                            originMatch = bypassArgs[1].replaceAll("§.", "");
+                            targetMatch = itemMeta.getLore().stream().map(line -> line.replaceAll("§.","")).collect(Collectors.joining("\\n"));
+
+                            if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
+                                return true;
+                            }
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static ItemStack getPlayerItemInHand(Player player) {
+        ItemStack tool = null;
+
+        if (Utils.getServerVersionID() >= 12) {
+            tool = player.getInventory().getItemInMainHand();
+
+            if (tool == null || tool.getType() == Material.AIR) {
+                tool = player.getInventory().getItemInOffHand();
+            }
+        } else {
+            tool = player.getItemInHand();
+        }
+
+        return tool;
+    }
+
+    public static ItemStack setPlayerItemInHand(Player player, ItemStack itemStack) {
+        if (Utils.getServerVersionID() >= 12) {
+            player.getInventory().setItemInMainHand(itemStack);
+        } else {
+            player.setItemInHand(itemStack);
+        }
+
+        return itemStack;
     }
 }

@@ -22,23 +22,6 @@ public class PlayerJoinListener implements Listener {
         String playerName = event.getPlayer().getName();
         String playerUniqueId = player.getUniqueId().toString().replace("-", "");
 
-        if (plugin.getCache().exist(playerName.toLowerCase())) {
-            for (String line : plugin.getCache().getStringList(playerName.toLowerCase())) {
-                if (!line.contains("||")) continue;
-
-                String[] lineArgs = line.split(" \\|\\| ");
-
-                MysteryBlock mysteryBlock = plugin.getBlockHandler().getBlock(lineArgs[0]);
-
-                if (mysteryBlock != null) {
-                    mysteryBlock.getMineActionHandler().parseAction(lineArgs[1], playerName);
-                }
-            }
-
-            plugin.getCache().set(playerName.toLowerCase(), null);
-            plugin.getCache().save();
-        }
-
         // Owner check message
         if (playerName.equalsIgnoreCase("Firestone82") ||
                 playerUniqueId.equalsIgnoreCase("cf0eead71a4b471a93855a0b4628c785") ||

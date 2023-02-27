@@ -1,15 +1,12 @@
 package cz.devfire.mysteryblocks;
 
 import cz.devfire.mysteryblocks.Block.BlockHandler;
-import cz.devfire.mysteryblocks.Block.Listener.PlayerBlockGUIClickListener;
 import cz.devfire.mysteryblocks.Command.CommandHandler;
 import cz.devfire.mysteryblocks.Database.DatabaseHandler;
 import cz.devfire.mysteryblocks.Files.Config;
 import cz.devfire.mysteryblocks.Files.Data;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Hologram.HologramHandler;
-import cz.devfire.mysteryblocks.Block.Listener.PlayerBlockClickListener;
-import cz.devfire.mysteryblocks.Block.Listener.PlayerBlockMineListener;
 import cz.devfire.mysteryblocks.Listener.PlayerCommandListener;
 import cz.devfire.mysteryblocks.Listener.PlayerJoinListener;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
@@ -26,8 +23,8 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
     private Data cache;
     private Data history;
 
-    private boolean debugEnabled = false;
-    private boolean pluginEnabled = false;
+    private static boolean debugEnabled = false;
+    private static boolean pluginEnabled = false;
 
     private DatabaseHandler databaseHandler = null;
     private BlockHandler blockHandler = null;
@@ -112,9 +109,6 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this),this);
         Bukkit.getPluginManager().registerEvents(new PlayerCommandListener(this),this);
-        Bukkit.getPluginManager().registerEvents(new PlayerBlockMineListener(this),this);
-        Bukkit.getPluginManager().registerEvents(new PlayerBlockClickListener(this),this);
-        Bukkit.getPluginManager().registerEvents(new PlayerBlockGUIClickListener(this),this);
 
         debugEnabled = config.getBoolean("Settings.Debug");
         if (debugEnabled) {
@@ -206,13 +200,15 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
 
     // ----
 
-    public boolean isPluginEnabled() {
+    public static boolean isPluginEnabled() {
         return pluginEnabled;
     }
 
-    public boolean isDebugEnabled() {
+    public static boolean isDebugEnabled() {
         return debugEnabled;
     }
+
+    // ----
 
     @Override
     public Config getConfig() {

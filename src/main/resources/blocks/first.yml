@@ -58,22 +58,33 @@ Block:
   Location: "world/0/100/0"
   # Total block mines required to destroy the block and get rewards.
   Limit: 10
-  # Item durability taken by mining. To disable itemDamage set this to 0.
-  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.item-damage
-  ItemDamage: 1
   # If enabled, the player will need specific permission to be able to mine this block.
   # Perm: "firemysteryblocks.BLOCKNAME.mine"
   Permission: false
+
+ItemDamage:
+  # If enabled, pickaxes that mine this mystery block takes durability
+  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.item-damage
+  Enabled: true
+  # Amount of durability taken from pickaxe
+  Damage: 1
+  # If enabled, unbreaking enchantment will be ignored
+  IgnoreEnchants: false
+  # Bypass works as permission, but need to match specific item description
+  # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE
+  Bypass:
+    - "God's pickaxe"
+    - "This pickaxe name;;This item lore\\nWith next line"
 
 Regeneration:
   # If enabled, block will be regenerated if is not mines under specific time
   Enabled: true
   # Time in milliseconds
   Time: 300000
-  # Methods: FULL, ADD
+  # Types: FULL, ADD
   # FULL - After time block is regenerated completely to start
   # ADD - Amount of mines is temporarily added to block max health
-  Method: FULL
+  Type: FULL
   Actions:
     - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has regenerated its damage! Mine it faster!"
 
@@ -99,6 +110,13 @@ Schedule:
     Time: 3600000
     # If enabled, actions will be made as it was broken, otherwise block will just change into cooldown state
     Actions: false
+
+Visibility:
+  # If enabled, when player starts mining block, all players around this block will be hidden
+  # after he stops all players will be back visible
+  Enabled: false
+  # Radius in block around the mystery block
+  Radius: 5
 
 EnchantLimit:
   # If enabled, player items will be limited to those equal or lower to the specified enchantment limit.
@@ -209,8 +227,8 @@ GUI:
       List:
         - "[MESSAGE] &6&lMysteryBlocks &8&l» &7This is history click action.."
 
-# If enabled, player that left click this block, will be affected by actions specified down bellow.
 Click:
+  # If enabled, player that left click this block, will be affected by actions specified down bellow.
   Enabled: true
   Actions:
     - "[MESSAGE] &6&lMysteryBlocks &8&l» &7Opening GUI of &e{0}&7."
@@ -251,6 +269,8 @@ AntiAFK:
     Knockback:
       # How much you want to throw the player away.
       Power: 1
+      # If enabled, player will be turned away from block on knockback
+      Rotation: false
     Captcha:
       # When enabled, players that won't complete the captcha under limit, will be treated as if they failed.
       Time:
@@ -272,9 +292,9 @@ AntiAFK:
             - "&r"
         # Material that will be filled in all other slots
         Fill:
-          Enabled: false
+          Enabled: true
           Item:
-            Material: "WHITE_STAINED_GLASS_PANE"
+            Material: "STONE"
             DisplayName: "&r"
             Lore: []
       Action:

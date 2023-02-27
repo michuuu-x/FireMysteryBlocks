@@ -1,28 +1,38 @@
 package cz.devfire.mysteryblocks.Block;
 
 import com.google.common.collect.Maps;
+import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Listener.BlockCaptchaListener;
+import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Schedule.BlockCaptchaSchedule;
+import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.Schedule.BlockAntiCheatSchedule;
+import cz.devfire.mysteryblocks.Block.Handler.Click.Listener.PlayerBlockClickListener;
+import cz.devfire.mysteryblocks.Block.Handler.Cooldown.Schedule.BlockCooldownSchedule;
+import cz.devfire.mysteryblocks.Block.Handler.GUI.Listener.BlockGUIListener;
+import cz.devfire.mysteryblocks.Block.Handler.Regeneration.Schedule.BlockRegenerationSchedule;
+import cz.devfire.mysteryblocks.Block.Handler.Visibility.Schedule.BlockVisibilitySchedule;
+import cz.devfire.mysteryblocks.Block.Listener.*;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
-import cz.devfire.mysteryblocks.Block.Regeneration.BlockRegenerationHandler;
 import cz.devfire.mysteryblocks.Database.Object.Results;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
-import cz.devfire.mysteryblocks.Scheduler.BlockCooldownSchedule;
-import cz.devfire.mysteryblocks.Scheduler.BlockRegenerationSchedule;
 import cz.devfire.mysteryblocks.Scheduler.BlockSaveSchedule;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
 import cz.devfire.mysteryblocks.Util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 public class BlockHandler extends AbstractHandler {
     private final HashMap<String, MysteryBlock> blocks = Maps.newHashMap();
 
-    private BlockRegenerationSchedule regenerationSchedule = null;
-    private BlockCooldownSchedule cooldownShedule = null;
-    private BlockSaveSchedule saveSchedule = null;
+    private ArrayList<Listener> listeners = new ArrayList<>();
+    private ArrayList<BukkitRunnable> runnables = new ArrayList<>();
 
     public BlockHandler(MysteryBlocksPlugin plugin) {
         super(plugin);
@@ -60,7 +70,8 @@ public class BlockHandler extends AbstractHandler {
             loadBlock("first");
         }
 
-        startSchedulers();
+        initListeners();
+        initSchedules();
 
         return true;
     }
@@ -68,13 +79,13 @@ public class BlockHandler extends AbstractHandler {
     public boolean destroy() {
         enabled = false;
 
-        stopSchedulers();
+        stopListeners();
+        stopSchedules();
+
         save();
         removeOld();
 
-        for (MysteryBlock block : blocks.values()) {
-            block.destroy();
-        }
+        blocks.values().forEach(MysteryBlock::destroy);
         blocks.clear();
 
         return true;
@@ -92,9 +103,12 @@ public class BlockHandler extends AbstractHandler {
     public boolean loadBlock(String blockName) {
         try {
             MysteryBlock mysteryBlock = new MysteryBlock(plugin, blockName);
-            blocks.put(blockName.toLowerCase(), mysteryBlock);
+            blocks.put(mysteryBlock.getName().toLowerCase(), mysteryBlock);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (MysteryBlocksPlugin.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+
             return false;
         }
 
@@ -102,12 +116,23 @@ public class BlockHandler extends AbstractHandler {
     }
 
     public boolean removeBlock(MysteryBlock block) {
-        block.destroy();
+        try {
+            blocks.remove(block.getName().toLowerCase());
 
-        File blockFile = new File(plugin.getDataFolder(), "blocks/" + block.getName() + ".yml");
-        blockFile.delete();
+            File blockFile = new File(plugin.getDataFolder(), "blocks/" + block.getName() + ".yml");
+            blockFile.delete();
 
-        blocks.remove(block.getName());
+            block.destroy();
+        } catch (Exception e) {
+            // TODO: Error message
+
+            if (MysteryBlocksPlugin.isDebugEnabled()) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -126,30 +151,75 @@ public class BlockHandler extends AbstractHandler {
                 }
             }
         } catch (Exception e) {
-            if (plugin.isDebugEnabled()) {
+            // TODO: Error message
+
+            if (MysteryBlocksPlugin.isDebugEnabled()) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void stopSchedulers() {
-        if (regenerationSchedule != null) regenerationSchedule.cancel();
-        if (cooldownShedule != null) cooldownShedule.cancel();
-        if (saveSchedule != null) saveSchedule.cancel();
-    }
-
-    public void startSchedulers() {
-        regenerationSchedule = new BlockRegenerationSchedule(plugin);
-        cooldownShedule = new BlockCooldownSchedule(plugin);
-        saveSchedule = new BlockSaveSchedule(plugin);
-
-        cooldownShedule.runTaskTimerAsynchronously(plugin,20,10);
-        regenerationSchedule.runTaskTimerAsynchronously(plugin,20,20);
-
+    public void initSchedules() {
         if (plugin.getConfig().getBoolean("Settings.AutoSave.Enabled")) {
             int delay = plugin.getConfig().getInt("Settings.AutoSave.Time") * 20;
-            saveSchedule.runTaskTimerAsynchronously(plugin, delay, delay);
+            initSchedule(new BlockSaveSchedule(plugin),true, delay, delay);
         }
+
+        initSchedule(new BlockCooldownSchedule(plugin),true,20,5);
+        initSchedule(new BlockCaptchaSchedule(plugin),true,20,20);
+        initSchedule(new BlockAntiCheatSchedule(plugin),true,20,1);
+        initSchedule(new BlockRegenerationSchedule(plugin),true,20,20);
+        initSchedule(new BlockVisibilitySchedule(plugin),true,20,5);
+    }
+
+    public void initSchedule(BukkitRunnable runnable, boolean async, long delay, long period) {
+        if (async) {
+            runnable.runTaskTimerAsynchronously(plugin, delay, period);
+        } else {
+            runnable.runTaskTimer(plugin, delay, period);
+        }
+
+        runnables.add(runnable);
+    }
+
+    public void stopSchedule(BukkitRunnable runnable) {
+        runnable.cancel();
+        runnables.remove(runnable);
+    }
+
+    public void stopSchedules() {
+        for (BukkitRunnable runnable : runnables) {
+            runnable.cancel();
+        }
+
+        runnables.clear();
+    }
+
+    public void initListeners() {
+        initListener(new PlayerBlockMineListener(plugin));
+        initListener(new PlayerBlockQuitJoinListener(plugin));
+
+        initListener(new BlockCaptchaListener(plugin));
+        initListener(new BlockGUIListener(plugin));
+        initListener(new PlayerBlockClickListener(plugin));
+    }
+
+    public void initListener(Listener listener) {
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
+        listeners.add(listener);
+    }
+
+    public void stopListener(Listener listener) {
+        HandlerList.unregisterAll(listener);
+        listeners.remove(listener);
+    }
+
+    public void stopListeners() {
+        for (Listener listener : listeners) {
+            HandlerList.unregisterAll(listener);
+        }
+
+        listeners.clear();
     }
 
     public Collection<MysteryBlock> getBlocks() {

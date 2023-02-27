@@ -1,15 +1,11 @@
 package cz.devfire.mysteryblocks.Command.List;
 
 import com.google.common.collect.Lists;
-import cz.devfire.mysteryblocks.Block.Handler.BlockHologramHandler;
-import cz.devfire.mysteryblocks.Block.History.BlockHistoryHandler;
-import cz.devfire.mysteryblocks.Block.History.Object.History;
+import cz.devfire.mysteryblocks.Block.Handler.Hologram.BlockHologramHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Command.Interface.ICommand;
 import cz.devfire.mysteryblocks.Files.Language;
-import cz.devfire.mysteryblocks.Hologram.HologramHandler;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
-import cz.devfire.mysteryblocks.Util.Pair;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

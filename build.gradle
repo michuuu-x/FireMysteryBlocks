@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'FireMysteryBlocks'
-version = "2.2.4"
+version = "2.2.7"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -58,8 +58,8 @@ allprojects {
 
         // Addons
         compileOnly "me.clip:placeholderapi:2.10.9"
-        compileOnly "com.zrips:cmi:9.0.4.4"
-        compileOnly "com.zrips:cmiLib:1.0.3.10"
+        compileOnly "com.zrips:cmi:9.2.6.1"
+        compileOnly "com.zrips:cmiLib:1.2.3.7"
         compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
         compileOnly 'com.github.decentsoftware-eu:decentholograms:2.5.1'
         implementation "com.iridium:IridiumColorAPI:1.0.5"

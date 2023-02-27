@@ -1,8 +1,7 @@
 package cz.devfire.mysteryblocks.Hologram.Providers;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import cz.devfire.mysteryblocks.Block.Handler.BlockHologramHandler;
+import cz.devfire.mysteryblocks.Block.Handler.Hologram.BlockHologramHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Hologram.Interface.HologramProvider;
@@ -10,7 +9,6 @@ import cz.devfire.mysteryblocks.Util.Utils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public abstract class AbstractHologramProvider implements HologramProvider {
@@ -18,19 +16,21 @@ public abstract class AbstractHologramProvider implements HologramProvider {
     protected final MysteryBlock mysteryBlock;
     protected final String name;
 
-    private final boolean vaultEnabled;
+    private final boolean injectionEnabled;
     private final String prefixInjection;
     private final String suffixInjection;
 
     protected final boolean staticEnabled;
     protected int state = 0;
 
+    protected boolean updating = false;
+
     public AbstractHologramProvider(BlockHologramHandler hologramHandler, MysteryBlock mysteryBlock, String name) {
         this.hologramHandler = hologramHandler;
         this.mysteryBlock = mysteryBlock;
         this.name = name;
 
-        this.vaultEnabled = mysteryBlock.getConfig().getBoolean("Hologram.NameInjection.Enabled");
+        this.injectionEnabled = mysteryBlock.getConfig().getBoolean("Hologram.NameInjection.Enabled");
         this.prefixInjection = mysteryBlock.getConfig().getString("Hologram.NameInjection.Inject.Prefix");
         this.suffixInjection = mysteryBlock.getConfig().getString("Hologram.NameInjection.Inject.Suffix");
 
@@ -57,9 +57,10 @@ public abstract class AbstractHologramProvider implements HologramProvider {
                     String playerName = i + 1 > mysteryBlock.getMineMap().size() ? Language.EMPTY.getMessage() : (String) mysteryBlock.getMineMap().keySet().toArray()[i];
                     String parsedPlayerName = playerName;
 
-                    if (vaultEnabled && Bukkit.getPluginManager().isPluginEnabled("Vault") && mysteryBlock.getMineMap().size() > i) {
+                    if (injectionEnabled && mysteryBlock.getMineMap().size() > i) {
                         parsedPlayerName = PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(playerName),prefixInjection + playerName + suffixInjection +"§r");
                     }
+                    parsedPlayerName = parsedPlayerName.replace(prefixInjection,"").replace(suffixInjection,"");
 
                     line = line.replace("{pos-" + (i + 1) + "-name}", parsedPlayerName);
                     line = line.replace("{pos-" + (i + 1) + "-value}", "" + mysteryBlock.getMineMap().getOrDefault(playerName, 0));

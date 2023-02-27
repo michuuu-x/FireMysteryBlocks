@@ -1,19 +1,14 @@
 package cz.devfire.mysteryblocks.Hologram.Providers;
 
-import cz.devfire.mysteryblocks.Block.Handler.BlockHologramHandler;
+import cz.devfire.mysteryblocks.Block.Handler.Hologram.BlockHologramHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Hologram.Enum.HologramProviderType;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import eu.decentsoftware.holograms.api.holograms.HologramLine;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.List;
-
 public class DecentHologramsProvider extends AbstractHologramProvider {
-    private Location location;
     private Hologram hologram;
 
     public DecentHologramsProvider(BlockHologramHandler hologramHandler, MysteryBlock mysteryBlock) {
@@ -21,7 +16,7 @@ public class DecentHologramsProvider extends AbstractHologramProvider {
     }
 
     public void create() {
-        location = mysteryBlock.getLocation();
+        Location location = mysteryBlock.getLocation();
         hologram = DHAPI.createHologram(name, location);
 
         ConfigurationSection settings = hologramHandler.getConfig(HologramProviderType.DecentHolograms);
@@ -35,16 +30,21 @@ public class DecentHologramsProvider extends AbstractHologramProvider {
     }
 
     public void update() {
-        List<String> hologramLines = getLines();
+        if (hologram == null) return;
+
+        if (updating) return;
+        updating = true;
 
         Location newLoc = mysteryBlock.getLocation().clone().add(0.5D, 2D + hologramHandler.getOffset(), 0.5D);
         if (!hologram.getLocation().equals(newLoc)) {
             hologram.setLocation(newLoc);
         }
 
-        if (checkStatic()) return;
+        if (!checkStatic()) {
+            DHAPI.setHologramLines(hologram, getLines());
+        }
 
-        DHAPI.setHologramLines(hologram, hologramLines);
+        updating = false;
     }
 
     public void destroy() {

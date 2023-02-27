@@ -1,7 +1,7 @@
 package cz.devfire.mysteryblocks.Command.List;
 
 import com.google.common.collect.Lists;
-import cz.devfire.mysteryblocks.Block.Handler.BlockGUIHandler;
+import cz.devfire.mysteryblocks.Block.Handler.GUI.BlockGUIHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Command.Interface.ICommand;
 import cz.devfire.mysteryblocks.Files.Language;

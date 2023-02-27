@@ -2,21 +2,21 @@ package cz.devfire.mysteryblocks.Block.Listener;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import cz.devfire.mysteryblocks.Block.AntiAfk.Interface.AntiAfkMethod;
-import cz.devfire.mysteryblocks.Block.AntiAfk.BlockAntiAfkHandler;
-import cz.devfire.mysteryblocks.Block.Handler.BlockAntiCheatHandler;
-import cz.devfire.mysteryblocks.Block.Handler.BlockCooldownHandler;
-import cz.devfire.mysteryblocks.Block.Handler.BlockEnchantLimitHandler;
-import cz.devfire.mysteryblocks.Block.Handler.BlockMiningEffectsHandler;
+import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Interface.AntiAfkMethod;
+import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.BlockAntiAfkHandler;
+import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.BlockAntiCheatHandler;
+import cz.devfire.mysteryblocks.Block.Handler.ItemDamage.BlockItemDamageHandler;
+import cz.devfire.mysteryblocks.Block.Handler.MiningEffects.BlockMiningEffectsHandler;
+import cz.devfire.mysteryblocks.Block.Handler.Cooldown.BlockCooldownHandler;
+import cz.devfire.mysteryblocks.Block.Handler.EnchantLimit.BlockEnchantLimitHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
+import cz.devfire.mysteryblocks.Block.Handler.Visibility.BlockVisibilityHandler;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,14 +24,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.Permission;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 public class PlayerBlockMineListener implements Listener {
     private final MysteryBlocksPlugin plugin;
@@ -54,9 +49,13 @@ public class PlayerBlockMineListener implements Listener {
 
             if (mysteryBlock != null) {
                 BlockMiningEffectsHandler miningEffectsHandler = mysteryBlock.getMiningEffectsHandler();
-
                 if (miningEffectsHandler != null && miningEffectsHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.mining-effect")) {
                     miningEffectsHandler.apply(player);
+                }
+
+                BlockVisibilityHandler visibilityHandler = mysteryBlock.getVisibilityHandler();
+                if (visibilityHandler != null && visibilityHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.visibility")) {
+                    visibilityHandler.hideAll(player);
                 }
             }
         }
@@ -119,33 +118,9 @@ public class PlayerBlockMineListener implements Listener {
                 }
             }
 
-            if (mysteryBlock.getItemDamage() != 0 && !player.hasPermission(mysteryBlock.getPermission() +".bypass.item-damage")) {
-                if (tool != null && tool.getType() != Material.AIR && player.getGameMode() != GameMode.CREATIVE) {
-                    short durability = tool.getDurability();
-                    short maxDurability = tool.getType().getMaxDurability();
-
-                    if (durability + mysteryBlock.getItemDamage() >= maxDurability) {
-                        // TODO: Simulate item break
-                        player.setItemInHand(null);
-                    } else {
-                        int unbreaking = tool.getEnchantmentLevel(Enchantment.DURABILITY);
-
-                        if (unbreaking != 0) {
-                            float prc = 100 / (float) (unbreaking + 1);
-                            float hit = new Random().nextInt(100);
-
-                            if (prc < 1) {
-                                prc = 1;
-                            }
-
-                            if (prc >= hit) {
-                                tool.setDurability((short) (tool.getDurability() + mysteryBlock.getItemDamage()));
-                            }
-                        } else {
-                            tool.setDurability((short) (tool.getDurability() + mysteryBlock.getItemDamage()));
-                        }
-                    }
-                }
+            BlockItemDamageHandler itemDamageHandler = mysteryBlock.getItemDamageHandler();
+            if (itemDamageHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.item-damage")) {
+                itemDamageHandler.apply(player);
             }
 
             mysteryBlock.mine(player);

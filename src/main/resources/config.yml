@@ -6,8 +6,8 @@
 Settings:
   Debug: false
 
-  # Please do not change this in case to auto-updating! Thanks
-  Version: 2.2.0
+  # Please do not change this, is used to auto-updating! Thanks
+  Version: 2.2.7
 
   AutoSave:
     # If enabled, plugin will save block data automatically to database per some time

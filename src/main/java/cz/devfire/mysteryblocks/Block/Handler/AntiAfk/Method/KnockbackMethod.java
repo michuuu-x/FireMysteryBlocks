@@ -1,0 +1,76 @@
+package cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method;
+
+import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.BlockAntiAfkHandler;
+import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
+import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Util.Utils;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.awt.geom.Point2D;
+
+public class KnockbackMethod extends AbstractAntiAfkMethod {
+    private final float power;
+    private final boolean rotation;
+
+    public KnockbackMethod(BlockAntiAfkHandler handler, MysteryBlocksPlugin plugin, MysteryBlock mysteryBlock) {
+        super(plugin, handler, mysteryBlock);
+
+        this.power = Float.parseFloat(mysteryBlock.getConfig().getString("AntiAFK.Methods.Knockback.Power","1"));
+        this.rotation = Boolean.parseBoolean(mysteryBlock.getConfig().getString("AntiAFK.Methods.Knockback.Rotation","false"));
+    }
+
+    public void check(Player player) {
+        final Entity entity = player.isInsideVehicle() ? player.getVehicle() : player;
+
+        if (entity.getLocation().getBlock().getLocation().subtract(0,1,0).getBlock().equals(mysteryBlock.getLocation().getBlock())) {
+            final Point2D.Double point2D = new Point2D.Double(0, 0);
+
+            switch (Utils.getCardinalDirection(player)) {
+                case "W":  { point2D.setLocation(-1.0,0.0); break; }
+                case "NW": { point2D.setLocation(-0.5,0.5); break; }
+                case "N":  { point2D.setLocation(0.0,-1.0); break; }
+                case "NE": { point2D.setLocation(0.0,-0.5); break; }
+                case "E":  { point2D.setLocation(1.0, 0.0); break; }
+                case "SE": { point2D.setLocation(0.5, 0.5); break; }
+                case "S":  { point2D.setLocation(0.0, 1.0); break; }
+                case "SW": { point2D.setLocation(-0.5,0.0); break; }
+            }
+
+            if (rotation) {
+                entity.setRotation(entity.getLocation().getYaw() + 180, entity.getLocation().getPitch());
+            }
+
+            entity.setVelocity(player.getVelocity().setY(0.475D));
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    entity.setVelocity(player.getLocation().getDirection().normalize().setX(point2D.getX()).setZ(point2D.getY()).multiply(player.isSneaking() ? 1 : 0.75).setY(0.4D));
+                }
+            }.runTaskLater(plugin,2);
+        } else {
+            if (player.isSneaking()) {
+                player.setVelocity(player.getVelocity().setY(0.475D));
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (rotation) {
+                            entity.setRotation(entity.getLocation().getYaw() + 180, entity.getLocation().getPitch());
+                        }
+
+                        entity.setVelocity(player.getLocation().getDirection().normalize().multiply((power * player.getLocation().getPitch() > 50 ? 1.5 : 0.65) * (-1)).setY(0.4));
+                    }
+                }.runTaskLater(plugin,2);
+            } else {
+                if (rotation) {
+                    entity.setRotation(entity.getLocation().getYaw() + 180, entity.getLocation().getPitch());
+                }
+
+                entity.setVelocity(player.getLocation().getDirection().normalize().multiply((power * player.getLocation().getPitch() > 50 ? 1.5 : 1) * (-1)).setY(0.4));
+            }
+        }
+    }
+}

@@ -1,18 +1,15 @@
 package cz.devfire.mysteryblocks.Command.List;
 
 import com.google.common.collect.Lists;
-import cz.devfire.mysteryblocks.Block.Handler.BlockGUIHandler;
-import cz.devfire.mysteryblocks.Block.History.BlockHistoryHandler;
-import cz.devfire.mysteryblocks.Block.History.Object.History;
+import cz.devfire.mysteryblocks.Block.Handler.History.BlockHistoryHandler;
+import cz.devfire.mysteryblocks.Block.Handler.History.Object.History;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Command.Interface.ICommand;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Pair;
 import cz.devfire.mysteryblocks.Util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,14 +70,14 @@ public final class HistoryCommand implements ICommand {
             return;
         }
 
-        if (historyHandler.getCount() < entry) {
-            Language.BLOCK_HISTORY_OVER.send(sender, historyHandler.getCount());
+        if (historyHandler.getSaveCount() < entry) {
+            Language.BLOCK_HISTORY_OVER.send(sender, historyHandler.getSaveCount());
             return;
         }
 
-        History history = historyHandler.getHistory(historyHandler.getCount() - entry);
+        History history = historyHandler.getHistory(historyHandler.getSaveCount() - entry);
         if (history.getDate() == null || entry <= 0) {
-            Language.BLOCK_HISTORY_EMPTY.send(sender, historyHandler.getCount());
+            Language.BLOCK_HISTORY_EMPTY.send(sender, historyHandler.getSaveCount());
             return;
         }
 

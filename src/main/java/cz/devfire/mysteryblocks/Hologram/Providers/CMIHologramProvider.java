@@ -2,19 +2,16 @@ package cz.devfire.mysteryblocks.Hologram.Providers;
 
 import com.Zrips.CMI.CMI;
 import com.Zrips.CMI.Modules.Holograms.CMIHologram;
-import cz.devfire.mysteryblocks.Block.Handler.BlockHologramHandler;
+import cz.devfire.mysteryblocks.Block.Handler.Hologram.BlockHologramHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Hologram.Enum.HologramProviderType;
 import net.Zrips.CMILib.Container.CMILocation;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
 public class CMIHologramProvider extends AbstractHologramProvider {
     private final CMI cmi = CMI.getInstance();
-    private CMILocation location;
     private CMIHologram hologram;
 
     public CMIHologramProvider(BlockHologramHandler hologramHandler, MysteryBlock mysteryBlock) {
@@ -22,7 +19,7 @@ public class CMIHologramProvider extends AbstractHologramProvider {
     }
 
     public void create() {
-        location = new CMILocation(mysteryBlock.getLocation());
+        CMILocation location = new CMILocation(mysteryBlock.getLocation());
         hologram = new CMIHologram(name, location);
 
         ConfigurationSection settings = hologramHandler.getConfig(HologramProviderType.CMI);
@@ -36,24 +33,33 @@ public class CMIHologramProvider extends AbstractHologramProvider {
         hologram.setUpdateIntervalSec(settings.getDouble("UpdateInterval",0D));
 
         cmi.getHologramManager().addHologram(hologram);
+        hologram.update();
     }
 
     public void update() {
-        List<String> hologramLines = getLines();
+        if (hologram == null) return;
 
-        for (int i = hologramLines.size(); i < hologram.getLines().size(); i++) {
-            hologramLines.add(null);
-        }
+        if (updating) return;
+        updating = true;
 
         CMILocation newLoc = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D));
         if (!hologram.getLocation().equals(newLoc)) {
             hologram.setLoc(newLoc);
+            hologram.refresh();
         }
 
-        if (checkStatic()) return;
+        if (!checkStatic()) {
+            List<String> hologramLines = getLines();
 
-        hologram.setLines(hologramLines);
-        hologram.update();
+            for (int i = hologramLines.size(); i < hologram.getLines().size(); i++) {
+                hologramLines.add(null);
+            }
+
+            hologram.setLines(hologramLines);
+            hologram.update();
+        }
+
+        updating = false;
     }
 
     public void destroy() {

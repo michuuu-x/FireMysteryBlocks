@@ -59,8 +59,11 @@ public abstract class AbstractHologramProvider implements HologramProvider {
 
                     if (injectionEnabled && mysteryBlock.getMineMap().size() > i) {
                         parsedPlayerName = PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(playerName),prefixInjection + playerName + suffixInjection +"§r");
+
+                        if (!staticEnabled) {
+                            parsedPlayerName = parsedPlayerName.replaceAll("%[^%]*%", "%UnknownPlaceholder%");
+                        }
                     }
-                    parsedPlayerName = parsedPlayerName.replace(prefixInjection,"").replace(suffixInjection,"");
 
                     line = line.replace("{pos-" + (i + 1) + "-name}", parsedPlayerName);
                     line = line.replace("{pos-" + (i + 1) + "-value}", "" + mysteryBlock.getMineMap().getOrDefault(playerName, 0));

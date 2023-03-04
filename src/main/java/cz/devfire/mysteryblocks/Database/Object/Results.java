@@ -37,7 +37,8 @@ public class Results {
     }
 
     public boolean next() {
-        return resultList.size() > index++;
+        index++;
+        return resultList.size() > index;
     }
 
     public boolean isNull() {

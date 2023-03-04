@@ -78,7 +78,7 @@ public class BlockMineActionHandler extends AbstractBlockHandler {
             }
 
             case MINE: {
-                perform(onReset, playerName);
+                perform(onMine, playerName);
                 break;
             }
 

@@ -142,9 +142,8 @@ public class BlockHandler extends AbstractHandler {
         try {
             Results rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData");
 
-            while (rs.next()) {
+            while (rs.hasNext() && rs.next()) {
                 String name = rs.getString("name");
-
                 if (!blocks.containsKey(name.toLowerCase())) {
                     Utils.log("   §e- Found.. &6"+ name +"&e. &aRemoved! §r");
                     plugin.getDatabaseHandler().getDatabase().update("DELETE FROM MysteryBlocksData WHERE name = ?", name);

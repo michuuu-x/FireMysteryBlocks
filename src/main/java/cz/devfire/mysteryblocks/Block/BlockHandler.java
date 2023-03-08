@@ -168,7 +168,7 @@ public class BlockHandler extends AbstractHandler {
         initSchedule(new BlockCaptchaSchedule(plugin),true,20,20);
         initSchedule(new BlockAntiCheatSchedule(plugin),true,20,1);
         initSchedule(new BlockRegenerationSchedule(plugin),true,20,20);
-        initSchedule(new BlockVisibilitySchedule(plugin),true,20,5);
+        initSchedule(new BlockVisibilitySchedule(plugin),false,20,5);
     }
 
     public void initSchedule(BukkitRunnable runnable, boolean async, long delay, long period) {

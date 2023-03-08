@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class BlockHistoryHandler extends AbstractBlockHandler {
     private int saveCount = 0;
-    public static String dateFormat = "YYYY-MM-dd HH:mm";
+    private String dateFormat = "dd.MM.yyyy HH:mm:ss";
     private ItemStack historyItem = new ItemStack(Material.STONE);
     private Integer[] historySlots = new Integer[]{};
 
@@ -31,6 +31,8 @@ public class BlockHistoryHandler extends AbstractBlockHandler {
     public boolean init(ConfigurationSection section) {
         enabled = section.getBoolean("Enabled");
 
+        dateFormat = section.getString("Format");
+
         if (enabled) {
             saveCount = section.getInt("Count");
 
@@ -40,7 +42,6 @@ public class BlockHistoryHandler extends AbstractBlockHandler {
 
             historyItem = Utils.getItemFromSection(section.getConfigurationSection("Item"));
             historySlots = Arrays.stream(section.getString("Slots").isEmpty() ? new String[]{} : section.getString("Slots").split(",")).map(Integer::parseInt).toArray(Integer[]::new);
-            dateFormat = section.getString("Format");
         }
 
         return true;
@@ -75,5 +76,9 @@ public class BlockHistoryHandler extends AbstractBlockHandler {
 
     public Integer[] getHistorySlots() {
         return historySlots;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
     }
 }

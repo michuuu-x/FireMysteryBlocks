@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import cz.devfire.mysteryblocks.Block.Handler.History.BlockHistoryHandler;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Util.Pair;
+import org.bukkit.Bukkit;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -47,7 +48,7 @@ public class History {
         return date;
     }
 
-    public String getDateString() {
-        return date == null ? Language.EMPTY.getMessage() : new SimpleDateFormat(BlockHistoryHandler.dateFormat).format(date);
+    public String getDateString(String format) {
+        return date == null ? Language.EMPTY.getMessage() : new SimpleDateFormat(format).format(date);
     }
 }

@@ -183,14 +183,14 @@ public class MysteryBlock {
                         location.getBlock().setType(material);
                     }
                 }
+
+                if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
+                    hologramHandler.getHologram().recreate();
+                }
             }
         }.runTask(plugin);
 
         Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockLoadEvent(block));
-
-        if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
-            hologramHandler.getHologram().recreate();
-        }
     }
 
     public void save() {

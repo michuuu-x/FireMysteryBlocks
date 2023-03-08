@@ -251,7 +251,7 @@ public class Utils {
                         line = line.replace("{history-" + (i+1) + "-pos-" + (j+1) + "-value}",history.getPosition(j).getSecond() +"");
                     }
 
-                    line = line.replace("{history-" + (i+1) + "-date}", history.getDateString());
+                    line = line.replace("{history-" + (i+1) + "-date}", history.getDateString(mysteryBlock.getHistoryHandler().getDateFormat()));
                 }
             }
         }
@@ -261,7 +261,7 @@ public class Utils {
                 /* 1  - Block Material             */ blockIsNull  ? "null" : mysteryBlock.getMaterial().name(),
                 /* 2  - Player Name                */ playerIsNull ? "null" : playerName,
                 /* 3  - Block Mines ASC            */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getCurrentMines()),
-                /* 4  - Block Mines DESC           */ blockIsNull  ? "null" : decimal.format((mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines())),
+                /* 4  - Block Mines DESC           */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines()),
                 /* 5  - Block Required Mines       */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getRequiredMines()),
                 /* 6  - Player Current Mines       */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getMineMap().getOrDefault(playerName,0)),
                 /* 7  - Player Mine Speed          */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getAntiCheatHandler().getSpeed(playerName)),
@@ -325,15 +325,12 @@ public class Utils {
         return false;
     }
 
+
     public static ItemStack getPlayerItemInHand(Player player) {
         ItemStack tool = null;
 
         if (Utils.getServerVersionID() >= 12) {
-            tool = player.getInventory().getItemInMainHand();
-
-            if (tool == null || tool.getType() == Material.AIR) {
-                tool = player.getInventory().getItemInOffHand();
-            }
+            return player.getInventory().getItemInMainHand();
         } else {
             tool = player.getItemInHand();
         }

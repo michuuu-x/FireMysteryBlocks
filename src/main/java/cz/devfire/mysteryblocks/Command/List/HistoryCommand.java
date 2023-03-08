@@ -81,7 +81,7 @@ public final class HistoryCommand implements ICommand {
             return;
         }
 
-        Language.BLOCK_HISTORY.send(sender,entry, targetBlock, history.getDateString());
+        Language.BLOCK_HISTORY.send(sender,entry, targetBlock, mysteryBlock.getHistoryHandler().getDateFormat());
         int i = 1;
         for (Pair<String, Integer> pair : history.getList()) {
             Language.BLOCK_HISTORY_LINE.send(sender, i++, pair.getFirst(), pair.getSecond());

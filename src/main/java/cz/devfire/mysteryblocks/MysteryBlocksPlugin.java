@@ -12,11 +12,13 @@ import cz.devfire.mysteryblocks.Listener.PlayerJoinListener;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
 import cz.devfire.mysteryblocks.Util.Metrics;
 import cz.devfire.mysteryblocks.Util.Utils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
+@Getter
 public final class MysteryBlocksPlugin extends JavaPlugin {
     private File configFile;
     private Config config;
@@ -213,33 +215,5 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
     @Override
     public Config getConfig() {
         return config;
-    }
-
-    public Data getCache() {
-        return cache;
-    }
-
-    public Data getHistory() {
-        return history;
-    }
-
-    public BlockHandler getBlockHandler() {
-        return blockHandler;
-    }
-
-    public DatabaseHandler getDatabaseHandler() {
-        return databaseHandler;
-    }
-
-    public HologramHandler getHologramHandler() {
-        return hologramHandler;
-    }
-
-    public PlaceholderHandler getPlaceholderHandler() {
-        return placeholderHandler;
-    }
-
-    public CommandHandler getCommandHandler() {
-        return commandHandler;
     }
 }

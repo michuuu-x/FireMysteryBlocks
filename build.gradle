@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'FireMysteryBlocks'
-version = "2.2.8"
+version = "2.2.10"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -64,6 +64,9 @@ allprojects {
         compileOnly 'com.github.decentsoftware-eu:decentholograms:2.5.1'
         implementation "com.iridium:IridiumColorAPI:1.0.5"
         implementation 'com.zaxxer:HikariCP:4.0.3'
+
+        compileOnly 'org.projectlombok:lombok:1.18.26'
+        annotationProcessor 'org.projectlombok:lombok:1.18.26'
     }
 
     build {

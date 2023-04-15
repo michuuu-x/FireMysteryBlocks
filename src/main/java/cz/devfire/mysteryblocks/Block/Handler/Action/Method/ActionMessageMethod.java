@@ -8,7 +8,7 @@ public class ActionMessageMethod implements ActionMethod {
 
     public void perform(String actionString, Player player) {
         if (player != null) {
-            player.sendMessage(Utils.cc(actionString));
+            player.sendMessage(Utils.cc(Utils.ph(actionString, player)));
         }
     }
 

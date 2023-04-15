@@ -63,7 +63,7 @@ public final class OpenCommand implements ICommand {
                 if (mysteryBlock == null) {
                     Language.BLOCK_UNKNOWN.send(sender, targetBlock);
                 } else {
-                    BlockGUIHandler guiHandler = mysteryBlock.getGUIHandler();
+                    BlockGUIHandler guiHandler = mysteryBlock.getGuiHandler();
 
                     if (guiHandler.isEnabled()) {
                         guiHandler.open((Player) sender);
@@ -75,7 +75,7 @@ public final class OpenCommand implements ICommand {
                 if (mysteryBlock == null) {
                     Language.BLOCK_UNKNOWN.send(sender, targetBlock);
                 } else {
-                    BlockGUIHandler guiHandler = mysteryBlock.getGUIHandler();
+                    BlockGUIHandler guiHandler = mysteryBlock.getGuiHandler();
 
                     if (guiHandler.isEnabled()) {
                         Player player = Bukkit.getPlayer(args[2]);

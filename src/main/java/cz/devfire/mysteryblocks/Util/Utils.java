@@ -9,10 +9,12 @@ import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -97,6 +99,14 @@ public class Utils {
 
     public static List<String> ccl(List<String> stringList) {
         return stringList.stream().map(Utils::cc).collect(Collectors.toList());
+    }
+
+    public static String ph(String string, Player player) {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, string);
+        }
+
+        return string;
     }
 
     public static String getServerVersion() {
@@ -208,6 +218,11 @@ public class Utils {
         meta.setDisplayName(Utils.cc(section.getString("DisplayName", "&cError")));
         meta.setLore(Utils.ccl(section.getStringList("Lore")));
         meta.setCustomModelData(section.getInt("ModelData"));
+
+        for (String flag : section.getStringList("ItemFlags")) {
+            meta.addItemFlags(ItemFlag.valueOf(flag));
+        }
+
         stack.setItemMeta(meta);
 
         return stack;
@@ -231,7 +246,7 @@ public class Utils {
         boolean blockIsNull = mysteryBlock == null;
         boolean playerIsNull = playerName == null;
 
-        DecimalFormat decimal = new DecimalFormat("#,###");
+        DecimalFormat decimal = new DecimalFormat("#,###", new DecimalFormatSymbols(Locale.ENGLISH));
         long time = blockIsNull ? 0 : mysteryBlock.getCooldownHandler().getETA();
         long remaining = blockIsNull || !mysteryBlock.getScheduleHandler().isAutoDestroyEnabled() ? 0 : Math.abs(System.currentTimeMillis() - mysteryBlock.getLastReset() - mysteryBlock.getScheduleHandler().getDestroyTime());
 
@@ -257,23 +272,26 @@ public class Utils {
         }
 
         return Utils.parseArgs(line,
-                /* 0  - Block Name                 */ blockIsNull  ? "null" : mysteryBlock.getName(),
-                /* 1  - Block Material             */ blockIsNull  ? "null" : mysteryBlock.getMaterial().name(),
-                /* 2  - Player Name                */ playerIsNull ? "null" : playerName,
-                /* 3  - Block Mines ASC            */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getCurrentMines()),
-                /* 4  - Block Mines DESC           */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines()),
-                /* 5  - Block Required Mines       */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getRequiredMines()),
-                /* 6  - Player Current Mines       */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getMineMap().getOrDefault(playerName,0)),
-                /* 7  - Player Mine Speed          */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getAntiCheatHandler().getSpeed(playerName)),
-                /* 8  - Block Cooldown FORMAT      */ blockIsNull  ? "null" : translateTimeToTimer(time),
-                /* 9  - Block Cooldown SHORT       */ blockIsNull  ? "null" : translateTimeToString(time),
-                /* 10 - Block Cooldown PLAIN       */ blockIsNull  ? "null" : ((int) (time / 1000)) +"",
-                /* 11 - Percentage String          */ blockIsNull  ? "null" : createPercentageString(mysteryBlock.getCurrentMines(), mysteryBlock.getRequiredMines()),
-                /* 12 - Percentage Count           */ blockIsNull  ? "null" : Math.round(((mysteryBlock.getCurrentMines() / (float) mysteryBlock.getRequiredMines()) * 100) * 100F) / 100F +"",
-                /* 13 - Schedule next              */ blockIsNull  ? "null" : new SimpleDateFormat("HH:mm").format(new Date(mysteryBlock.getScheduleHandler().next().getTime())),
-                /* 14 - Schedule remaining FORMAT  */ blockIsNull  ? "null" : translateTimeToTimer(remaining),
-                /* 15 - Schedule remaining SHORT   */ blockIsNull  ? "null" : translateTimeToString(remaining),
-                /* 16 - Schedule remaining PLAIN   */ blockIsNull  ? "null" : ((int) (remaining / 1000)) +""
+                /* 0  - Block Name                    */ blockIsNull  ? "null" : mysteryBlock.getName(),
+                /* 1  - Block Material                */ blockIsNull  ? "null" : mysteryBlock.getMaterial().name(),
+                /* 2  - Player Name                   */ playerIsNull ? "null" : playerName,
+                /* 3  - Block Mines ASC               */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getCurrentMines()),
+                /* 4  - Block Mines DESC              */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getRequiredMines() - mysteryBlock.getCurrentMines()),
+                /* 5  - Block Required Mines          */ blockIsNull  ? "null" : decimal.format(mysteryBlock.getRequiredMines()),
+                /* 6  - Player Current Mines          */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getMineMap().getOrDefault(playerName,0)),
+                /* 7  - Player Mine Speed             */ blockIsNull  ? "null" : playerIsNull ? "0" : decimal.format(mysteryBlock.getAntiCheatHandler().getSpeed(playerName)),
+                /* 8  - Block Cooldown FORMAT         */ blockIsNull  ? "null" : translateTimeToTimer(time),
+                /* 9  - Block Cooldown SHORT          */ blockIsNull  ? "null" : translateTimeToString(time),
+                /* 10 - Block Cooldown PLAIN          */ blockIsNull  ? "null" : ((int) (time / 1000)) +"",
+                /* 11 - Percentage String             */ blockIsNull  ? "null" : createPercentageString(mysteryBlock.getCurrentMines(), mysteryBlock.getRequiredMines()),
+                /* 12 - Percentage Count              */ blockIsNull  ? "null" : Math.round(((mysteryBlock.getCurrentMines() / (float) mysteryBlock.getRequiredMines()) * 100) * 100F) / 100F +"",
+                /* 13 - Schedule next                 */ blockIsNull  ? "null" : new SimpleDateFormat("HH:mm").format(new Date(mysteryBlock.getScheduleHandler().next().getTime())),
+                /* 14 - Schedule remaining FORMAT     */ blockIsNull  ? "null" : translateTimeToTimer(remaining),
+                /* 15 - Schedule remaining SHORT      */ blockIsNull  ? "null" : translateTimeToString(remaining),
+                /* 16 - Schedule remaining PLAIN      */ blockIsNull  ? "null" : ((int) (remaining / 1000)) +"",
+                /* 17 - Regeneration remaining FORMAT */ blockIsNull  ? "null" : translateTimeToTimer(mysteryBlock.getRegenerationHandler().getETA()),
+                /* 18 - Regeneration remaining SHORT  */ blockIsNull  ? "null" : translateTimeToString(mysteryBlock.getRegenerationHandler().getETA()),
+                /* 19 - Regeneration remaining PLAIN  */ blockIsNull  ? "null" : ((int) (mysteryBlock.getRegenerationHandler().getETA() / 1000)) +""
         );
     }
 

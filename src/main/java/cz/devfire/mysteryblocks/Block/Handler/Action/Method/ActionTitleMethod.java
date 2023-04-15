@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 public class ActionTitleMethod implements ActionMethod {
 
     public void perform(String actionString, Player player) {
+        actionString = Utils.cc(Utils.ph(actionString, player));
+
         if (actionString.contains("\n")) {
             String[] actionStringArgs = actionString.split("\n");
 

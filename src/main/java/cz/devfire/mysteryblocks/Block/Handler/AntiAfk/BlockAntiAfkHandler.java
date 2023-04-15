@@ -8,9 +8,11 @@ import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method.KnockbackMethod;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+@Getter
 public class BlockAntiAfkHandler extends AbstractBlockHandler {
     private double chance = 0D;
     private AntiAfkType type = AntiAfkType.NONE;
@@ -61,17 +63,5 @@ public class BlockAntiAfkHandler extends AbstractBlockHandler {
     public boolean destroy() {
         method.destroy();
         return super.destroy();
-    }
-
-    public AntiAfkMethod getMethod() {
-        return method;
-    }
-
-    public AntiAfkType getType() {
-        return type;
-    }
-
-    public double getChance() {
-        return chance;
     }
 }

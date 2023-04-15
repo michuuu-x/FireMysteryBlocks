@@ -7,12 +7,14 @@ import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.Schedule.BlockAntiCheatSchedule;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
+@Getter
 public class BlockAntiCheatHandler extends AbstractBlockHandler {
     private long calculationTime = 1000;
     private long actionCooldown = 1000;
@@ -59,31 +61,31 @@ public class BlockAntiCheatHandler extends AbstractBlockHandler {
         return mineMap.get(player).size() > breakLimit && breakLimit > 0;
     }
 
-    public HashMap<Player, Set<Long>> getMineMap() {
-        return mineMap;
-    }
-
-    public HashMap<Integer, List<String>> getActions() {
-        return actions;
-    }
-
-    public long getCalculationTime() {
-        return calculationTime;
-    }
-
-    public HashMap<String, Long> getWarnCooldownMap() {
-        return warnCooldownMap;
-    }
-
-    public int getBreakLimit() {
-        return breakLimit;
-    }
-
-    public long getActionCooldown() {
-        return actionCooldown;
-    }
-
-    public LinkedList<Integer> getActionKeyList() {
-        return actionKeyList;
-    }
+//    public HashMap<Player, Set<Long>> getMineMap() {
+//        return mineMap;
+//    }
+//
+//    public HashMap<Integer, List<String>> getActions() {
+//        return actions;
+//    }
+//
+//    public long getCalculationTime() {
+//        return calculationTime;
+//    }
+//
+//    public HashMap<String, Long> getWarnCooldownMap() {
+//        return warnCooldownMap;
+//    }
+//
+//    public int getBreakLimit() {
+//        return breakLimit;
+//    }
+//
+//    public long getActionCooldown() {
+//        return actionCooldown;
+//    }
+//
+//    public LinkedList<Integer> getActionKeyList() {
+//        return actionKeyList;
+//    }
 }

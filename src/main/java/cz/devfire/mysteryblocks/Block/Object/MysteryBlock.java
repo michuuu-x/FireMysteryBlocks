@@ -23,6 +23,8 @@ import cz.devfire.mysteryblocks.Listener.Event.*;
 import cz.devfire.mysteryblocks.Files.Config;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,6 +37,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class MysteryBlock {
     private final MysteryBlocksPlugin plugin;
     private final MysteryBlock block;
@@ -183,12 +187,12 @@ public class MysteryBlock {
                         location.getBlock().setType(material);
                     }
                 }
-
-                if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
-                    hologramHandler.getHologram().recreate();
-                }
             }
         }.runTask(plugin);
+
+        if (hologramHandler.isEnabled() && hologramHandler.getHologram() != null) {
+            hologramHandler.getHologram().recreate();
+        }
 
         Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockLoadEvent(block));
     }
@@ -377,125 +381,129 @@ public class MysteryBlock {
     // --- --- --- --- --- ---- ---
     //
 
-    public Config getConfig() {
-        return config;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LinkedHashMap<String, Integer> getMineMap() {
-        return mineMap;
-    }
-
-    public int getItemDamage() {
-        return itemDamage;
-    }
-
-    public boolean isPermissionRequired() {
-        return permissionRequired;
-    }
-
+//    public Config getConfig() {
+//        return config;
+//    }
+//
+//    public Material getMaterial() {
+//        return material;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public LinkedHashMap<String, Integer> getMineMap() {
+//        return mineMap;
+//    }
+//
+//    public int getItemDamage() {
+//        return itemDamage;
+//    }
+//
+//    public boolean isPermissionRequired() {
+//        return permissionRequired;
+//    }
+//
+//    public int getRequiredRawMines() {
+//        return requiredMines;
+//    }
+//
     public int getRequiredMines() {
         return requiredMines + requiredTempMines;
     }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public int getCurrentMines() {
-        return currentMines;
-    }
-
-    public int getTotalDestroys() {
-        return totalDestroys;
-    }
-
-    public void setTempRequired(int mines) {
-        this.requiredTempMines = mines;
-    }
-
-    public void setLastMine(long lastMine) {
-        this.lastMine = lastMine;
-    }
-
-    public int getRequiredTempMines() {
-        return requiredTempMines;
-    }
-
-    public long getLastMine() {
-        return lastMine;
-    }
-
-    public long getLastReset() {
-        return lastReset;
-    }
-
+//
+//    public Location getLocation() {
+//        return location;
+//    }
+//
+//    public int getCurrentMines() {
+//        return currentMines;
+//    }
+//
+//    public int getTotalDestroys() {
+//        return totalDestroys;
+//    }
+//
+//    public void setTempRequired(int mines) {
+//        this.requiredTempMines = mines;
+//    }
+//
+//    public void setLastMine(long lastMine) {
+//        this.lastMine = lastMine;
+//    }
+//
+//    public int getRequiredTempMines() {
+//        return requiredTempMines;
+//    }
+//
+//    public long getLastMine() {
+//        return lastMine;
+//    }
+//
+//    public long getLastReset() {
+//        return lastReset;
+//    }
+//
     public String getPermission() { return "firemysteryblocks."+ name; }
-
-    public ArrayList<String> getMineList() {
-        return mineList;
-    }
-
-    public BlockGUIHandler getGUIHandler() {
-        return guiHandler;
-    }
-
-    public BlockClickHandler getClickHandler() {
-        return clickHandler;
-    }
-
-    public BlockAntiAfkHandler getAntiAfkHandler() {
-        return antiAfkHandler;
-    }
-
-    public BlockHistoryHandler getHistoryHandler() {
-        return historyHandler;
-    }
-
-    public BlockCooldownHandler getCooldownHandler() {
-        return cooldownHandler;
-    }
-
-    public BlockScheduleHandler getScheduleHandler() {
-        return scheduleHandler;
-    }
-
-    public BlockHologramHandler getHologramHandler() {
-        return hologramHandler;
-    }
-
-    public BlockAntiCheatHandler getAntiCheatHandler() {
-        return antiCheatHandler;
-    }
-
-    public BlockMineActionHandler getMineActionHandler() {
-        return mineActionHandler;
-    }
-
-    public BlockItemDamageHandler getItemDamageHandler() {
-        return itemDamageHandler;
-    }
-
-    public BlockEnchantLimitHandler getEnchantLimitHandler() {
-        return enchantLimitHandler;
-    }
-
-    public BlockRegenerationHandler getRegenerationHandler() {
-        return regenerationHandler;
-    }
-
-    public BlockVisibilityHandler getVisibilityHandler() {
-        return visibilityHandler;
-    }
-
-    public BlockMiningEffectsHandler getMiningEffectsHandler() {
-        return miningEffectsHandler;
-    }
+//
+//    public ArrayList<String> getMineList() {
+//        return mineList;
+//    }
+//
+//    public BlockGUIHandler getGUIHandler() {
+//        return guiHandler;
+//    }
+//
+//    public BlockClickHandler getClickHandler() {
+//        return clickHandler;
+//    }
+//
+//    public BlockAntiAfkHandler getAntiAfkHandler() {
+//        return antiAfkHandler;
+//    }
+//
+//    public BlockHistoryHandler getHistoryHandler() {
+//        return historyHandler;
+//    }
+//
+//    public BlockCooldownHandler getCooldownHandler() {
+//        return cooldownHandler;
+//    }
+//
+//    public BlockScheduleHandler getScheduleHandler() {
+//        return scheduleHandler;
+//    }
+//
+//    public BlockHologramHandler getHologramHandler() {
+//        return hologramHandler;
+//    }
+//
+//    public BlockAntiCheatHandler getAntiCheatHandler() {
+//        return antiCheatHandler;
+//    }
+//
+//    public BlockMineActionHandler getMineActionHandler() {
+//        return mineActionHandler;
+//    }
+//
+//    public BlockItemDamageHandler getItemDamageHandler() {
+//        return itemDamageHandler;
+//    }
+//
+//    public BlockEnchantLimitHandler getEnchantLimitHandler() {
+//        return enchantLimitHandler;
+//    }
+//
+//    public BlockRegenerationHandler getRegenerationHandler() {
+//        return regenerationHandler;
+//    }
+//
+//    public BlockVisibilityHandler getVisibilityHandler() {
+//        return visibilityHandler;
+//    }
+//
+//    public BlockMiningEffectsHandler getMiningEffectsHandler() {
+//        return miningEffectsHandler;
+//    }
 }

@@ -3,18 +3,20 @@ package cz.devfire.mysteryblocks.Block.Handler.Hologram;
 import com.google.common.collect.Lists;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
-import cz.devfire.mysteryblocks.Hologram.Interface.HologramProvider;
 import cz.devfire.mysteryblocks.Hologram.Enum.HologramProviderType;
+import cz.devfire.mysteryblocks.Hologram.Interface.HologramProvider;
 import cz.devfire.mysteryblocks.Hologram.Providers.AbstractHologramProvider;
 import cz.devfire.mysteryblocks.Hologram.Providers.CMIHologramProvider;
 import cz.devfire.mysteryblocks.Hologram.Providers.DecentHologramsProvider;
 import cz.devfire.mysteryblocks.Hologram.Providers.HolographicDisplaysProvider;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class BlockHologramHandler extends AbstractBlockHandler {
     private final ArrayList<String> inactiveLines = Lists.newArrayList();
     private double inactiveOffset = 0;
@@ -76,10 +78,6 @@ public class BlockHologramHandler extends AbstractBlockHandler {
         return true;
     }
 
-    public HologramProvider getHologram() {
-        return hologram;
-    }
-
     public List<String> getLines() {
         return mysteryBlock.getCooldownHandler().isUnder() ? inactiveLines : activeLines;
     }
@@ -90,9 +88,5 @@ public class BlockHologramHandler extends AbstractBlockHandler {
 
     public ConfigurationSection getConfig(HologramProviderType provider) {
         return mysteryBlock.getConfig().getConfigurationSection("Hologram.Providers." + provider.name());
-    }
-
-    public MysteryBlocksPlugin getPlugin() {
-        return plugin;
     }
 }

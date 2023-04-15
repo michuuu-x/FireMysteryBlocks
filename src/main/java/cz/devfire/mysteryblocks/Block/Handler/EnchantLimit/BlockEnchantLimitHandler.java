@@ -7,6 +7,7 @@ import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
 public class BlockEnchantLimitHandler extends AbstractBlockHandler {
     private final HashMap<Enchantment, Integer> enchantList = Maps.newHashMap();
     private final ArrayList<String> bypassList = Lists.newArrayList();
@@ -67,13 +69,5 @@ public class BlockEnchantLimitHandler extends AbstractBlockHandler {
         }
 
         return list;
-    }
-
-    public ArrayList<String> getBypassList() {
-        return bypassList;
-    }
-
-    public HashMap<Enchantment, Integer> getEnchantList() {
-        return enchantList;
     }
 }

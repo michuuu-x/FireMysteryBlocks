@@ -2,20 +2,25 @@ package cz.devfire.mysteryblocks.Block.Handler.Action;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Handler.Action.Enum.BlockActionSection;
 import cz.devfire.mysteryblocks.Block.Handler.Action.Enum.BlockActionType;
-import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Handler.Action.Interface.ActionMethod;
 import cz.devfire.mysteryblocks.Block.Handler.Action.Method.*;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
+@Getter
 public class BlockMineActionHandler extends AbstractBlockHandler {
     private final ArrayList<String> onReset = Lists.newArrayList();
     private final ArrayList<String> onMine = Lists.newArrayList();
@@ -162,17 +167,16 @@ public class BlockMineActionHandler extends AbstractBlockHandler {
         }
 
         if (percentage == -1 || (100 * new Random().nextDouble()) <= percentage) {
-            if (delay == 0D) {
-                methods.get(actionType).perform(actionString, playerName == null ? null : Bukkit.getPlayer(playerName));
-            } else {
-                String finalActionString = actionString;
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        methods.get(actionType).perform(finalActionString, playerName == null ? null : Bukkit.getPlayer(playerName));
-                    }
-                }.runTaskLater(plugin, Math.round(20 / 1000F * delay));
-            }
+            String finalActionString = actionString;
+
+            BukkitRunnable run = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    methods.get(actionType).perform(finalActionString, playerName == null ? null : Bukkit.getPlayer(playerName));
+                }
+            };
+
+            run.runTaskLater(plugin, Math.round((20 / 1000F) * delay));
         }
     }
 }

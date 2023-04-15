@@ -11,10 +11,10 @@ public class ActionActionbarMethod implements ActionMethod {
     public void perform(String actionString, Player player) {
         if (player == null) {
             for (Player p : Bukkit.getOnlinePlayers()) {
-                ActionBar.sendActionBar(p, Utils.cc(actionString));
+                ActionBar.sendActionBar(p, Utils.cc(Utils.ph(actionString, p)));
             }
         } else {
-            ActionBar.sendActionBar(player, Utils.cc(actionString));
+            ActionBar.sendActionBar(player, Utils.cc(Utils.ph(actionString, player)));
         }
     }
 

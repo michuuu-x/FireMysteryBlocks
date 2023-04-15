@@ -52,6 +52,8 @@ public final class Language {
     public static Language BLOCK_HISTORY_DISABLED = new Language("BLOCK_HISTORY_DISABLED");
     public static Language BLOCK_HISTORY_EMPTY = new Language("BLOCK_HISTORY_EMPTY");
     public static Language BLOCK_HISTORY_OVER = new Language("BLOCK_HISTORY_OVER");
+    public static Language BLOCK_VISIBILITY_START = new Language("BLOCK_VISIBILITY_START");
+    public static Language BLOCK_VISIBILITY_STOP = new Language("BLOCK_VISIBILITY_STOP");
     private String message;
 
     private Language(String identifier) {

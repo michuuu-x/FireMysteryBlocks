@@ -3,9 +3,13 @@ package cz.devfire.mysteryblocks.Block.Handler.Cooldown;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
+@Getter
+@Setter
 public class BlockCooldownHandler extends AbstractBlockHandler {
     private Material cooldownMaterial = Material.BEDROCK;
     private long requiredTime = -1;
@@ -47,21 +51,5 @@ public class BlockCooldownHandler extends AbstractBlockHandler {
         } else {
             return 0;
         }
-    }
-
-    public Material getCooldownMaterial() {
-        return cooldownMaterial;
-    }
-
-    public long getRequiredTime() {
-        return requiredTime;
-    }
-
-    public long getCurrentTime() {
-        return currentTime;
-    }
-
-    public void setCurrentTime(long currentTime) {
-        this.currentTime = currentTime;
     }
 }

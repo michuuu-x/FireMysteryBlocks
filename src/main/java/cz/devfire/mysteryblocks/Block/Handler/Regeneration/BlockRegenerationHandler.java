@@ -2,21 +2,29 @@ package cz.devfire.mysteryblocks.Block.Handler.Regeneration;
 
 import com.google.common.collect.Lists;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
-import cz.devfire.mysteryblocks.Block.Handler.Regeneration.Schedule.BlockRegenerationSchedule;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Block.Handler.Regeneration.Enum.RegenerationType;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
+@Setter
+@Getter
 public class BlockRegenerationHandler extends AbstractBlockHandler {
     private long regenerationTime;
-    private int lastMines = 0;
-    private int lastAdd = 0;
+    private boolean progressiveEnabled = false;
+    private long lastProcess = 0;
+    private long millisPerProcess = 0;
+    private double progressivePercentage = 0;
     private RegenerationType type = null;
-    private final ArrayList<String> actions = Lists.newArrayList();
+    private final ArrayList<String> onStartActions = Lists.newArrayList();
+    private final ArrayList<String> onEndActions = Lists.newArrayList();
+
+    private int healingAmount = 0;
 
     public BlockRegenerationHandler(MysteryBlocksPlugin plugin, MysteryBlock mysteryBlock) {
         super(plugin, mysteryBlock);
@@ -29,6 +37,12 @@ public class BlockRegenerationHandler extends AbstractBlockHandler {
 
         if (enabled) {
             regenerationTime = section.getLong("Time");
+            progressiveEnabled = section.getBoolean("Progressive.Enabled");
+            millisPerProcess = section.getLong("Progressive.Time");
+            progressivePercentage = section.getDouble("Progressive.Percentage");
+
+            healingAmount = (int) Math.ceil((mysteryBlock.getRequiredMines() / 100D) * progressivePercentage);
+            if (healingAmount <= 0) healingAmount = 1;
 
             try {
                 type = RegenerationType.valueOf(section.getString("Type"));
@@ -37,43 +51,75 @@ public class BlockRegenerationHandler extends AbstractBlockHandler {
                 enabled = false;
             }
 
-            if (type == RegenerationType.ADD) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        lastAdd = mysteryBlock.getCurrentMines();
-                        lastMines = lastAdd;
-                        mysteryBlock.setTempRequired(lastAdd);
+            switch (type) {
 
-                        if (mysteryBlock.getHologramHandler().isEnabled() && mysteryBlock.getHologramHandler().getHologram() != null) {
-                            mysteryBlock.getHologramHandler().getHologram().update();
+                case FULL: {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (mysteryBlock.getCurrentMines() > 0) {
+                                mysteryBlock.reset(true);
+                            }
                         }
-                    }
-                }.runTaskLaterAsynchronously(plugin,20);
+                    }.runTaskLater(plugin,20);
+
+                    break;
+                }
+
+                case HEAL: {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            mysteryBlock.setLastMine(0);
+                            mysteryBlock.setRequiredTempMines(0);
+                            mysteryBlock.setCurrentMines(0);
+                        }
+                    }.runTaskLaterAsynchronously(plugin,20);
+
+                    break;
+                }
+
+                case ADD: {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            mysteryBlock.setLastMine(0);
+                            mysteryBlock.setRequiredTempMines(mysteryBlock.getCurrentMines());
+                        }
+                    }.runTaskLaterAsynchronously(plugin,20);
+
+                    break;
+                }
+
             }
 
-            actions.addAll(section.getStringList("Actions"));
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (mysteryBlock.getHologramHandler().isEnabled() && mysteryBlock.getHologramHandler().getHologram() != null) {
+                        mysteryBlock.getHologramHandler().getHologram().update();
+                    }
+                }
+            }.runTaskLater(plugin,20);
+
+            onStartActions.addAll(section.getStringList("Actions.Start"));
+            onEndActions.addAll(section.getStringList("Actions.End"));
         }
 
         return true;
     }
 
     public void perform() {
+        if (mysteryBlock.getLastMine() != 0) {
+            mysteryBlock.setLastMine(0);
+            lastProcess = 0;
+        }
+
+        if (progressiveEnabled && lastProcess == 0) {
+            mysteryBlock.getMineActionHandler().perform(onStartActions,null);
+        }
+
         switch (type) {
-            case ADD: {
-                mysteryBlock.setTempRequired(mysteryBlock.getRequiredTempMines() + (mysteryBlock.getCurrentMines() - lastMines));
-                mysteryBlock.setLastMine(0);
-
-                lastAdd += (mysteryBlock.getCurrentMines() - lastMines);
-                lastMines = mysteryBlock.getCurrentMines();
-
-                if (mysteryBlock.getHologramHandler().isEnabled() && mysteryBlock.getHologramHandler().getHologram() != null) {
-                    mysteryBlock.getHologramHandler().getHologram().update();
-                }
-
-                break;
-            }
-
             case FULL: {
                 new BukkitRunnable() {
                     @Override
@@ -84,16 +130,63 @@ public class BlockRegenerationHandler extends AbstractBlockHandler {
 
                 break;
             }
+
+            case HEAL: {
+                if (progressiveEnabled) {
+                    if (healingAmount >= mysteryBlock.getCurrentMines()) {
+                        lastProcess = 0;
+
+                        mysteryBlock.setCurrentMines(0);
+                    } else {
+                        lastProcess = System.currentTimeMillis();
+
+                        mysteryBlock.setCurrentMines(mysteryBlock.getCurrentMines() - healingAmount);
+                    }
+                } else {
+                    mysteryBlock.setCurrentMines(0);
+                    mysteryBlock.getMineActionHandler().perform(onEndActions,null);
+                }
+
+                break;
+            }
+
+            case ADD: {
+                if (progressiveEnabled) {
+                    if (mysteryBlock.getRequiredTempMines() + healingAmount >= mysteryBlock.getCurrentMines()) {
+                        lastProcess = 0;
+
+                        mysteryBlock.setRequiredTempMines(mysteryBlock.getCurrentMines());
+                    } else {
+                        lastProcess = System.currentTimeMillis();
+
+                        mysteryBlock.setRequiredTempMines(mysteryBlock.getRequiredTempMines() + healingAmount);
+                    }
+                } else {
+                    mysteryBlock.setRequiredTempMines(mysteryBlock.getCurrentMines());
+                    mysteryBlock.getMineActionHandler().perform(onEndActions,null);
+                }
+
+                break;
+            }
         }
 
-        mysteryBlock.getMineActionHandler().perform(actions,null);
+        if (progressiveEnabled && lastProcess == 0) {
+            mysteryBlock.getMineActionHandler().perform(onEndActions,null);
+        }
+
+        if (type != RegenerationType.FULL) {
+            if (mysteryBlock.getHologramHandler().isEnabled() && mysteryBlock.getHologramHandler().getHologram() != null) {
+                mysteryBlock.getHologramHandler().getHologram().update();
+            }
+        }
     }
 
-    public long getRegenerationTime() {
-        return regenerationTime;
+    public boolean isUnder() {
+        return progressiveEnabled && lastProcess != 0;
     }
 
-    public int getAmount() {
-        return lastAdd;
+    public long getETA() {
+        if (mysteryBlock.getLastMine() == 0) return 0;
+        return regenerationTime - (System.currentTimeMillis() - mysteryBlock.getLastMine()) + 1000;
     }
 }

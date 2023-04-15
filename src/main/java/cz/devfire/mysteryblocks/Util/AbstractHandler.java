@@ -27,4 +27,8 @@ public abstract class AbstractHandler {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    public MysteryBlocksPlugin getPlugin() {
+        return plugin;
+    }
 }

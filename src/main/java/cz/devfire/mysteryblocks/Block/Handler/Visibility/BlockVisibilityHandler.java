@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
+import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Pair;
+import eu.decentsoftware.holograms.api.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -54,6 +56,8 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
                 continue;
             }
 
+            int countBefore = pair.getSecond().size();
+
             for (Player p : Lists.newArrayList(pair.getSecond())) {
                 if (p == null || !p.isOnline()) {
                     pair.getSecond().remove(p);
@@ -65,12 +69,18 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
                     pair.getSecond().remove(p);
                 }
             }
+
+            if (countBefore > 0 && pair.getSecond().size() == 0) {
+                Language.BLOCK_VISIBILITY_STOP.send(player);
+            }
         }
     }
 
     public void hideAll(Player player) {
         Pair<Long, ArrayList<Player>> pair = playerMap.getOrDefault(player, new Pair<>(0L, Lists.newArrayList()));
         List<Player> playerList = Lists.newArrayList();
+
+        int countBefore = pair.getSecond().size();
 
         Location location = mysteryBlock.getLocation();
         Bukkit.getOnlinePlayers().stream()
@@ -86,11 +96,17 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
         pair.setFirst(System.currentTimeMillis());
         pair.getSecond().addAll(playerList);
 
+        if (countBefore == 0 && pair.getSecond().size() > 0) {
+            Language.BLOCK_VISIBILITY_START.send(player);
+        }
+
         playerMap.put(player, pair);
     }
 
     public void showAll(Player player) {
         if (playerMap.containsKey(player)) {
+            Language.BLOCK_VISIBILITY_STOP.send(player);
+
             playerMap.get(player).getSecond().forEach(p -> player.showPlayer(plugin, p));
             playerMap.remove(player);
         }

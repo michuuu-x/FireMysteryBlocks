@@ -9,6 +9,7 @@ import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Pair;
 import cz.devfire.mysteryblocks.Util.Utils;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Getter
 public class BlockGUIHandler extends AbstractBlockHandler {
     private int inventorySize = 0;
     private String inventoryTitle = "";
@@ -122,18 +124,19 @@ public class BlockGUIHandler extends AbstractBlockHandler {
 
         BlockHistoryHandler historyHandler = mysteryBlock.getHistoryHandler();
         if (historyHandler.isEnabled()) {
-            for (int j = historyHandler.getSaveCount(); j > 0; j--) {
-                int slot = historyHandler.getHistorySlots()[j-1];
+            for (int j = 0; j < historyHandler.getSaveCount(); j++) {
+                if (j > historyHandler.getHistorySlots().length) continue;
+                int slot = historyHandler.getHistorySlots()[j];
 
                 ItemStack stack = new ItemStack(historyHandler.getHistoryItem());
                 ItemMeta meta = stack.getItemMeta();
 
                 if (meta != null && meta.hasDisplayName() && meta.getDisplayName().length() != 0) {
-                    meta.setDisplayName(Utils.parseBlockPlaceholders(mysteryBlock,null, meta.getDisplayName().replace("{history-id}",(j) +"")));
+                    meta.setDisplayName(Utils.parseBlockPlaceholders(mysteryBlock,null, meta.getDisplayName().replace("{history-id}",(j+1) +"")));
                 }
 
                 if (meta != null && meta.hasLore() && meta.getLore().size() != 0) {
-                    meta.setLore(Utils.parseBlockPlaceholders(mysteryBlock,null, Utils.replaceAll(meta.getLore() == null ? new ArrayList<>() : meta.getLore(),"{history-id}",(historyHandler.getSaveCount() - j +1) +"")));
+                    meta.setLore(Utils.parseBlockPlaceholders(mysteryBlock,null, Utils.replaceAll(meta.getLore() == null ? new ArrayList<>() : meta.getLore(),"{history-id}",(j+1) +"")));
                 }
 
                 stack.setItemMeta(meta);
@@ -143,25 +146,5 @@ public class BlockGUIHandler extends AbstractBlockHandler {
 
         player.openInventory(inventory);
         viewers.add(player);
-    }
-
-    public ArrayList<Player> getViewers() {
-        return viewers;
-    }
-
-    public HashMap<Integer, Pair<Boolean, List<String>>> getActions() {
-        return actions;
-    }
-
-    public String getInventoryTitle() {
-        return inventoryTitle;
-    }
-
-    public Inventory getTemplate() {
-        return template;
-    }
-
-    public int getInventorySize() {
-        return inventorySize;
     }
 }

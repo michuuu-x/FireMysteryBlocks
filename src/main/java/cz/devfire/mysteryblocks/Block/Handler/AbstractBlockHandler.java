@@ -4,6 +4,7 @@ import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.Plugin;
 
 public abstract class AbstractBlockHandler extends AbstractHandler {
     protected final MysteryBlock mysteryBlock;

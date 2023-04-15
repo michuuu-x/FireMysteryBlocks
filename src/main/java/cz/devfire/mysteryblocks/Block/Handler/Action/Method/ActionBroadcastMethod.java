@@ -9,7 +9,7 @@ public class ActionBroadcastMethod implements ActionMethod {
 
     public void perform(String actionString, Player player) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(Utils.cc(actionString));
+            p.sendMessage(Utils.cc(Utils.ph(actionString, player)));
         }
     }
 

@@ -9,6 +9,8 @@ import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+@Getter
+@Setter
 public class CaptchaMethod extends AbstractAntiAfkMethod {
     private final HashMap<String, Long> checkingPlayers = Maps.newHashMap();
 
@@ -85,43 +89,43 @@ public class CaptchaMethod extends AbstractAntiAfkMethod {
         player.openInventory(inventory);
     }
 
-    public ArrayList<String> getOnFailActions() {
-        return onFailActions;
-    }
-
-    public ArrayList<String> getOnSuccessActions() {
-        return onSuccessActions;
-    }
-
-    public HashMap<String, Long> getCheckingPlayers() {
-        return checkingPlayers;
-    }
-
-    public int getInventorySize() {
-        return inventorySize;
-    }
-
-    public int getTimeLimit() {
-        return timeLimit;
-    }
-
-    public ItemStack getActiveItem() {
-        return activeItem;
-    }
-
-    public ItemStack getFillItem() {
-        return fillItem;
-    }
-
-    public boolean isFillEnabled() {
-        return fillEnabled;
-    }
-
-    public boolean isTimeLimitEnabled() {
-        return timeLimitEnabled;
-    }
-
-    public boolean isSkipBlankEnabled() {
-        return skipBlankEnabled;
-    }
+//    public ArrayList<String> getOnFailActions() {
+//        return onFailActions;
+//    }
+//
+//    public ArrayList<String> getOnSuccessActions() {
+//        return onSuccessActions;
+//    }
+//
+//    public HashMap<String, Long> getCheckingPlayers() {
+//        return checkingPlayers;
+//    }
+//
+//    public int getInventorySize() {
+//        return inventorySize;
+//    }
+//
+//    public int getTimeLimit() {
+//        return timeLimit;
+//    }
+//
+//    public ItemStack getActiveItem() {
+//        return activeItem;
+//    }
+//
+//    public ItemStack getFillItem() {
+//        return fillItem;
+//    }
+//
+//    public boolean isFillEnabled() {
+//        return fillEnabled;
+//    }
+//
+//    public boolean isTimeLimitEnabled() {
+//        return timeLimitEnabled;
+//    }
+//
+//    public boolean isSkipBlankEnabled() {
+//        return skipBlankEnabled;
+//    }
 }

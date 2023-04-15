@@ -30,7 +30,7 @@ public class BlockGUIListener implements Listener {
         if (item == null || item.getType() == Material.AIR) return;
 
         for (MysteryBlock mysteryBlock : plugin.getBlockHandler().getBlocks()) {
-            BlockGUIHandler blockGUIHandler = mysteryBlock.getGUIHandler();
+            BlockGUIHandler blockGUIHandler = mysteryBlock.getGuiHandler();
 
             if (blockGUIHandler.isEnabled() && blockGUIHandler.getViewers().contains(player)) {
                 event.setCancelled(true);
@@ -57,7 +57,7 @@ public class BlockGUIListener implements Listener {
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
         for (MysteryBlock mysteryBlock : plugin.getBlockHandler().getBlocks()) {
-            BlockGUIHandler blockGUIHandler = mysteryBlock.getGUIHandler();
+            BlockGUIHandler blockGUIHandler = mysteryBlock.getGuiHandler();
 
             if (blockGUIHandler.isEnabled()) {
                 blockGUIHandler.getViewers().remove((Player) event.getPlayer());
@@ -68,10 +68,10 @@ public class BlockGUIListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         for (MysteryBlock mysteryBlock : plugin.getBlockHandler().getBlocks()) {
-            BlockGUIHandler blockGUIHandler = mysteryBlock.getGUIHandler();
+            BlockGUIHandler blockGUIHandler = mysteryBlock.getGuiHandler();
 
             if (blockGUIHandler.isEnabled()) {
-                blockGUIHandler.getViewers().remove((Player) event.getPlayer());
+                blockGUIHandler.getViewers().remove(event.getPlayer());
             }
         }
     }

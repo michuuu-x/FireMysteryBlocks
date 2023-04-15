@@ -1,6 +1,5 @@
 package cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Schedule;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.BlockAntiAfkHandler;
 import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method.CaptchaMethod;
@@ -37,7 +36,12 @@ public class BlockCaptchaSchedule extends BukkitRunnable {
                             Player player = Bukkit.getPlayer(playerName);
 
                             if (player != null) {
-                                player.closeInventory();
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        player.closeInventory();
+                                    }
+                                }.runTask(plugin);
                             }
                         }
                     }

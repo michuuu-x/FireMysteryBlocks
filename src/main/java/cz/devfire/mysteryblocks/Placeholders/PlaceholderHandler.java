@@ -3,17 +3,20 @@ package cz.devfire.mysteryblocks.Placeholders;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
 import cz.devfire.mysteryblocks.Util.Utils;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
 
+@Getter
 public class PlaceholderHandler extends AbstractHandler {
     private final PlaceholderExpansion expansion;
 
-    private static int percentageTotal = 5;
-    private static String percentageLow = "&c■";
-    private static String percentageHalf = "&a■";
-    private static String percentageFull = "&2⬛";
+    @Getter private static int percentageTotal = 5;
+    @Getter private static String percentageLow = "&c■";
+    @Getter private static String percentageHalf = "&a■";
+    @Getter private static String percentageFull = "&2⬛";
 
     public PlaceholderHandler(MysteryBlocksPlugin plugin) {
         super(plugin);
@@ -56,25 +59,5 @@ public class PlaceholderHandler extends AbstractHandler {
         }
 
         return true;
-    }
-
-    public PlaceholderExpansion getExpansion() {
-        return expansion;
-    }
-
-    public static int getPercentageTotal() {
-        return percentageTotal;
-    }
-
-    public static String getPercentageFull() {
-        return percentageFull;
-    }
-
-    public static String getPercentageHalf() {
-        return percentageHalf;
-    }
-
-    public static String getPercentageLow() {
-        return percentageLow;
     }
 }

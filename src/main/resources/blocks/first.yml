@@ -26,6 +26,7 @@
 #  - {12} - Block mine progress (in progress bar format)
 #  - {13} - Next schedule time
 #  - {14}, {15}, {16} - Schedule remaining time before autoDestroy .. FORMATTED, SHORT, PLAIN
+#  - {17}, {18}, {19} - Time before block is starting regenerating .. FORMATTED, SHORT, PLAIN
 #  - {pos-1-name} and {pos-1-value} - First position name and mine count. !! MAX TOP 10 !!
 #  - {history-1-pos-1-name} and {history-1-pos-1-value} - History 1 backwards, position 1 !! MAX TOP 10 !!
 #  - {history-1-date} - Date of history block break in format "YYYY-MM-dd HH:mm"
@@ -81,12 +82,24 @@ Regeneration:
   Enabled: true
   # Time in milliseconds
   Time: 300000
-  # Types: FULL, ADD
-  # FULL - After time block is regenerated completely to start
-  # ADD - Amount of mines is temporarily added to block max health
+  # Types:
+  #  - FULL   - Block is completely restarted
+  #  - HEAL   - Block is healed to full health
+  #  - ADD    - Block damage is added to block max health
   Type: FULL
+  Progressive:
+    # If enabled, block healing will be progressive and not instant
+    Enabled: false
+    # Time in milliseconds
+    Time: 10000
+    # Amount of percentage max health added/removed per time
+    Percentage: 5
+  # When progressive is NOT enabled, start actions are skipped
   Actions:
-    - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has regenerated its damage! Mine it faster!"
+    Start:
+      - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has started regenerating!"
+    End:
+      - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has been fully regenerated!"
 
 Cooldown:
   # If enabled, the block will temporarily change into an unbreakable material specified bellow.
@@ -130,6 +143,18 @@ EnchantLimit:
   Bypass:
     - "God's pickaxe"
     - "This pickaxe name;;This item lore\\nWith next line"
+
+ForceField:
+  # If enabled, player will not be able to get into specific radius around the block
+  # if he is in radius, he will be pushed out
+  Enabled: true
+  # Radius in block around the mystery block
+  Radius: 0.5
+  # If enabled, player will be pushed out with knockback
+  Knockback:
+    Enabled: true
+    # Knockback strength
+    Strength: 1
 
 MiningEffects:
   # If enabled, player will have a specific effects applied to them while mining this block.
@@ -193,6 +218,9 @@ GUI:
       Material: "BLACK_STAINED_GLASS_PANE"
       DisplayName: "&r"
       Lore: []
+      # ItemFlags: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemFlag.html
+      ItemFlags:
+        - "HIDE_ATTRIBUTES"
     36~44:
       Material: "BLACK_STAINED_GLASS_PANE"
       DisplayName: "&r"
@@ -271,6 +299,8 @@ AntiAFK:
       Power: 1
       # If enabled, player will be turned away from block on knockback
       Rotation: false
+      # If enabled, player that are moving will not be affected by knockback
+      Moving: true
     Captcha:
       # When enabled, players that won't complete the captcha under limit, will be treated as if they failed.
       Time:

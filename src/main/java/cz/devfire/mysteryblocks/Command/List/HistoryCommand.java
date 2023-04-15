@@ -11,6 +11,7 @@ import cz.devfire.mysteryblocks.Util.Pair;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.command.CommandSender;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,13 +76,13 @@ public final class HistoryCommand implements ICommand {
             return;
         }
 
-        History history = historyHandler.getHistory(historyHandler.getSaveCount() - entry);
-        if (history.getDate() == null || entry <= 0) {
+        History history = historyHandler.getHistory(entry-1);
+        if (history.getDate() == null || entry < 0) {
             Language.BLOCK_HISTORY_EMPTY.send(sender, historyHandler.getSaveCount());
             return;
         }
 
-        Language.BLOCK_HISTORY.send(sender,entry, targetBlock, mysteryBlock.getHistoryHandler().getDateFormat());
+        Language.BLOCK_HISTORY.send(sender,entry, targetBlock, new SimpleDateFormat(historyHandler.getDateFormat()).format(history.getDate()));
         int i = 1;
         for (Pair<String, Integer> pair : history.getList()) {
             Language.BLOCK_HISTORY_LINE.send(sender, i++, pair.getFirst(), pair.getSecond());

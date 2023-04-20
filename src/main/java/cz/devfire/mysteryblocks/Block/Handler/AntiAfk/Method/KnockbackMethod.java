@@ -7,9 +7,11 @@ import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.awt.geom.Point2D;
 import java.util.HashMap;
@@ -44,53 +46,51 @@ public class KnockbackMethod extends AbstractAntiAfkMethod {
             }
         }
 
-        if (entity.getLocation().getBlock().getLocation().subtract(0,1,0).getBlock().equals(mysteryBlock.getLocation().getBlock())) {
-            final Point2D.Double point2D = new Point2D.Double(0, 0);
+        double targetX = mysteryBlock.getLocation().getX() + 0.5;
+        double targetY = mysteryBlock.getLocation().getY();
+        double targetZ = mysteryBlock.getLocation().getZ() + 0.5;
 
+        double entityX = entity.getLocation().getX();
+        double entityY = entity.getLocation().getY();
+        double entityZ = entity.getLocation().getZ();
+
+        Vector vector = new Vector(targetX - entityX,0, targetZ - entityZ);
+
+        if (targetX - entityX == 0 && targetZ - entityZ == 0) {
             switch (Utils.getCardinalDirection(player)) {
-                case "W":  { point2D.setLocation(-1.0,0.0); break; }
-                case "NW": { point2D.setLocation(-0.5,0.5); break; }
-                case "N":  { point2D.setLocation(0.0,-1.0); break; }
-                case "NE": { point2D.setLocation(0.0,-0.5); break; }
-                case "E":  { point2D.setLocation(1.0, 0.0); break; }
-                case "SE": { point2D.setLocation(0.5, 0.5); break; }
-                case "S":  { point2D.setLocation(0.0, 1.0); break; }
-                case "SW": { point2D.setLocation(-0.5,0.0); break; }
+                case "N": vector.setX(0.5); break;
+                case "S": vector.setX(-0.5); break;
+                case "E": vector.setZ(0.5); break;
+                case "W": vector.setZ(-0.5); break;
+                case "NE": vector.setX(0.5); vector.setZ(0.5); break;
+                case "NW": vector.setX(0.5); vector.setZ(-0.5); break;
+                case "SE": vector.setX(-0.5); vector.setZ(0.5); break;
+                case "SW": vector.setX(-0.5); vector.setZ(-0.5); break;
             }
+        }
 
+        // Check if player is on the block and in radius 0.75 from x or z
+        if (targetY == entityY - 1 && (Math.abs(targetX - entityX) <= 0.8 || Math.abs(targetZ - entityZ) <= 0.8)) {
             entity.setVelocity(player.getVelocity().setY(0.475D));
 
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    entity.setVelocity(player.getLocation().getDirection().normalize().setX(point2D.getX()).setZ(point2D.getY()).multiply(player.isSneaking() ? 1 : 0.75).setY(0.4D));
-
-                    if (rotation) {
-                        entity.setRotation(entity.getLocation().getYaw() + 180, entity.getLocation().getPitch());
-                    }
+                    vector.normalize();
+                    vector.setY(-0.4);
+                    vector.multiply(player.isOnGround() ? -0.75 : -0.5);
+                    entity.setVelocity(vector);
                 }
-            }.runTaskLater(plugin,2);
+            }.runTaskLater(mysteryBlock.getPlugin(),2);
         } else {
-            if (player.isSneaking()) {
-                player.setVelocity(player.getVelocity().setY(0.475D));
+            vector.normalize();
+            vector.setY(-0.4);
+            vector.multiply(player.isOnGround() ? -0.75 : -0.5);
+            entity.setVelocity(vector);
+        }
 
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        entity.setVelocity(player.getLocation().getDirection().normalize().multiply((power * player.getLocation().getPitch() > 50 ? 1.5 : 0.65) * (-1)).setY(0.4));
-
-                        if (rotation) {
-                            entity.setRotation(entity.getLocation().getYaw() + 180, entity.getLocation().getPitch());
-                        }
-                    }
-                }.runTaskLater(plugin,2);
-            } else {
-                entity.setVelocity(player.getLocation().getDirection().normalize().multiply((power * player.getLocation().getPitch() > 50 ? 1.5 : 1) * (-1)).setY(0.4));
-
-                if (rotation) {
-                    entity.setRotation(entity.getLocation().getYaw() + 180, entity.getLocation().getPitch());
-                }
-            }
+        if (rotation) {
+            entity.setRotation(entity.getLocation().getYaw() + 180, entity.getLocation().getPitch());
         }
     }
 }

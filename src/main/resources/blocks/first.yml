@@ -149,31 +149,29 @@ ForceField:
   # if he is in radius, he will be pushed out
   Enabled: true
   # Radius in block around the mystery block
-  Radius: 0.5
+  Radius: 1.25
   # If enabled, player will be pushed out with knockback
-  Knockback:
-    Enabled: true
-    # Knockback strength
-    Strength: 1
+  Knockback: true
 
 MiningEffects:
   # If enabled, player will have a specific effects applied to them while mining this block.
   # Effect must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+  # In 1.19+, effect FREEZE is supported
   # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.mining-effects
   Enabled: false
   # These effects are added constantly every tick.
   Constant:
-    # Format: EFFECT:AMPLIFIER
+    # Format: EFFECT-AMPLIFIER
     List:
-      - "SLOW_DIGGING:1"
+      - "SLOW_DIGGING-1"
   # These effects have a chance to be added under set cooldown
   Percentage:
     Cooldown: 30000
-    # Format: PERCENTAGE-EFFECT:AMPLIFIER:DURATION
+    # Format: PERCENTAGE-EFFECT-AMPLIFIER-DURATION
     List:
-      - "0.5-HARM:1:10" # 0.5% that player receives damage
-      - "5-FAST_DIGGING:1:20" # 5% that player gets HASTE 1 for 20 ticks (1 second)
-      - "10-BLINDNESS:1:100" # 10% that player gets BLINDNESS 1 for 100 ticks (5 seconds)
+      - "0.5-HARM-1-10" # 0.5% that player receives damage
+      - "5-FAST_DIGGING-1-20" # 5% that player gets HASTE 1 for 20 ticks (1 second)
+      - "10-BLINDNESS-1-100" # 10% that player gets BLINDNESS 1 for 100 ticks (5 seconds)
   # Bypass works as permission, but need to match specific item description
   # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE
   Bypass:

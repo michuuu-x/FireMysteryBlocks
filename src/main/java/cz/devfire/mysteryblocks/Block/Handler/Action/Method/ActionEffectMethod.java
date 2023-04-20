@@ -38,7 +38,7 @@ public class ActionEffectMethod implements ActionMethod {
         }
 
         if (er || type == null) {
-            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] &cUnknown effect: \"" + actionString + "\"");
+            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cUnknown effect: \"" + actionString + "\"");
 
             if (MysteryBlocksPlugin.isDebugEnabled()) {
                 exception.printStackTrace();

@@ -6,6 +6,7 @@ import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Schedule.BlockCaptchaSched
 import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.Schedule.BlockAntiCheatSchedule;
 import cz.devfire.mysteryblocks.Block.Handler.Click.Listener.PlayerBlockClickListener;
 import cz.devfire.mysteryblocks.Block.Handler.Cooldown.Schedule.BlockCooldownSchedule;
+import cz.devfire.mysteryblocks.Block.Handler.ForceField.Listener.BlockFieldListener;
 import cz.devfire.mysteryblocks.Block.Handler.GUI.Listener.BlockGUIListener;
 import cz.devfire.mysteryblocks.Block.Handler.Regeneration.Schedule.BlockRegenerationSchedule;
 import cz.devfire.mysteryblocks.Block.Handler.Visibility.Schedule.BlockVisibilitySchedule;
@@ -199,6 +200,7 @@ public class BlockHandler extends AbstractHandler {
         initListener(new PlayerBlockQuitJoinListener(plugin));
 
         initListener(new BlockCaptchaListener(plugin));
+        initListener(new BlockFieldListener(plugin));
         initListener(new BlockGUIListener(plugin));
         initListener(new PlayerBlockClickListener(plugin));
     }

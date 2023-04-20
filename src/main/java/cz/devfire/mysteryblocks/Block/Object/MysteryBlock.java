@@ -6,6 +6,7 @@ import cz.devfire.mysteryblocks.Block.Handler.Action.Enum.BlockActionSection;
 import cz.devfire.mysteryblocks.Block.Handler.Action.BlockMineActionHandler;
 import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.BlockAntiAfkHandler;
 import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.BlockAntiCheatHandler;
+import cz.devfire.mysteryblocks.Block.Handler.ForceField.BlockForceFieldHandler;
 import cz.devfire.mysteryblocks.Block.Handler.ItemDamage.BlockItemDamageHandler;
 import cz.devfire.mysteryblocks.Block.Handler.MiningEffects.BlockMiningEffectsHandler;
 import cz.devfire.mysteryblocks.Block.Handler.Cooldown.BlockCooldownHandler;
@@ -71,6 +72,7 @@ public class MysteryBlock {
     private final BlockMineActionHandler mineActionHandler;
     private final BlockItemDamageHandler itemDamageHandler;
     private final BlockVisibilityHandler visibilityHandler;
+    private final BlockForceFieldHandler forceFieldHandler;
     private final BlockEnchantLimitHandler enchantLimitHandler;
     private final BlockRegenerationHandler regenerationHandler;
     private final BlockMiningEffectsHandler miningEffectsHandler;
@@ -109,6 +111,7 @@ public class MysteryBlock {
         this.mineActionHandler = new BlockMineActionHandler(plugin,this);
         this.itemDamageHandler = new BlockItemDamageHandler(plugin,this);
         this.visibilityHandler = new BlockVisibilityHandler(plugin,this);
+        this.forceFieldHandler = new BlockForceFieldHandler(plugin,this);
         this.enchantLimitHandler = new BlockEnchantLimitHandler(plugin,this);
         this.regenerationHandler = new BlockRegenerationHandler(plugin,this);
         this.miningEffectsHandler = new BlockMiningEffectsHandler(plugin,this);

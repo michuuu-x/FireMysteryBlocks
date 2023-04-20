@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 public class BlockForceFieldHandler extends AbstractBlockHandler {
     private double radius;
     private boolean knockbackEnabled;
-    private double knockbackStrength;
 
     public BlockForceFieldHandler(MysteryBlocksPlugin plugin, MysteryBlock mysteryBlock) {
         super(plugin, mysteryBlock);
@@ -28,8 +27,7 @@ public class BlockForceFieldHandler extends AbstractBlockHandler {
 
         if (enabled) {
             radius = section.getDouble("Radius");
-            knockbackEnabled = section.getBoolean("Knockback.Enabled");
-            knockbackStrength = section.getDouble("Knockback.Strength");
+            knockbackEnabled = section.getBoolean("Knockback");
         }
 
         return true;

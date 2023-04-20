@@ -5,6 +5,8 @@ import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Util.Pair;
+import cz.devfire.mysteryblocks.Util.Tuple;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,13 +16,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
 public class BlockMiningEffectsHandler extends AbstractBlockHandler {
-    private final ArrayList<PotionEffect> constantList = Lists.newArrayList();
-    private final HashMap<PotionEffect, Double> percentageMap = Maps.newHashMap();
+    private final HashMap<String, Tuple<Double, Integer, Integer>> effectMap = Maps.newHashMap();
 
     private final HashMap<Player, Long> cooldownMap = Maps.newHashMap();
     private Long cooldownTime = 0L;
@@ -37,49 +40,32 @@ public class BlockMiningEffectsHandler extends AbstractBlockHandler {
         enabled = section.getBoolean("Enabled");
 
         if (enabled) {
-            for (String effect : section.getStringList("Constant.List")) {
-                String[] effectArgs = effect.split(":");
+            for (String constantEffect : section.getStringList("Constant.List")) {
+                String[] effectArgs = constantEffect.split("-");
 
-                PotionEffectType type = null;
-                try {
-                    type = PotionEffectType.getByName(effectArgs[0]);
-                } catch (Exception e) {
-                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] &cUnknown effect: \"" + effectArgs[1] + "\"");
+                if (effectArgs.length != 2) {
+                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cConstant PotionEffectType " + constantEffect + " is not valid!");
+                } else {
+                    String effectName = effectArgs[0];
+                    int amplifier = Math.min(Math.max(Integer.parseInt(effectArgs[1]) - 1, 0), 255);
+                    int duration = 20;
 
-                    if (MysteryBlocksPlugin.isDebugEnabled()) {
-                        e.printStackTrace();
-                    }
-                }
-
-                int amplifier = Math.min(Integer.parseInt(effectArgs[1]) - 1, 0);
-                int duration = 20;
-
-                if (type != null) {
-                    constantList.add(new PotionEffect(type, duration, amplifier,true,false));
+                    effectMap.put(effectName, new Tuple<>(100D, amplifier, duration));
                 }
             }
 
-            for (String effect : section.getStringList("Percentage.List")) {
-                String[] percentageArgs = effect.split("-");
-                String[] effectArgs = percentageArgs[1].split(":");
+            for (String percentageEffect : section.getStringList("Percentage.List")) {
+                String[] effectArgs = percentageEffect.split("-");
 
-                PotionEffectType type = null;
-                try {
-                    type = PotionEffectType.getByName(effectArgs[0]);
-                } catch (Exception e) {
-                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] &cUnknown effect: \"" + percentageArgs[1] + "\"");
+                if (effectArgs.length != 4) {
+                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cPercentage PotionEffectType " + percentageEffect + " is not valid!");
+                } else {
+                    double chance = Math.min(Math.max(Double.parseDouble(effectArgs[0]), 0), 100);
+                    String effectName = effectArgs[1];
+                    int amplifier = Math.min(Math.max(Integer.parseInt(effectArgs[2]) - 1, 0), 255);
+                    int duration = Math.max(Integer.parseInt(effectArgs[3]), 20);
 
-                    if (MysteryBlocksPlugin.isDebugEnabled()) {
-                        e.printStackTrace();
-                    }
-                }
-
-                double percentage = Double.parseDouble(percentageArgs[0]);
-                int amplifier = Math.min(Math.max(Integer.parseInt(effectArgs[1]) - 1, 0), 255);
-                int duration = Math.max(Integer.parseInt(effectArgs[2]), 20);
-
-                if (type != null) {
-                    percentageMap.put(new PotionEffect(type, duration, amplifier,true,false), percentage);
+                    effectMap.put(effectName, new Tuple<>(chance, amplifier, duration));
                 }
             }
 
@@ -96,32 +82,36 @@ public class BlockMiningEffectsHandler extends AbstractBlockHandler {
             if (Utils.isItemBypassed(tool, bypassList)) return;
         }
 
-        for (PotionEffect effect : constantList) {
-            if (!player.hasPotionEffect(effect.getType())) {
-                ItemStack itemStack = Utils.getPlayerItemInHand(player);
-                Utils.setPlayerItemInHand(player,null);
+        boolean skip = cooldownMap.getOrDefault(player, Long.MAX_VALUE) + cooldownTime > System.currentTimeMillis();
 
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        Utils.setPlayerItemInHand(player, itemStack);
-                    }
-                }.runTaskLater(plugin,2);
-            }
+        for (String effect : effectMap.keySet()) {
+            Double chance = effectMap.get(effect).getFirst();
+            Integer amplifier = effectMap.get(effect).getSecond();
+            Integer duration = effectMap.get(effect).getThird();
 
-            player.addPotionEffect(effect);
-        }
-
-        if (cooldownMap.getOrDefault(player, Long.MAX_VALUE) + cooldownTime < System.currentTimeMillis()) {
-            cooldownMap.put(player, System.currentTimeMillis());
-
-            double targetPercentage = new Random().nextDouble() * 100;
-            for (PotionEffect effect : percentageMap.keySet()) {
-                double percentage = percentageMap.get(effect);
-
-                if (percentage > targetPercentage) {
-                    player.addPotionEffect(effect);
+            try {
+                PotionEffectType type = PotionEffectType.getByName(effect);
+                if (type == null && !effect.equalsIgnoreCase("FREEZE")) {
+                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cPotionEffectType " + effect + " is not valid!");
+                    continue;
                 }
+
+                if (chance < 100) {
+                    if (skip) continue;
+                    cooldownMap.put(player, System.currentTimeMillis());
+
+                    double targetPercentage = new Random().nextDouble() * 100;
+                    if (targetPercentage > chance) continue;
+                }
+
+                if (effect.equalsIgnoreCase("FREEZE")) {
+                    player.setFreezeTicks(duration * Math.max(amplifier, 1));
+                    continue;
+                }
+
+                player.addPotionEffect(new PotionEffect(type, duration, amplifier));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

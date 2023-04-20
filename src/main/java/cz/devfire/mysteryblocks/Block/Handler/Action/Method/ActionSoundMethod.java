@@ -37,7 +37,7 @@ public class ActionSoundMethod implements ActionMethod {
         }
 
         if (er || sound == null) {
-            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] &cUnknown sound: \"" + actionString + "\"");
+            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cUnknown sound: \"" + actionString + "\"");
 
             if (MysteryBlocksPlugin.isDebugEnabled()) {
                 exception.printStackTrace();

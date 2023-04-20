@@ -48,7 +48,7 @@ public class BlockScheduleHandler extends AbstractBlockHandler {
                     String[] args = date.split(":");
                     times.add(LocalTime.of(Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (Exception e) {
-                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] &cUnknown date: \"" + date + "\"");
+                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cUnknown date: \"" + date + "\"");
 
                     if (plugin.isPluginEnabled()) {
                         e.printStackTrace();

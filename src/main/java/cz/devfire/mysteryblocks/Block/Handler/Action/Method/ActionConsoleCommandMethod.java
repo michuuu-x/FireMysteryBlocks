@@ -10,7 +10,7 @@ public class ActionConsoleCommandMethod implements ActionMethod {
         String[] commands = actionString.split(";;");
 
         for (String command : commands) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), actionString);
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
     }
 

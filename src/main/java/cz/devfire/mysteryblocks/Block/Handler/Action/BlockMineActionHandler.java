@@ -56,15 +56,15 @@ public class BlockMineActionHandler extends AbstractBlockHandler {
                 }
             }
 
-            methods.put(BlockActionType.ACTIONBAR, new ActionActionbarMethod());
-            methods.put(BlockActionType.BROADCAST, new ActionBroadcastMethod());
+            methods.put(BlockActionType.ACTIONBAR, new ActionActionbarMethod(plugin));
+            methods.put(BlockActionType.BROADCAST, new ActionBroadcastMethod(plugin));
             methods.put(BlockActionType.COMMAND, new ActionCommandMethod());
             methods.put(BlockActionType.CONSOLE_COMMAND, new ActionConsoleCommandMethod());
             methods.put(BlockActionType.EFFECT, new ActionEffectMethod());
             methods.put(BlockActionType.MESSAGE, new ActionMessageMethod());
             methods.put(BlockActionType.OP_COMMAND, new ActionOPCommandMethod());
-            methods.put(BlockActionType.SOUND, new ActionSoundMethod());
-            methods.put(BlockActionType.TITLE, new ActionTitleMethod());
+            methods.put(BlockActionType.SOUND, new ActionSoundMethod(plugin));
+            methods.put(BlockActionType.TITLE, new ActionTitleMethod(plugin));
             methods.put(BlockActionType.WARN, new ActionWarnMethod());
         }
 

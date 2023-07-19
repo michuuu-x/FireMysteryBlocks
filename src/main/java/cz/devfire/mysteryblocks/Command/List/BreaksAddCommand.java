@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +29,7 @@ public final class BreaksAddCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.breaks-add";
+        return "firemysteryblocks.command.breaks-add";
     }
 
     @Override
@@ -56,7 +55,7 @@ public final class BreaksAddCommand implements ICommand {
         try {
             number = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            Language.NEGATIVE.send(sender);
+            Language.NUMBER_NEGATIVE.send(sender);
             return;
         }
 
@@ -67,12 +66,12 @@ public final class BreaksAddCommand implements ICommand {
         }
 
         if (number <= 0) {
-            Language.NEGATIVE.send(sender);
+            Language.NUMBER_NEGATIVE.send(sender);
             return;
         }
 
         if (mysteryBlock.getCurrentMines() + number > mysteryBlock.getRequiredMines()) {
-            Language.OVER.send(sender);
+            Language.NUMBER_NEGATIVE.send(sender);
             return;
         }
 
@@ -85,9 +84,9 @@ public final class BreaksAddCommand implements ICommand {
             }
 
             mysteryBlock.getMineMap().put(offlinePlayer.getName(), mysteryBlock.getMineMap().getOrDefault(offlinePlayer.getName(),0) + number);
-            Language.ADDED_AS.send(sender, number, offlinePlayer.getName());
+            Language.BLOCK_DAMAGE_ADDED_AS.send(sender, number, offlinePlayer.getName());
         } else {
-            Language.ADDED.send(sender, number);
+            Language.BLOCK_DAMAGE_ADDED.send(sender, number);
         }
 
         mysteryBlock.setCurrentMines(mysteryBlock.getCurrentMines() + number);
@@ -95,12 +94,7 @@ public final class BreaksAddCommand implements ICommand {
 
         BlockHologramHandler blockHologramHandler = mysteryBlock.getHologramHandler();
         if (blockHologramHandler.isEnabled() && blockHologramHandler.getHologram() != null) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    blockHologramHandler.getHologram().update();
-                }
-            }.runTaskAsynchronously(plugin);
+            blockHologramHandler.getHologram().update();
         }
     }
 

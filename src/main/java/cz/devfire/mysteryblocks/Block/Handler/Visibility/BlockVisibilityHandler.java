@@ -6,6 +6,7 @@ import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Player.Object.MysteryPlayer;
 import cz.devfire.mysteryblocks.Util.Pair;
 import eu.decentsoftware.holograms.api.Lang;
 import org.bukkit.Bukkit;
@@ -71,7 +72,11 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
             }
 
             if (countBefore > 0 && pair.getSecond().size() == 0) {
-                Language.BLOCK_VISIBILITY_STOP.send(player);
+                MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(player.getName());
+
+                if (mysteryPlayer.isMessageEnabled()) {
+                    Language.BLOCK_VISIBILITY_STOP.send(player);
+                }
             }
         }
     }
@@ -97,7 +102,11 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
         pair.getSecond().addAll(playerList);
 
         if (countBefore == 0 && pair.getSecond().size() > 0) {
-            Language.BLOCK_VISIBILITY_START.send(player);
+            MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(player.getName());
+
+            if (mysteryPlayer.isMessageEnabled()) {
+                Language.BLOCK_VISIBILITY_START.send(player);
+            }
         }
 
         playerMap.put(player, pair);
@@ -105,7 +114,11 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
 
     public void showAll(Player player) {
         if (playerMap.containsKey(player)) {
-            Language.BLOCK_VISIBILITY_STOP.send(player);
+            MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(player.getName());
+
+            if (mysteryPlayer.isMessageEnabled()) {
+                Language.BLOCK_VISIBILITY_STOP.send(player);
+            }
 
             playerMap.get(player).getSecond().forEach(p -> player.showPlayer(plugin, p));
             playerMap.remove(player);

@@ -29,12 +29,7 @@ public class BlockCooldownSchedule extends BukkitRunnable {
                         hologramProvider.update();
                     }
                 } else {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            mysteryBlock.reset(false);
-                        }
-                    }.runTask(plugin);
+                    mysteryBlock.reset(false);
                 }
             } else {
                 if (scheduleHandler.isEnabled() && scheduleHandler.isAutoDestroyEnabled()) {
@@ -45,16 +40,11 @@ public class BlockCooldownSchedule extends BukkitRunnable {
                     }
 
                     if (mysteryBlock.getLastReset() + scheduleHandler.getDestroyTime() < System.currentTimeMillis()) {
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                if (scheduleHandler.isActionsEnabled()) {
-                                    mysteryBlock.broke(false);
-                                } else {
-                                    mysteryBlock.broke(true);
-                                }
-                            }
-                        }.runTask(plugin);
+                        if (scheduleHandler.isActionsEnabled()) {
+                            mysteryBlock.broke(false);
+                        } else {
+                            mysteryBlock.broke(true);
+                        }
                     }
                 }
             }

@@ -60,32 +60,4 @@ public class BlockAntiCheatHandler extends AbstractBlockHandler {
         mineMap.computeIfAbsent(player, k -> Sets.newHashSet()).add(System.currentTimeMillis());
         return mineMap.get(player).size() > breakLimit && breakLimit > 0;
     }
-
-//    public HashMap<Player, Set<Long>> getMineMap() {
-//        return mineMap;
-//    }
-//
-//    public HashMap<Integer, List<String>> getActions() {
-//        return actions;
-//    }
-//
-//    public long getCalculationTime() {
-//        return calculationTime;
-//    }
-//
-//    public HashMap<String, Long> getWarnCooldownMap() {
-//        return warnCooldownMap;
-//    }
-//
-//    public int getBreakLimit() {
-//        return breakLimit;
-//    }
-//
-//    public long getActionCooldown() {
-//        return actionCooldown;
-//    }
-//
-//    public LinkedList<Integer> getActionKeyList() {
-//        return actionKeyList;
-//    }
 }

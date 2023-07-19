@@ -2,8 +2,8 @@ package cz.devfire.mysteryblocks.Block.Handler.Regeneration;
 
 import com.google.common.collect.Lists;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
-import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Block.Handler.Regeneration.Enum.RegenerationType;
+import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,46 +51,8 @@ public class BlockRegenerationHandler extends AbstractBlockHandler {
                 enabled = false;
             }
 
-            switch (type) {
-
-                case FULL: {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (mysteryBlock.getCurrentMines() > 0) {
-                                mysteryBlock.reset(true);
-                            }
-                        }
-                    }.runTaskLater(plugin,20);
-
-                    break;
-                }
-
-                case HEAL: {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            mysteryBlock.setLastMine(0);
-                            mysteryBlock.setRequiredTempMines(0);
-                            mysteryBlock.setCurrentMines(0);
-                        }
-                    }.runTaskLaterAsynchronously(plugin,20);
-
-                    break;
-                }
-
-                case ADD: {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            mysteryBlock.setLastMine(0);
-                            mysteryBlock.setRequiredTempMines(mysteryBlock.getCurrentMines());
-                        }
-                    }.runTaskLaterAsynchronously(plugin,20);
-
-                    break;
-                }
-
+            if (type == RegenerationType.FULL) {
+                progressiveEnabled = false;
             }
 
             new BukkitRunnable() {
@@ -170,7 +132,7 @@ public class BlockRegenerationHandler extends AbstractBlockHandler {
             }
         }
 
-        if (progressiveEnabled && lastProcess == 0) {
+        if (lastProcess == 0) {
             mysteryBlock.getMineActionHandler().perform(onEndActions,null);
         }
 

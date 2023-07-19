@@ -4,19 +4,19 @@ import com.google.common.collect.Lists;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.TimeZone;
 
+@Getter
 public class BlockScheduleHandler extends AbstractBlockHandler {
     private final ArrayList<LocalTime> times = Lists.newArrayList();
     private final ArrayList<LocalDateTime> nextDates = Lists.newArrayList();
@@ -113,21 +113,5 @@ public class BlockScheduleHandler extends AbstractBlockHandler {
         }
 
         return new Date();
-    }
-
-    public boolean isAutoDestroyEnabled() {
-        return autoDestroyEnabled;
-    }
-
-    public Long getDestroyTime() {
-        return destroyTime;
-    }
-
-    public TimeZone getTimeZone() {
-        return timeZone;
-    }
-
-    public boolean isActionsEnabled() {
-        return actionsEnabled;
     }
 }

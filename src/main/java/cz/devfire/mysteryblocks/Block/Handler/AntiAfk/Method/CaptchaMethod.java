@@ -3,10 +3,7 @@ package cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.BlockAntiAfkHandler;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Listener.BlockCaptchaListener;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Schedule.BlockCaptchaSchedule;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
-import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
 import lombok.Getter;
@@ -27,6 +24,7 @@ public class CaptchaMethod extends AbstractAntiAfkMethod {
     private final HashMap<String, Long> checkingPlayers = Maps.newHashMap();
 
     private int inventorySize;
+    private final String inventoryTitle;
     private final boolean fillEnabled;
     private final boolean skipBlankEnabled;
     private final ItemStack activeItem;
@@ -42,6 +40,7 @@ public class CaptchaMethod extends AbstractAntiAfkMethod {
         super(plugin, handler, mysteryBlock);
 
         this.inventorySize = mysteryBlock.getConfig().getInt("AntiAFK.Methods.Captcha.Inventory.Size");
+        this.inventoryTitle = mysteryBlock.getConfig().getString("AntiAFK.Methods.Captcha.Inventory.Title");
         this.fillEnabled = mysteryBlock.getConfig().getBoolean("AntiAFK.Methods.Captcha.Inventory.Fill.Enabled");
         this.skipBlankEnabled = mysteryBlock.getConfig().getBoolean("AntiAFK.Methods.Captcha.Inventory.SkipBank");
         this.activeItem = Utils.getItemFromSection(mysteryBlock.getConfig().getConfigurationSection("AntiAFK.Methods.Captcha.Inventory.Active"));
@@ -72,9 +71,9 @@ public class CaptchaMethod extends AbstractAntiAfkMethod {
         Inventory inventory = null;
 
         if (inventorySize == 5) {
-            inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Language.CAPTCHA_TITLE.getMessage());
+            inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Utils.cc(inventoryTitle));
         } else {
-            inventory = Bukkit.createInventory(null, inventorySize, Language.CAPTCHA_TITLE.getMessage());
+            inventory = Bukkit.createInventory(null, inventorySize, Utils.cc(inventoryTitle));
         }
 
         if (fillEnabled) {
@@ -88,44 +87,4 @@ public class CaptchaMethod extends AbstractAntiAfkMethod {
         checkingPlayers.put(player.getName(), System.currentTimeMillis());
         player.openInventory(inventory);
     }
-
-//    public ArrayList<String> getOnFailActions() {
-//        return onFailActions;
-//    }
-//
-//    public ArrayList<String> getOnSuccessActions() {
-//        return onSuccessActions;
-//    }
-//
-//    public HashMap<String, Long> getCheckingPlayers() {
-//        return checkingPlayers;
-//    }
-//
-//    public int getInventorySize() {
-//        return inventorySize;
-//    }
-//
-//    public int getTimeLimit() {
-//        return timeLimit;
-//    }
-//
-//    public ItemStack getActiveItem() {
-//        return activeItem;
-//    }
-//
-//    public ItemStack getFillItem() {
-//        return fillItem;
-//    }
-//
-//    public boolean isFillEnabled() {
-//        return fillEnabled;
-//    }
-//
-//    public boolean isTimeLimitEnabled() {
-//        return timeLimitEnabled;
-//    }
-//
-//    public boolean isSkipBlankEnabled() {
-//        return skipBlankEnabled;
-//    }
 }

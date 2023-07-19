@@ -7,6 +7,7 @@ import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Hologram.Enum.HologramProviderType;
 import net.Zrips.CMILib.Container.CMILocation;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
@@ -42,24 +43,29 @@ public class CMIHologramProvider extends AbstractHologramProvider {
         if (updating) return;
         updating = true;
 
-        CMILocation newLoc = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D));
-        if (!hologram.getLocation().equals(newLoc)) {
-            hologram.setLoc(newLoc);
-            hologram.refresh();
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                CMILocation newLoc = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D));
+                if (!hologram.getLocation().equals(newLoc)) {
+                    hologram.setLoc(newLoc);
+                    hologram.refresh();
+                }
 
-        if (!checkStatic()) {
-            List<String> hologramLines = getLines();
+                if (!checkStatic()) {
+                    List<String> hologramLines = getLines();
 
-            for (int i = hologramLines.size(); i < hologram.getLines().size(); i++) {
-                hologramLines.add(null);
+                    for (int i = hologramLines.size(); i < hologram.getLines().size(); i++) {
+                        hologramLines.add(null);
+                    }
+
+                    hologram.setLines(hologramLines);
+                    hologram.update();
+                }
+
+                updating = false;
             }
-
-            hologram.setLines(hologramLines);
-            hologram.update();
-        }
-
-        updating = false;
+        }.runTask(hologramHandler.getPlugin());
     }
 
     public void destroy() {

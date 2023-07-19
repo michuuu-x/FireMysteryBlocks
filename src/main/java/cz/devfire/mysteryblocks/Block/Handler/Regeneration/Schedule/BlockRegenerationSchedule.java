@@ -29,10 +29,8 @@ public class BlockRegenerationSchedule extends BukkitRunnable {
                     }
                 }
 
-                if (regenerationHandler.isProgressiveEnabled() && regenerationHandler.isUnder()) {
-                    if (mysteryBlock.getHologramHandler().isEnabled()) {
-                        mysteryBlock.getHologramHandler().getHologram().update();
-                    }
+                if (mysteryBlock.getHologramHandler().isEnabled()) {
+                    mysteryBlock.getHologramHandler().getHologram().update();
                 }
             }
         }

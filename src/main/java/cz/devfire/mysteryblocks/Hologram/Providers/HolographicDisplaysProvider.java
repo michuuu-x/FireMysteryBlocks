@@ -10,6 +10,7 @@ import cz.devfire.mysteryblocks.Hologram.Enum.HologramProviderType;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,16 @@ public class HolographicDisplaysProvider extends AbstractHologramProvider {
 
     @Override
     public void create() {
-        Location location = mysteryBlock.getLocation();
-        hologram = HologramsAPI.createHologram(hologramHandler.getPlugin(), location);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Location location = mysteryBlock.getLocation();
+                hologram = HologramsAPI.createHologram(hologramHandler.getPlugin(), location);
 
-        ConfigurationSection settings = hologramHandler.getConfig(HologramProviderType.HolographicDisplays);
-        hologram.setAllowPlaceholders(settings.getBoolean("AllowPlaceholders", false));
+                ConfigurationSection settings = hologramHandler.getConfig(HologramProviderType.HolographicDisplays);
+                hologram.setAllowPlaceholders(settings.getBoolean("AllowPlaceholders", false));
+            }
+        }.runTask(hologramHandler.getPlugin());
     }
 
     @Override
@@ -38,40 +44,45 @@ public class HolographicDisplaysProvider extends AbstractHologramProvider {
         if (updating) return;
         updating = true;
 
-        Location newLoc = mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D);
-        if (!hologram.getLocation().equals(newLoc)) {
-            hologram.teleport(newLoc);
-        }
-
-        if (!checkStatic()) {
-            List<String> hologramLines = getLines();
-
-            if (lines.isEmpty()) {
-                for (String line : hologramLines) {
-                    lines.add(hologram.appendTextLine(Utils.cc(line)));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Location newLoc = mysteryBlock.getLocation().clone().add(0.5D, 2D + hologramHandler.getOffset(), 0.5D);
+                if (!hologram.getLocation().equals(newLoc)) {
+                    hologram.teleport(newLoc);
                 }
-            } else {
-                int i = 0;
 
-                while (i < hologramLines.size()) {
-                    if (i < lines.size()) {
-                        lines.get(i).setText(Utils.cc(hologramLines.get(i)));
+                if (!checkStatic()) {
+                    List<String> hologramLines = getLines();
+
+                    if (lines.isEmpty()) {
+                        for (String line : hologramLines) {
+                            lines.add(hologram.appendTextLine(Utils.cc(line)));
+                        }
                     } else {
-                        lines.add(hologram.appendTextLine(Utils.cc(hologramLines.get(i))));
+                        int i = 0;
+
+                        while (i < hologramLines.size()) {
+                            if (i < lines.size()) {
+                                lines.get(i).setText(Utils.cc(hologramLines.get(i)));
+                            } else {
+                                lines.add(hologram.appendTextLine(Utils.cc(hologramLines.get(i))));
+                            }
+
+                            i++;
+                        }
+
+                        int to = Lists.newArrayList(lines).size();
+                        for (int x = i; x < to; x++) {
+                            hologram.removeLine(i);
+                            lines.remove(i);
+                        }
                     }
-
-                    i++;
                 }
 
-                int to = Lists.newArrayList(lines).size();
-                for (int x = i; x < to; x++) {
-                    hologram.removeLine(i);
-                    lines.remove(i);
-                }
+                updating = false;
             }
-        }
-
-        updating = false;
+        }.runTask(hologramHandler.getPlugin());
     }
 
     @Override

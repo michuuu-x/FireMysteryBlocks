@@ -8,8 +8,12 @@ import cz.devfire.mysteryblocks.Hologram.Interface.HologramProvider;
 import cz.devfire.mysteryblocks.Util.Utils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractHologramProvider implements HologramProvider {
     protected final BlockHologramHandler hologramHandler;
@@ -24,6 +28,8 @@ public abstract class AbstractHologramProvider implements HologramProvider {
     protected int state = 0;
 
     protected boolean updating = false;
+
+    private final HashMap<String, OfflinePlayer> offlinePlayerCache = new HashMap<>();
 
     public AbstractHologramProvider(BlockHologramHandler hologramHandler, MysteryBlock mysteryBlock, String name) {
         this.hologramHandler = hologramHandler;
@@ -57,8 +63,21 @@ public abstract class AbstractHologramProvider implements HologramProvider {
                     String playerName = i + 1 > mysteryBlock.getMineMap().size() ? Language.EMPTY.getMessage() : (String) mysteryBlock.getMineMap().keySet().toArray()[i];
                     String parsedPlayerName = playerName;
 
-                    if (injectionEnabled && mysteryBlock.getMineMap().size() > i) {
-                        parsedPlayerName = PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(playerName),prefixInjection + playerName + suffixInjection +"§r");
+                    if (injectionEnabled && mysteryBlock.getMineMap().size() > i && !parsedPlayerName.equals(Language.EMPTY.getMessage())) {
+                        if (!offlinePlayerCache.containsKey(playerName)) {
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
+                                    offlinePlayerCache.put(playerName, offlinePlayer);
+                                }
+                            }.runTaskAsynchronously(mysteryBlock.getPlugin());
+                        }
+
+                        OfflinePlayer offlinePlayer = offlinePlayerCache.get(playerName);
+                        if (offlinePlayer != null) {
+                            parsedPlayerName = PlaceholderAPI.setPlaceholders(offlinePlayer,prefixInjection + playerName + suffixInjection +"§r");
+                        }
 
                         if (!staticEnabled) {
                             parsedPlayerName = parsedPlayerName.replaceAll("%[^%]*%", "%UnknownPlaceholder%");

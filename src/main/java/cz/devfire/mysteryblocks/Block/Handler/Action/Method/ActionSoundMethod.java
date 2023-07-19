@@ -2,12 +2,17 @@ package cz.devfire.mysteryblocks.Block.Handler.Action.Method;
 
 import cz.devfire.mysteryblocks.Block.Handler.Action.Interface.ActionMethod;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
-import cz.devfire.mysteryblocks.Util.Utils;
+import cz.devfire.mysteryblocks.Player.Object.MysteryPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class ActionSoundMethod implements ActionMethod {
+    private final MysteryBlocksPlugin plugin;
+
+    public ActionSoundMethod(MysteryBlocksPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     public void perform(String actionString, Player player) {
         String[] soundArgs = actionString.split("-");
@@ -45,7 +50,11 @@ public class ActionSoundMethod implements ActionMethod {
         } else {
             if (player == null) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
-                    p.playSound(p.getLocation(), sound, volume, pitch);
+                    MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(p.getName());
+
+                    if (mysteryPlayer.isMessageEnabled()) {
+                        p.playSound(p.getLocation(), sound, volume, pitch);
+                    }
                 }
             } else {
                 player.playSound(player.getLocation(), sound, volume, pitch);

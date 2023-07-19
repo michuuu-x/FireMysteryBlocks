@@ -29,7 +29,7 @@ public final class HistoryCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.history";
+        return "firemysteryblocks.command.history";
     }
 
     @Override
@@ -55,7 +55,7 @@ public final class HistoryCommand implements ICommand {
         try {
             entry = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            Language.NEGATIVE.send(sender);
+            Language.NUMBER_NEGATIVE.send(sender);
             return;
         }
 

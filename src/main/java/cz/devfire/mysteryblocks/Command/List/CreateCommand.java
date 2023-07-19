@@ -26,7 +26,7 @@ public final class CreateCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.create";
+        return "firemysteryblocks.command.create";
     }
 
     @Override

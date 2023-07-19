@@ -25,7 +25,7 @@ public final class ResetCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.reset";
+        return "firemysteryblocks.command.reset";
     }
 
     @Override
@@ -55,7 +55,7 @@ public final class ResetCommand implements ICommand {
                 Language.BLOCK_UNKNOWN.send(sender, targetBlock);
             } else {
                 mysteryBlock.reset(true);
-                Language.BLOCK_RESETED.send(sender, mysteryBlock.getName());
+                Language.BLOCK_RESET.send(sender, mysteryBlock.getName());
             }
         }
     }

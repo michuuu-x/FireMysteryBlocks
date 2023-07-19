@@ -26,7 +26,7 @@ public final class TeleportCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.teleport";
+        return "firemysteryblocks.command.teleport";
     }
 
     @Override

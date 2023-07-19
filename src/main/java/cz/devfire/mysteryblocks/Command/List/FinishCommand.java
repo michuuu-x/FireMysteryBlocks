@@ -25,7 +25,7 @@ public final class FinishCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.finish";
+        return "firemysteryblocks.command.finish";
     }
 
     @Override

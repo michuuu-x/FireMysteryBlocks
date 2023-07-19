@@ -22,7 +22,7 @@ public final class HelpCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.help";
+        return "firemysteryblocks.command.help";
     }
 
     @Override

@@ -25,7 +25,7 @@ public final class DeleteCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.delete";
+        return "firemysteryblocks.command.delete";
     }
 
     @Override

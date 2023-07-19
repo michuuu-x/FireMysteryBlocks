@@ -22,7 +22,7 @@ public final class ReloadCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.reload";
+        return "firemysteryblocks.command.reload";
     }
 
     @Override

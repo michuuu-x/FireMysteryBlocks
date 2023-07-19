@@ -29,7 +29,7 @@ public final class SetCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.set";
+        return "firemysteryblocks.command.set";
     }
 
     @Override

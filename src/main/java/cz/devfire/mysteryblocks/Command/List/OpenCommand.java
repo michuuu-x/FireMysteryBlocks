@@ -28,7 +28,7 @@ public final class OpenCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.open";
+        return "firemysteryblocks.command.open";
     }
 
     @Override

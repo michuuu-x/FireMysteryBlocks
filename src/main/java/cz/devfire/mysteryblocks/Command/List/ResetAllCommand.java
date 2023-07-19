@@ -23,7 +23,7 @@ public final class ResetAllCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.resetall";
+        return "firemysteryblocks.command.resetall";
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class ResetAllCommand implements ICommand {
             block.reset(true);
         }
 
-        Language.BLOCKS_RESETED.send(sender);
+        Language.BLOCK_RESET_ALL.send(sender);
     }
 
     @Override

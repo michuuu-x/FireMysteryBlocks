@@ -45,6 +45,8 @@ public class CommandHandler extends AbstractHandler implements CommandExecutor, 
         subCommands.add(new OpenCommand());
         subCommands.add(new HistoryCommand());
         subCommands.add(new BreaksAddCommand());
+        subCommands.add(new HideCommand());
+        subCommands.add(new MessageCommand());
 
         return true;
     }
@@ -61,7 +63,7 @@ public class CommandHandler extends AbstractHandler implements CommandExecutor, 
             for (ICommand subCommand : subCommands) {
                 if (subCommand.getLabel().equalsIgnoreCase(args[0])) {
                     if (subCommand.getPermission() != null && !sender.hasPermission(subCommand.getPermission())) {
-                        Language.NO_PERMISSIONS.send(sender);
+                        Language.NO_PERMISSION.send(sender);
                         return true;
                     }
 

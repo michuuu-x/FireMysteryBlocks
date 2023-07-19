@@ -1,7 +1,6 @@
 package cz.devfire.mysteryblocks.Command.List;
 
 import com.google.common.collect.Lists;
-import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Command.Interface.ICommand;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
@@ -24,7 +23,7 @@ public final class ListCommand implements ICommand {
 
     @Override
     public String getPermission() {
-        return "firemysteryblocks.list";
+        return "firemysteryblocks.command.list";
     }
 
     @Override
@@ -44,9 +43,9 @@ public final class ListCommand implements ICommand {
 
     @Override
     public void perform(MysteryBlocksPlugin plugin, CommandSender sender, String[] args) {
-        Language.LIST.send(sender);
+        Language.BLOCK_LIST.send(sender);
 
-        plugin.getBlockHandler().getBlocks().forEach(block -> Language.LIST_BLOCK.send(sender,
+        plugin.getBlockHandler().getBlocks().forEach(block -> Language.BLOCK_LIST_ITEM.send(sender,
                 block.getName(),
                 Utils.putLocationToString(block.getLocation()),
                 block.getMaterial().name(),

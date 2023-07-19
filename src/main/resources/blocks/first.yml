@@ -169,11 +169,11 @@ MiningEffects:
     Cooldown: 30000
     # Format: PERCENTAGE-EFFECT-AMPLIFIER-DURATION
     List:
-      - "0.5-HARM-1-10" # 0.5% that player receives damage
-      - "5-FAST_DIGGING-1-20" # 5% that player gets HASTE 1 for 20 ticks (1 second)
-      - "10-BLINDNESS-1-100" # 10% that player gets BLINDNESS 1 for 100 ticks (5 seconds)
+      - "0.5-HARM-1-10"       # 0.5% that player receives damage
+      - "5-FAST_DIGGING-1-20" #   5% that player gets HASTE 1 for 20 ticks (1 second)
+      - "10-BLINDNESS-1-100"  #  10% that player gets BLINDNESS 1 for 100 ticks (5 seconds)
   # Bypass works as permission, but need to match specific item description
-  # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE
+  # Regex is supported! To work, all colors are ignored. Format: DISPLAY_NAME;;LORE
   Bypass:
     - "God's pickaxe"
     - "This pickaxe name;;This item lore\\nWith next line"
@@ -206,7 +206,7 @@ History:
   Slots: "21,22,23,24,25"
 
 GUI:
-# If enabled, GUI for this block gets created. Using /fmb open <blockName> can be opened.
+  # If enabled, GUI for this block gets created. Using /fmb open <blockName> can be opened.
   Enabled: true
   # Size from 9 to 54
   Size: 45
@@ -310,6 +310,8 @@ AntiAFK:
         Size: 5
         # Enabling this will ignore if the player clicks on an empty item in inventory
         SkipBlank: false
+        # Title of the inventory
+        Title: "&c&lMysteryBlocks &8- &0CAPTCHA"
         # Material that will be used in menu
         Active:
           Material: "BEDROCK"

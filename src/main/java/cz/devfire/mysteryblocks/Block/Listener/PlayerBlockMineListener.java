@@ -2,17 +2,18 @@ package cz.devfire.mysteryblocks.Block.Listener;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Interface.AntiAfkMethod;
 import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.BlockAntiAfkHandler;
+import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Interface.AntiAfkMethod;
 import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.BlockAntiCheatHandler;
-import cz.devfire.mysteryblocks.Block.Handler.ItemDamage.BlockItemDamageHandler;
-import cz.devfire.mysteryblocks.Block.Handler.MiningEffects.BlockMiningEffectsHandler;
 import cz.devfire.mysteryblocks.Block.Handler.Cooldown.BlockCooldownHandler;
 import cz.devfire.mysteryblocks.Block.Handler.EnchantLimit.BlockEnchantLimitHandler;
-import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
+import cz.devfire.mysteryblocks.Block.Handler.ItemDamage.BlockItemDamageHandler;
+import cz.devfire.mysteryblocks.Block.Handler.MiningEffects.BlockMiningEffectsHandler;
 import cz.devfire.mysteryblocks.Block.Handler.Visibility.BlockVisibilityHandler;
+import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Player.Object.MysteryPlayer;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -46,6 +47,7 @@ public class PlayerBlockMineListener implements Listener {
 
         if (targetBlock != null) {
             MysteryBlock mysteryBlock = plugin.getBlockHandler().getBlockAt(targetBlock.getLocation());
+            MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(player.getName());
 
             if (mysteryBlock != null) {
                 BlockMiningEffectsHandler miningEffectsHandler = mysteryBlock.getMiningEffectsHandler();
@@ -55,7 +57,9 @@ public class PlayerBlockMineListener implements Listener {
 
                 BlockVisibilityHandler visibilityHandler = mysteryBlock.getVisibilityHandler();
                 if (visibilityHandler != null && visibilityHandler.isEnabled() && !player.hasPermission(mysteryBlock.getPermission() +".bypass.visibility")) {
-                    visibilityHandler.hideAll(player);
+                    if (mysteryPlayer.isVisualEnabled()) {
+                        visibilityHandler.hideAll(player);
+                    }
                 }
             }
         }
@@ -94,7 +98,7 @@ public class PlayerBlockMineListener implements Listener {
                             String[] enchArgs = ench.split("\\|");
 
                             if (cooldown.getOrDefault(player, Long.MAX_VALUE) + 1000 < System.currentTimeMillis()) {
-                                Language.ENCHANT_LIMIT.send(player, enchArgs[0], enchArgs[1], enchArgs[2]);
+                                Language.BLOCK_ENCHANT_LIMIT.send(player, enchArgs[0], enchArgs[1], enchArgs[2]);
                                 cooldown.put(player, System.currentTimeMillis());
                             }
                         }

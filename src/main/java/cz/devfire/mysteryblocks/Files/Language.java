@@ -3,7 +3,6 @@ package cz.devfire.mysteryblocks.Files;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
@@ -14,22 +13,23 @@ import java.util.Map;
 public final class Language {
     private static final Map<String, Language> localeMap = new HashMap<>();
 
+    public static Language EMPTY = new Language("EMPTY");
     public static Language USAGE = new Language("USAGE");
     public static Language HELP = new Language("HELP");
     public static Language HELP_COMMAND = new Language("HELP_COMMAND");
     public static Language NO_COMMAND = new Language("NO_COMMAND");
-    public static Language LIST = new Language("LIST");
-    public static Language LIST_BLOCK = new Language("LIST_BLOCK");
-    public static Language NO_PERMISSIONS = new Language("NO_PERMISSIONS");
     public static Language NO_PLAYER = new Language("NO_PLAYER");
-    public static Language RELOAD = new Language("RELOAD");
-    public static Language EMPTY = new Language("EMPTY");
-    public static Language OVER = new Language("OVER");
-    public static Language NEGATIVE = new Language("NEGATIVE");
-    public static Language ADDED = new Language("ADDED");
-    public static Language ADDED_AS = new Language("ADDED_AS");
-    public static Language TELEPORTED = new Language("TELEPORTED");
+    public static Language NO_PERMISSION = new Language("NO_PERMISSION");
     public static Language PLAYER_ONLY_COMMAND = new Language("PLAYER_ONLY_COMMAND");
+    public static Language RELOAD = new Language("RELOAD");
+    public static Language TELEPORTED = new Language("TELEPORTED");
+    public static Language NUMBER_OVER = new Language("NUMBER_OVER");
+    public static Language NUMBER_NEGATIVE = new Language("NUMBER_NEGATIVE");
+    public static Language BLOCK_LIST = new Language("BLOCK_LIST");
+    public static Language BLOCK_LIST_ITEM = new Language("BLOCK_LIST_ITEM");
+    public static Language BLOCK_DAMAGE_ADDED = new Language("BLOCK_DAMAGE_ADDED");
+    public static Language BLOCK_DAMAGE_ADDED_AS = new Language("BLOCK_DAMAGE_ADDED_AS");
+    public static Language BLOCK_ENCHANT_LIMIT = new Language("BLOCK_ENCHANT_LIMIT");
     public static Language BLOCK_PERMISSION = new Language("BLOCK_PERMISSION");
     public static Language BLOCK_COOLDOWN = new Language("BLOCK_COOLDOWN");
     public static Language BLOCK_CREATED = new Language("BLOCK_CREATED");
@@ -39,12 +39,8 @@ public final class Language {
     public static Language BLOCK_EXISTS = new Language("BLOCK_EXISTS");
     public static Language BLOCK_NOT_FOUND = new Language("BLOCK_NOT_FOUND");
     public static Language BLOCK_ALREADY_SET = new Language("BLOCK_ALREADY_SET");
-    public static Language BLOCK_RESETED = new Language("BLOCK_RESETED");
-    public static Language BLOCKS_RESETED = new Language("BLOCKS_RESETED");
-    public static Language CAPTCHA_TITLE = new Language("CAPTCHA_TITLE");
-    public static Language CAPTCHA_ITEM_TITLE = new Language("CAPTCHA_ITEM_TITLE");
-    public static Language CAPTCHA_ITEM_DESCRIPTION = new Language("CAPTCHA_ITEM_DESCRIPTION");
-    public static Language ENCHANT_LIMIT = new Language("ENCHANT_LIMIT");
+    public static Language BLOCK_RESET = new Language("BLOCK_RESET");
+    public static Language BLOCK_RESET_ALL = new Language("BLOCK_RESET_ALL");
     public static Language BLOCK_FINISH = new Language("BLOCK_FINISH");
     public static Language BLOCK_GUI_DISABLED = new Language("BLOCK_GUI_DISABLED");
     public static Language BLOCK_HISTORY = new Language("BLOCK_HISTORY");
@@ -54,6 +50,12 @@ public final class Language {
     public static Language BLOCK_HISTORY_OVER = new Language("BLOCK_HISTORY_OVER");
     public static Language BLOCK_VISIBILITY_START = new Language("BLOCK_VISIBILITY_START");
     public static Language BLOCK_VISIBILITY_STOP = new Language("BLOCK_VISIBILITY_STOP");
+    public static Language BLOCK_VISIBILITY_TOGGLE = new Language("BLOCK_VISIBILITY_TOGGLE");
+    public static Language BLOCK_VISIBILITY_TOGGLE_ENABLED = new Language("BLOCK_VISIBILITY_TOGGLE_ENABLED");
+    public static Language BLOCK_VISIBILITY_TOGGLE_DISABLED = new Language("BLOCK_VISIBILITY_TOGGLE_DISABLED");
+    public static Language BLOCK_MESSAGE_TOGGLE = new Language("BLOCK_MESSAGE_TOGGLE");
+    public static Language BLOCK_MESSAGE_TOGGLE_ENABLED = new Language("BLOCK_MESSAGE_TOGGLE_ENABLED");
+    public static Language BLOCK_MESSAGE_TOGGLE_DISABLED = new Language("BLOCK_MESSAGE_TOGGLE_DISABLED");
     private String message;
 
     private Language(String identifier) {
@@ -112,5 +114,9 @@ public final class Language {
 
     private void setMessage(String message) {
         this.message = message;
+    }
+
+    public String toString() {
+        return message;
     }
 }

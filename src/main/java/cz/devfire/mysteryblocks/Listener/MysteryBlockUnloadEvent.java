@@ -1,15 +1,15 @@
-package cz.devfire.mysteryblocks.Listener.Event;
+package cz.devfire.mysteryblocks.Listener;
 
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class MysteryBlockRespawnEvent extends Event {
+public class MysteryBlockUnloadEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final MysteryBlock mysteryBlock;
 
-    public MysteryBlockRespawnEvent(MysteryBlock mysteryBlock) {
+    public MysteryBlockUnloadEvent(MysteryBlock mysteryBlock) {
         this.mysteryBlock = mysteryBlock;
     }
 

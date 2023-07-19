@@ -320,21 +320,21 @@ public class Utils {
             for (String bypass : bypassList) {
                 String[] bypassArgs = bypass.split(";;");
 
-                if (bypassArgs.length > 0 && itemMeta.hasDisplayName()) {
+                if (bypassArgs.length >= 1 && itemMeta.hasDisplayName()) {
                     String originMatch = bypassArgs[0].replaceAll("§.", "").trim();
                     String targetMatch = itemMeta.getDisplayName().replaceAll("§.", "").trim();
 
                     if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
-                        if (bypassArgs.length > 1 && itemMeta.hasLore()) {
-                            originMatch = bypassArgs[1].replaceAll("§.", "");
-                            targetMatch = itemMeta.getLore().stream().map(line -> line.replaceAll("§.","")).collect(Collectors.joining("\\n"));
+                        return true;
+                    }
+                }
 
-                            if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
-                                return true;
-                            }
-                        } else {
-                            return true;
-                        }
+                if (bypassArgs.length >= 2 && itemMeta.hasLore()) {
+                    String originMatch = bypassArgs[1].replaceAll("§.", "").trim();
+                    String targetMatch = itemMeta.getLore().stream().map(line -> line.replaceAll("§.","")).collect(Collectors.joining("\\n"));
+
+                    if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
+                        return true;
                     }
                 }
             }

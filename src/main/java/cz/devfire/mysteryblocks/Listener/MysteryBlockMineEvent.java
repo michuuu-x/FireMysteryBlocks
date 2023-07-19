@@ -1,4 +1,4 @@
-package cz.devfire.mysteryblocks.Listener.Event;
+package cz.devfire.mysteryblocks.Listener;
 
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import org.bukkit.entity.Player;

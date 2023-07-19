@@ -7,9 +7,10 @@ import cz.devfire.mysteryblocks.Files.Config;
 import cz.devfire.mysteryblocks.Files.Data;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Hologram.HologramHandler;
-import cz.devfire.mysteryblocks.Listener.PlayerCommandListener;
-import cz.devfire.mysteryblocks.Listener.PlayerJoinListener;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
+import cz.devfire.mysteryblocks.Player.Listener.PlayerCommandListener;
+import cz.devfire.mysteryblocks.Player.Listener.PlayerJoinListener;
+import cz.devfire.mysteryblocks.Player.PlayerHandler;
 import cz.devfire.mysteryblocks.Util.Metrics;
 import cz.devfire.mysteryblocks.Util.Utils;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
     private HologramHandler hologramHandler = null;
     private PlaceholderHandler placeholderHandler = null;
     private CommandHandler commandHandler = null;
+    private PlayerHandler playerHandler = null;
 
     @Override
     public void onEnable() {
@@ -109,8 +111,11 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
         commandHandler = new CommandHandler(this,"mysteryblocks");
         commandHandler.init();
 
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this),this);
-        Bukkit.getPluginManager().registerEvents(new PlayerCommandListener(this),this);
+        playerHandler = new PlayerHandler(this);
+        playerHandler.init();
+
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(playerHandler),this);
+        Bukkit.getPluginManager().registerEvents(new PlayerCommandListener(playerHandler),this);
 
         debugEnabled = config.getBoolean("Settings.Debug");
         if (debugEnabled) {
@@ -125,25 +130,12 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (blockHandler != null && blockHandler.isEnabled()) {
-            blockHandler.destroy();
-        }
-
-        if (databaseHandler != null && databaseHandler.isEnabled()) {
-            databaseHandler.destroy();
-        }
-
-        if (placeholderHandler != null && placeholderHandler.isEnabled()) {
-            placeholderHandler.destroy();
-        }
-
-        if (commandHandler != null && commandHandler.isEnabled()) {
-            commandHandler.destroy();
-        }
-
-        if (hologramHandler != null && hologramHandler.isEnabled()) {
-            hologramHandler.destroy();
-        }
+        if (blockHandler != null && blockHandler.isEnabled()) blockHandler.destroy();
+        if (playerHandler != null && playerHandler.isEnabled()) playerHandler.destroy();
+        if (databaseHandler != null && databaseHandler.isEnabled()) databaseHandler.destroy();
+        if (placeholderHandler != null && placeholderHandler.isEnabled()) placeholderHandler.destroy();
+        if (commandHandler != null && commandHandler.isEnabled()) commandHandler.destroy();
+        if (hologramHandler != null && hologramHandler.isEnabled()) hologramHandler.destroy();
 
         pluginEnabled = false;
         getLogger().info("Disabled plugin with version " + getDescription().getVersion() + " by " + Utils.stripBrackets(getDescription().getAuthors().toString()));

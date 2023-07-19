@@ -1,19 +1,19 @@
-package cz.devfire.mysteryblocks.Listener;
+package cz.devfire.mysteryblocks.Player.Listener;
 
-import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
-import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Player.PlayerHandler;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerJoinListener implements Listener {
-    private final MysteryBlocksPlugin plugin;
+    private final PlayerHandler playerHandler;
 
-    public PlayerJoinListener(MysteryBlocksPlugin plugin) {
-        this.plugin = plugin;
+    public PlayerJoinListener(PlayerHandler playerHandler) {
+        this.playerHandler = playerHandler;
     }
 
     @EventHandler
@@ -30,9 +30,16 @@ public class PlayerJoinListener implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    player.sendMessage(Utils.cc("&c&lServer &8&l» &7Server is running &eFireMysteryBlocks &8(&6v" + plugin.getDescription().getVersion() + "&8)"));
+                    player.sendMessage(Utils.cc("&c&lServer &8&l» &7Server is running &eFireMysteryBlocks &8(&6v" + playerHandler.getPlugin().getDescription().getVersion() + "&8)"));
                 }
-            }.runTaskLaterAsynchronously(plugin,20);
+            }.runTaskLaterAsynchronously(playerHandler.getPlugin(),20);
         }
+
+        playerHandler.loadPlayer(player.getName());
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        playerHandler.savePlayer(event.getPlayer().getName());
     }
 }

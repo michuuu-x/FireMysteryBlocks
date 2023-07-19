@@ -7,9 +7,7 @@ import cz.devfire.mysteryblocks.Database.Type.DatabaseMySQL;
 import cz.devfire.mysteryblocks.Database.Type.DatabaseSQLite;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class DatabaseHandler extends AbstractHandler {
     private DatabaseType databaseType;
@@ -19,6 +17,7 @@ public class DatabaseHandler extends AbstractHandler {
         super(plugin);
     }
 
+    @Override
     public boolean init(ConfigurationSection section) {
         enabled = true;
         databaseType = DatabaseType.valueOf(section.getString("Type", "SQLITE").toUpperCase());
@@ -37,6 +36,7 @@ public class DatabaseHandler extends AbstractHandler {
         return false;
     }
 
+    @Override
     public boolean destroy() {
         enabled = false;
         return database.disconnect();
@@ -44,14 +44,38 @@ public class DatabaseHandler extends AbstractHandler {
 
     public void createTables() {
         database.update("" +
-                "CREATE TABLE IF NOT EXISTS MysteryBlocksData(" +
-                    "id SERIAL, " +
-                    "name VARCHAR(16) PRIMARY KEY, " +
-                    "cooldown BIGINT, " +
-                    "destroys BIGINT, " +
-                    "mines BIGINT, " +
-                    "playerMines TEXT" +
-                ")");
+            "CREATE TABLE IF NOT EXISTS MysteryBlocksData(" +
+                "id SERIAL, " +
+                "name VARCHAR(16) PRIMARY KEY, " +
+                "cooldown BIGINT, " +
+                "regeneration BIGINT, " +
+                "destroys BIGINT, " +
+                "mines BIGINT, " +
+                "requiredMines INTEGER, " +
+                "lastMine BIGINT, " +
+                "playerMines TEXT" +
+            ")");
+
+        // TODO: Remove in 2.5
+        database.setIgnoreErrors(true);
+        database.update("" +
+            "ALTER TABLE MysteryBlocksData " +
+            "ADD COLUMN regeneration BIGINT");
+        database.update("" +
+                "ALTER TABLE MysteryBlocksData " +
+                "ADD COLUMN requiredMines INTEGER");
+        database.update("" +
+                "ALTER TABLE MysteryBlocksData " +
+                "ADD COLUMN lastMine BIGINT");
+        database.setIgnoreErrors(false);
+
+        database.update("" +
+            "CREATE TABLE IF NOT EXISTS MysteryBlocksPlayerData(" +
+                "id SERIAL, " +
+                "name VARCHAR(16) PRIMARY KEY, " +
+                "messages TINYINT DEFAULT(1), " +
+                "visibility TINYINT DEFAULT(1) " +
+            ")");
     }
 
     public Database getDatabase() {

@@ -7,9 +7,12 @@ import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public class DatabaseSQLite implements Database {
+public class DatabaseSQLite extends Database {
     private Connection conn;
 
     private final File file;
@@ -64,10 +67,11 @@ public class DatabaseSQLite implements Database {
             parseStatement(ps, args);
             ps.executeUpdate();
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("");
+            if (isIgnoreErrors()) return;
+
+            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
             Bukkit.getConsoleSender().sendMessage("§c - Update failed! §4" + query);
             Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
-            throw new RuntimeException(e);
         }
     }
 
@@ -77,10 +81,13 @@ public class DatabaseSQLite implements Database {
             parseStatement(ps, args);
             return new Results(ps.executeQuery());
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("");
+            if (isIgnoreErrors()) return null;
+
+            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
             Bukkit.getConsoleSender().sendMessage("§c - Query failed! §4" + query);
             Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
-            throw new RuntimeException(e);
         }
+
+        return null;
     }
 }

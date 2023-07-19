@@ -2,25 +2,36 @@ package cz.devfire.mysteryblocks.Database.Interface;
 
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
 import cz.devfire.mysteryblocks.Database.Object.Results;
-import org.bukkit.Bukkit;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public interface Database {
+public abstract class Database {
 
-    DatabaseType getType();
+    private boolean ignoreErrors = false;
 
-    boolean connect();
+    public boolean isIgnoreErrors() {
+        return ignoreErrors;
+    }
 
-    boolean disconnect();
+    public void setIgnoreErrors(boolean bool) {
+        this.ignoreErrors = bool;
+    }
 
-    boolean isConnected();
+    public abstract DatabaseType getType();
 
-    void update(String query, Object... args);
+    public abstract boolean connect();
 
-    Results query(String query, Object... args);
+    public abstract boolean disconnect();
 
-    default void parseStatement(PreparedStatement ps, Object[] args) throws SQLException {
+    public abstract boolean isConnected();
+
+    public abstract void update(String query, Object... args);
+
+    public abstract Results query(String query, Object... args);
+
+    public void parseStatement(PreparedStatement ps, Object[] args) throws SQLException {
         int i = 1;
 
         for (Object arg : args) {

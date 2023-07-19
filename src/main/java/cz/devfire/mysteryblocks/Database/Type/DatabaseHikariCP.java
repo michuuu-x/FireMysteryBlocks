@@ -1,7 +1,5 @@
 package cz.devfire.mysteryblocks.Database.Type;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
@@ -11,12 +9,12 @@ import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.sql.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class DatabaseHikariCP implements Database {
+public class DatabaseHikariCP extends Database {
     private final HikariDataSource ds;
 
     private final String database;
@@ -129,10 +127,11 @@ public class DatabaseHikariCP implements Database {
             parseStatement(ps, args);
             ps.executeUpdate();
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("");
+            if (isIgnoreErrors()) return;
+
+            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
             Bukkit.getConsoleSender().sendMessage("§c - Update failed! §4" + query);
             Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
-            throw new RuntimeException(e);
         }
     }
 
@@ -147,10 +146,11 @@ public class DatabaseHikariCP implements Database {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("");
+            if (isIgnoreErrors()) return null;
+
+            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
             Bukkit.getConsoleSender().sendMessage("§c - Query failed! §4" + query);
             Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
-            throw new RuntimeException(e);
         }
 
         return null;

@@ -12,7 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class DatabaseMySQL implements Database {
+public class DatabaseMySQL extends Database {
     private Connection conn;
 
     private final String database;
@@ -101,10 +101,11 @@ public class DatabaseMySQL implements Database {
             parseStatement(ps, args);
             ps.executeUpdate();
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("");
+            if (isIgnoreErrors()) return;
+
+            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
             Bukkit.getConsoleSender().sendMessage("§c - Update failed! §4" + query);
             Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
-            throw new RuntimeException(e);
         }
     }
 
@@ -114,10 +115,13 @@ public class DatabaseMySQL implements Database {
             parseStatement(ps, args);
             return new Results(ps.executeQuery());
         } catch (SQLException e) {
-            Bukkit.getConsoleSender().sendMessage("");
+            if (isIgnoreErrors()) return null;
+
+            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
             Bukkit.getConsoleSender().sendMessage("§c - Query failed! §4" + query);
             Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
-            throw new RuntimeException(e);
         }
+
+        return null;
     }
 }

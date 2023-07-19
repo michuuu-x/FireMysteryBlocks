@@ -165,7 +165,7 @@ public class BlockHandler extends AbstractHandler {
             initSchedule(new BlockSaveSchedule(plugin),true, delay, delay);
         }
 
-        initSchedule(new BlockCooldownSchedule(plugin),false,20,5);
+        initSchedule(new BlockCooldownSchedule(plugin),true,20,5);
         initSchedule(new BlockCaptchaSchedule(plugin),true,20,20);
         initSchedule(new BlockAntiCheatSchedule(plugin),true,20,1);
         initSchedule(new BlockRegenerationSchedule(plugin),true,20,10);

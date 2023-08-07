@@ -131,8 +131,13 @@ public final class ReflectionUtils {
         MethodHandle sendPacket = null, getHandle = null, connection = null;
 
         try {
-            connection = lookup.findGetter(entityPlayer,
-                    v(17, "b").orElse("playerConnection"), playerConnection);
+            if (supports(20)) {
+                connection = lookup.findGetter(entityPlayer,
+                        v(20, "c").orElse("playerConnection"), playerConnection);
+            } else {
+                connection = lookup.findGetter(entityPlayer,
+                        v(17, "b").orElse("playerConnection"), playerConnection);
+            }
             getHandle = lookup.findVirtual(craftPlayer, "getHandle", MethodType.methodType(entityPlayer));
             sendPacket = lookup.findVirtual(playerConnection,
                     v(18, "a").orElse("sendPacket"),

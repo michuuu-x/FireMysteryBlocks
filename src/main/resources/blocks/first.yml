@@ -78,21 +78,21 @@ ItemDamage:
     - "This pickaxe name;;This item lore\\nWith next line"
 
 Regeneration:
-  # If enabled, block will be regenerated if is not mines under specific time
+  # If enabled, block will start regenerating after last mine if not destroyed
   Enabled: true
-  # Time in milliseconds
+  # Time in milliseconds, to start regeneration after last mine
   Time: 300000
   # Types:
-  #  - FULL   - Block is completely restarted
-  #  - HEAL   - Block is healed to full health
-  #  - ADD    - Block damage is added to block max health
+  #  - FULL - Block is completely restarted
+  #  - HEAL - Block is healed to full health
+  #  - ADD  - Block damage is added to block max health
   Type: FULL
   Progressive:
-    # If enabled, block healing will be progressive and not instant
+    # If enabled, block healing will be progressive not instant
     Enabled: false
     # Time in milliseconds
     Time: 10000
-    # Amount of percentage max health added/removed per time
+    # Amount of percentage max health recovered per time
     Percentage: 5
   # When progressive is NOT enabled, start actions are skipped
   Actions:

@@ -43,15 +43,15 @@ public class CMIHologramProvider extends AbstractHologramProvider {
         if (updating) return;
         updating = true;
 
+        CMILocation newLoc = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D));
+        if (!hologram.getLocation().equals(newLoc)) {
+            hologram.setLoc(newLoc);
+            hologram.refresh();
+        }
+
         new BukkitRunnable() {
             @Override
             public void run() {
-                CMILocation newLoc = new CMILocation(mysteryBlock.getLocation().clone().add(0.5D,2D + hologramHandler.getOffset(),0.5D));
-                if (!hologram.getLocation().equals(newLoc)) {
-                    hologram.setLoc(newLoc);
-                    hologram.refresh();
-                }
-
                 if (!checkStatic()) {
                     List<String> hologramLines = getLines();
 
@@ -65,7 +65,7 @@ public class CMIHologramProvider extends AbstractHologramProvider {
 
                 updating = false;
             }
-        }.runTask(hologramHandler.getPlugin());
+        }.runTaskAsynchronously(hologramHandler.getPlugin());
     }
 
     public void destroy() {

@@ -44,14 +44,14 @@ public class HolographicDisplaysProvider extends AbstractHologramProvider {
         if (updating) return;
         updating = true;
 
+        Location newLoc = mysteryBlock.getLocation().clone().add(0.5D, 2D + hologramHandler.getOffset(), 0.5D);
+        if (!hologram.getLocation().equals(newLoc)) {
+            hologram.teleport(newLoc);
+        }
+
         new BukkitRunnable() {
             @Override
             public void run() {
-                Location newLoc = mysteryBlock.getLocation().clone().add(0.5D, 2D + hologramHandler.getOffset(), 0.5D);
-                if (!hologram.getLocation().equals(newLoc)) {
-                    hologram.teleport(newLoc);
-                }
-
                 if (!checkStatic()) {
                     List<String> hologramLines = getLines();
 
@@ -82,7 +82,7 @@ public class HolographicDisplaysProvider extends AbstractHologramProvider {
 
                 updating = false;
             }
-        }.runTask(hologramHandler.getPlugin());
+        }.runTaskAsynchronously(hologramHandler.getPlugin());
     }
 
     @Override

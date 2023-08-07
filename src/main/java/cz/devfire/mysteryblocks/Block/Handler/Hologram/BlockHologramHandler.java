@@ -71,6 +71,10 @@ public class BlockHologramHandler extends AbstractBlockHandler {
                             public void destroy() { /* */ }
                         };
                     }
+
+                    default: {
+                        enabled = false;
+                    }
                 }
             }
         }

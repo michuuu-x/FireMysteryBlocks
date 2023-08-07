@@ -7,6 +7,7 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class DecentHologramsProvider extends AbstractHologramProvider {
     private Hologram hologram;
@@ -40,11 +41,16 @@ public class DecentHologramsProvider extends AbstractHologramProvider {
             hologram.setLocation(newLoc);
         }
 
-        if (!checkStatic()) {
-            DHAPI.setHologramLines(hologram, getLines());
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!checkStatic()) {
+                    DHAPI.setHologramLines(hologram, getLines());
+                }
 
-        updating = false;
+                updating = false;
+            }
+        }.runTaskAsynchronously(hologramHandler.getPlugin());
     }
 
     public void destroy() {

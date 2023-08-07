@@ -27,7 +27,7 @@ public class BlockFieldListener implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         final Entity entity = player.isInsideVehicle() ? player.getVehicle() : player;
 
         for (MysteryBlock mysteryBlock : plugin.getBlockHandler().getBlocks()) {
@@ -35,6 +35,7 @@ public class BlockFieldListener implements Listener {
 
             if (forceFieldHandler.isEnabled()) {
                 if (entity == null) return;
+                if (mysteryBlock.getBlock() == null) return;
 
                 double targetX = mysteryBlock.getBlock().getLocation().getX() + 0.5;
                 double targetY = mysteryBlock.getBlock().getLocation().getY();

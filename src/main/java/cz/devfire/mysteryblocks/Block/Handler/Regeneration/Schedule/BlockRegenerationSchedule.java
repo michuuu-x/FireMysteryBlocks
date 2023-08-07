@@ -2,6 +2,7 @@ package cz.devfire.mysteryblocks.Block.Handler.Regeneration.Schedule;
 
 import cz.devfire.mysteryblocks.Block.Handler.Regeneration.BlockRegenerationHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
+import cz.devfire.mysteryblocks.Hologram.Interface.HologramProvider;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,7 +31,11 @@ public class BlockRegenerationSchedule extends BukkitRunnable {
                 }
 
                 if (mysteryBlock.getHologramHandler().isEnabled()) {
-                    mysteryBlock.getHologramHandler().getHologram().update();
+                    HologramProvider hologramProvider = mysteryBlock.getHologramHandler().getHologram();
+
+                    if (hologramProvider != null) {
+                        hologramProvider.update();
+                    }
                 }
             }
         }

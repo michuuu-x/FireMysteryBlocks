@@ -52,7 +52,6 @@ public class MysteryBlock {
     private final String name;
     private LinkedHashMap<String, Integer> mineMap = Maps.newLinkedHashMap();
     private ArrayList<String> mineList = Lists.newArrayList();
-    private final int itemDamage;
     private final boolean permissionRequired;
     private final int requiredMines;
     private int requiredTempMines;
@@ -96,7 +95,6 @@ public class MysteryBlock {
         this.material = Material.valueOf(config.getString("Block.Material","STONE"));
         this.name = blockName;
         this.mineMap.clear();
-        this.itemDamage = config.getInt("Block.ItemDamage");
         this.permissionRequired = config.getBoolean("Block.Permission");
         this.requiredMines = config.getInt("Block.Limit");
 

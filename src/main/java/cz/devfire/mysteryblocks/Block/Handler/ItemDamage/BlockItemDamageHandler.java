@@ -5,6 +5,7 @@ import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -48,7 +49,7 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
             if (Utils.isItemBypassed(tool, bypassList)) return;
         }
 
-        if (mysteryBlock.getItemDamage() != 0 && !player.hasPermission(mysteryBlock.getPermission() +".bypass.item-damage")) {
+        if (itemDamage != 0 && !player.hasPermission(mysteryBlock.getPermission() +".bypass.item-damage")) {
             short durability = tool.getDurability();
             short maxDurability = tool.getType().getMaxDurability();
 

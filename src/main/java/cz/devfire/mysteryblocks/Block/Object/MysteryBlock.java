@@ -207,13 +207,16 @@ public class MysteryBlock {
 
         if (plugin.getDatabaseHandler().getDatabaseType() == DatabaseType.SQLITE) {
             plugin.getDatabaseHandler().getDatabase().update("" +
-                    "REPLACE INTO MysteryBlocksData VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "REPLACE INTO MysteryBlocksData (`name`,`cooldown`,`regeneration`,`destroys`,`mines`,`requiredMines`,`lastMine`,`playerMines`) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     name,
                     cooldownHandler.getCurrentTime(), regenerationHandler.getLastProcess(), totalDestroys, currentMines, requiredTempMines, lastMine, playerMap
             );
         } else {
             plugin.getDatabaseHandler().getDatabase().update("" +
-                    "INSERT INTO MysteryBlocksData VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE cooldown = ?, regeneration = ?, destroys = ?, mines = ?, requiredMines = ?, playerMines = ?",
+                    "INSERT INTO MysteryBlocksData (`name`,`cooldown`,`regeneration`,`destroys`,`mines`,`requiredMines`,`lastMine`,`playerMines`) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE cooldown = ?, regeneration = ?, destroys = ?, mines = ?, requiredMines = ?, lastMine = ?, playerMines = ?",
                     name,
                     cooldownHandler.getCurrentTime(), regenerationHandler.getLastProcess(), totalDestroys, currentMines, requiredTempMines, lastMine, playerMap,
                     cooldownHandler.getCurrentTime(), regenerationHandler.getLastProcess(), totalDestroys, currentMines, requiredTempMines, lastMine, playerMap

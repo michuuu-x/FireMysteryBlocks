@@ -8,12 +8,10 @@ import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Player.Object.MysteryPlayer;
 import cz.devfire.mysteryblocks.Util.Pair;
-import eu.decentsoftware.holograms.api.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +63,7 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
                     continue;
                 }
 
-                if (p.getLocation().distance(mysteryBlock.getLocation()) > visibilityRadius) {
+                if (p.getWorld() != mysteryBlock.getLocation().getWorld() || (p.getWorld() == mysteryBlock.getLocation().getWorld() && p.getLocation().distance(mysteryBlock.getLocation()) > visibilityRadius)) {
                     player.showPlayer(plugin, p);
                     pair.getSecond().remove(p);
                 }

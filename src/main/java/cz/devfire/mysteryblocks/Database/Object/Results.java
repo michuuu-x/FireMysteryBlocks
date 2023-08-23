@@ -2,7 +2,6 @@ package cz.devfire.mysteryblocks.Database.Object;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -58,37 +57,73 @@ public class Results {
     public int getInt(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        return ((Number) o).intValue();
+        if (o instanceof Integer) {
+            return (int) o;
+        } else if (o instanceof String) {
+            return Integer.parseInt((String) o);
+        }
+
+        throw new NumberFormatException("Cannot convert " + o.getClass().getName() + " to int");
     }
 
     public double getDouble(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        return ((Number) o).doubleValue();
+        if (o instanceof Double) {
+            return (double) o;
+        } else if (o instanceof String) {
+            return Double.parseDouble((String) o);
+        }
+
+        throw new NumberFormatException("Cannot convert " + o.getClass().getName() + " to double");
     }
 
     public byte getByte(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        return ((Number) o).byteValue();
+        if (o instanceof Byte) {
+            return (byte) o;
+        } else if (o instanceof String) {
+            return Byte.parseByte((String) o);
+        }
+
+        throw new NumberFormatException("Cannot convert " + o.getClass().getName() + " to byte");
     }
 
     public short getShort(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        return ((Number) o).shortValue();
+        if (o instanceof Short) {
+            return (short) o;
+        } else if (o instanceof String) {
+            return Short.parseShort((String) o);
+        }
+
+        throw new NumberFormatException("Cannot convert " + o.getClass().getName() + " to short");
     }
 
     public long getLong(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        return ((Number) o).longValue();
+        if (o instanceof Long) {
+            return (long) o;
+        } else if (o instanceof String) {
+            return Long.parseLong((String) o);
+        }
+
+        throw new NumberFormatException("Cannot convert " + o.getClass().getName() + " to long");
     }
 
     public float getFloat(String columnLabel) {
         Object o = resultList.get(index).get(columnLabel);
 
-        return ((Number) o).floatValue();
+        if (o instanceof Float) {
+            return (long) o;
+        } else if (o instanceof String) {
+            return Float.parseFloat((String) o);
+        }
+
+        throw new NumberFormatException("Cannot convert " + o.getClass().getName() + " to float");
     }
 
     public boolean getBoolean(String columnLabel) {

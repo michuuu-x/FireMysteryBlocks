@@ -1,16 +1,10 @@
 package cz.devfire.mysteryblocks.Block.Handler.ForceField;
 
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Enum.AntiAfkType;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Interface.AntiAfkMethod;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method.AbstractAntiAfkMethod;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method.CaptchaMethod;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method.KnockbackMethod;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 @Getter
 public class BlockForceFieldHandler extends AbstractBlockHandler {

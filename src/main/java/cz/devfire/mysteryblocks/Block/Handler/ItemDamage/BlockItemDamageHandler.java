@@ -5,7 +5,6 @@ import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;

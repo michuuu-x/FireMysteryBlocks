@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
-import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.Schedule.BlockAntiCheatSchedule;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import lombok.Getter;

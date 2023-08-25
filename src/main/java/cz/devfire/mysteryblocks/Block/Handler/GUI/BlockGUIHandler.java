@@ -3,7 +3,6 @@ package cz.devfire.mysteryblocks.Block.Handler.GUI;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
-import cz.devfire.mysteryblocks.Block.Handler.GUI.Listener.BlockGUIListener;
 import cz.devfire.mysteryblocks.Block.Handler.History.BlockHistoryHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;

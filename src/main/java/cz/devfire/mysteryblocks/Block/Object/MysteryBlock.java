@@ -151,7 +151,7 @@ public class MysteryBlock {
                 regenerationHandler.setLastProcess(rs.getLong("regeneration"));
                 totalDestroys = (int) rs.getLong("destroys");
                 currentMines = (int) rs.getLong("mines");
-                requiredTempMines = (int) rs.getLong("requiredMines");
+                requiredTempMines = rs.getInt("requiredMines");
                 lastMine = rs.getLong("lastMine");
 
 //                if (currentMines != 0) {

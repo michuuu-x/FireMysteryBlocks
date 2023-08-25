@@ -1,13 +1,10 @@
 package cz.devfire.mysteryblocks.Block.Listener;
 
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.BlockAntiAfkHandler;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method.CaptchaMethod;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerBlockQuitJoinListener implements Listener {
     private final MysteryBlocksPlugin plugin;

@@ -13,7 +13,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public abstract class AbstractHologramProvider implements HologramProvider {
     protected final BlockHologramHandler hologramHandler;

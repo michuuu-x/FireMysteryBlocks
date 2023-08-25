@@ -1,12 +1,10 @@
 package cz.devfire.mysteryblocks.Block.Handler.ForceField.Listener;
 
 import com.google.common.collect.Maps;
-import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Method.KnockbackMethod;
 import cz.devfire.mysteryblocks.Block.Handler.ForceField.BlockForceFieldHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +33,7 @@ public class BlockFieldListener implements Listener {
 
             if (forceFieldHandler.isEnabled()) {
                 if (entity == null) return;
-                if (mysteryBlock.getBlock() == null) return;
+                if (mysteryBlock.getBlock() == null || mysteryBlock.getLocation() == null) return;
 
                 double targetX = mysteryBlock.getBlock().getLocation().getX() + 0.5;
                 double targetY = mysteryBlock.getBlock().getLocation().getY();

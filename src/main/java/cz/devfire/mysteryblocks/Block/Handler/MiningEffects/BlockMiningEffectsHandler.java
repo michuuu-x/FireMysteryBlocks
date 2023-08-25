@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
-import cz.devfire.mysteryblocks.Util.Pair;
 import cz.devfire.mysteryblocks.Util.Tuple;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
@@ -14,11 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 

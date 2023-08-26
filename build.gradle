@@ -61,7 +61,7 @@ allprojects {
         compileOnly "com.zrips:cmi:9.2.6.1"
         compileOnly "com.zrips:cmiLib:1.2.3.7"
         compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
-        compileOnly 'com.github.decentsoftware-eu:decentholograms:2.5.1'
+        compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.3'
 
         // Libraries
         implementation "com.iridium:IridiumColorAPI:1.0.5"

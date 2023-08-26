@@ -44,6 +44,8 @@ public class DecentHologramsProvider extends AbstractHologramProvider {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (hologram == null) return;
+
                 if (!checkStatic()) {
                     DHAPI.setHologramLines(hologram, getLines());
                 }

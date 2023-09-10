@@ -48,19 +48,16 @@ public class DatabaseHandler extends AbstractHandler {
                 "id SERIAL, " +
                 "name VARCHAR(16) PRIMARY KEY, " +
                 "cooldown BIGINT, " +
-                "regeneration BIGINT, " +
                 "destroys BIGINT, " +
                 "mines BIGINT, " +
-                "requiredMines INTEGER, " +
-                "lastMine BIGINT, " +
                 "playerMines TEXT" +
             ")");
 
         // TODO: Remove in 2.5
         database.setIgnoreErrors(true);
         database.update("" +
-            "ALTER TABLE MysteryBlocksData " +
-            "ADD COLUMN regeneration BIGINT");
+                "ALTER TABLE MysteryBlocksData " +
+                "ADD COLUMN regeneration BIGINT");
         database.update("" +
                 "ALTER TABLE MysteryBlocksData " +
                 "ADD COLUMN requiredMines INTEGER");

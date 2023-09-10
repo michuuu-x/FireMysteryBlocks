@@ -19,7 +19,7 @@ import cz.devfire.mysteryblocks.Block.Handler.Regeneration.BlockRegenerationHand
 import cz.devfire.mysteryblocks.Block.Handler.Schedule.BlockScheduleHandler;
 import cz.devfire.mysteryblocks.Block.Handler.Visibility.BlockVisibilityHandler;
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
-import cz.devfire.mysteryblocks.Database.Object.Results;
+import cz.devfire.mysteryblocks.Database.Object.QueryResult;
 import cz.devfire.mysteryblocks.Files.Config;
 import cz.devfire.mysteryblocks.Listener.*;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
@@ -143,14 +143,13 @@ public class MysteryBlock {
         }
 
         try {
-            Results rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData WHERE name = ?", name);
+            QueryResult rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData WHERE name = ?", name);
 
-            if (rs.hasNext()) {
-                rs.next();
+            if (rs.next()) {
                 cooldownHandler.setCurrentTime(rs.getLong("cooldown"));
                 regenerationHandler.setLastProcess(rs.getLong("regeneration"));
-                totalDestroys = (int) rs.getLong("destroys");
-                currentMines = (int) rs.getLong("mines");
+                totalDestroys = rs.getInt("destroys");
+                currentMines = rs.getInt("mines");
                 requiredTempMines = rs.getInt("requiredMines");
                 lastMine = rs.getLong("lastMine");
 

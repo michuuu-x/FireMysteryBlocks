@@ -2,7 +2,7 @@ package cz.devfire.mysteryblocks.Player.Object;
 
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
 import cz.devfire.mysteryblocks.Database.Interface.Database;
-import cz.devfire.mysteryblocks.Database.Object.Results;
+import cz.devfire.mysteryblocks.Database.Object.QueryResult;
 import cz.devfire.mysteryblocks.Player.PlayerHandler;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class MysteryPlayer {
             Database database = playerHandler.getPlugin().getDatabaseHandler().getDatabase();
             String sql = "SELECT * FROM MysteryBlocksPlayerData WHERE name = ?";
 
-            Results results = database.query(sql, playerName);
+            QueryResult results = database.query(sql, playerName);
             if (results.next()) {
                 messageEnabled = results.getInt("messages") == 1;
                 visualEnabled = results.getInt("visibility") == 1;

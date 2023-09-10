@@ -1,10 +1,8 @@
 package cz.devfire.mysteryblocks.Block.Handler.History.Object;
 
 import com.google.common.collect.Lists;
-import cz.devfire.mysteryblocks.Block.Handler.History.BlockHistoryHandler;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Util.Pair;
-import org.bukkit.Bukkit;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -25,9 +23,11 @@ public class History {
 
         date = Date.from(Instant.ofEpochMilli(Long.parseLong(lineArgs[0])));
 
-        for (String group : lineArgs[1].split(",")) {
-            String[] groupArgs = group.split("\\|");
-            list.add(new Pair<>(groupArgs[0], Integer.parseInt(groupArgs[1])));
+        if (lineArgs.length > 1) {
+            for (String group : lineArgs[1].split(",")) {
+                String[] groupArgs = group.split("\\|");
+                list.add(new Pair<>(groupArgs[0], Integer.parseInt(groupArgs[1])));
+            }
         }
     }
 

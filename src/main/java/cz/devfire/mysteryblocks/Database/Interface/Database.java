@@ -1,7 +1,7 @@
 package cz.devfire.mysteryblocks.Database.Interface;
 
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
-import cz.devfire.mysteryblocks.Database.Object.Results;
+import cz.devfire.mysteryblocks.Database.Object.QueryResult;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -29,7 +29,7 @@ public abstract class Database {
 
     public abstract void update(String query, Object... args);
 
-    public abstract Results query(String query, Object... args);
+    public abstract QueryResult query(String query, Object... args);
 
     public void parseStatement(PreparedStatement ps, Object[] args) throws SQLException {
         int i = 1;

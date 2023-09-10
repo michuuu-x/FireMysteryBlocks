@@ -2,7 +2,7 @@ package cz.devfire.mysteryblocks.Database.Type;
 
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
 import cz.devfire.mysteryblocks.Database.Interface.Database;
-import cz.devfire.mysteryblocks.Database.Object.Results;
+import cz.devfire.mysteryblocks.Database.Object.QueryResult;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 
@@ -75,11 +75,10 @@ public class DatabaseSQLite extends Database {
         }
     }
 
-    public Results query(String query, Object... args) {
-        try {
-            PreparedStatement ps = conn.prepareStatement(query);
+    public QueryResult query(String query, Object... args) {
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
             parseStatement(ps, args);
-            return new Results(ps.executeQuery());
+            return new QueryResult(ps.executeQuery());
         } catch (SQLException e) {
             if (isIgnoreErrors()) return null;
 

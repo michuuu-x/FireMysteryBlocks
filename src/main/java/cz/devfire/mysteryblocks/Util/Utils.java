@@ -324,6 +324,23 @@ public class Utils {
                     String originMatch = bypassArgs[0].replaceAll("§.", "").trim();
                     String targetMatch = itemMeta.getDisplayName().replaceAll("§.", "").trim();
 
+                    // Escape targetMatch special characters
+                    targetMatch = targetMatch.replaceAll("\\(", "\\\\(");
+                    targetMatch = targetMatch.replaceAll("\\)", "\\\\)");
+                    targetMatch = targetMatch.replaceAll("\\[", "\\\\[");
+                    targetMatch = targetMatch.replaceAll("\\]", "\\\\]");
+                    targetMatch = targetMatch.replaceAll("\\{", "\\\\{");
+                    targetMatch = targetMatch.replaceAll("\\}", "\\\\}");
+                    targetMatch = targetMatch.replaceAll("\\.", "\\\\.");
+                    targetMatch = targetMatch.replaceAll("\\*", "\\\\*");
+                    targetMatch = targetMatch.replaceAll("\\+", "\\\\+");
+                    targetMatch = targetMatch.replaceAll("\\?", "\\\\?");
+                    targetMatch = targetMatch.replaceAll("\\^", "\\\\^");
+                    targetMatch = targetMatch.replaceAll("\\$", "\\\\$");
+                    targetMatch = targetMatch.replaceAll("\\|", "\\\\|");
+                    targetMatch = targetMatch.replaceAll("\\\\", "\\\\\\\\");
+                    targetMatch = targetMatch.replaceAll("\\/", "\\\\/");
+
                     if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
                         return true;
                     }

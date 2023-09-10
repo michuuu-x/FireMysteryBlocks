@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import cz.devfire.mysteryblocks.Database.Enum.DatabaseType;
 import cz.devfire.mysteryblocks.Database.Interface.Database;
-import cz.devfire.mysteryblocks.Database.Object.Results;
+import cz.devfire.mysteryblocks.Database.Object.QueryResult;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -136,12 +136,12 @@ public class DatabaseHikariCP extends Database {
     }
 
     @Override
-    public Results query(String query, Object... args) {
+    public QueryResult query(String query, Object... args) {
         try (Connection conn = ds.getConnection(); PreparedStatement ps = conn.prepareStatement(query);) {
             parseStatement(ps, args);
 
             try (ResultSet rs = ps.executeQuery();) {
-                return new Results(rs);
+                return new QueryResult(rs);
             } catch (Exception e) {
                 e.printStackTrace();
             }

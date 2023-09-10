@@ -10,9 +10,10 @@ import cz.devfire.mysteryblocks.Block.Handler.ForceField.Listener.BlockFieldList
 import cz.devfire.mysteryblocks.Block.Handler.GUI.Listener.BlockGUIListener;
 import cz.devfire.mysteryblocks.Block.Handler.Regeneration.Schedule.BlockRegenerationSchedule;
 import cz.devfire.mysteryblocks.Block.Handler.Visibility.Schedule.BlockVisibilitySchedule;
-import cz.devfire.mysteryblocks.Block.Listener.*;
+import cz.devfire.mysteryblocks.Block.Listener.PlayerBlockMineListener;
+import cz.devfire.mysteryblocks.Block.Listener.PlayerBlockQuitJoinListener;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
-import cz.devfire.mysteryblocks.Database.Object.Results;
+import cz.devfire.mysteryblocks.Database.Object.QueryResult;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Scheduler.BlockSaveSchedule;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
@@ -141,9 +142,9 @@ public class BlockHandler extends AbstractHandler {
         Utils.log(" §e- Removing old blocks");
 
         try {
-            Results rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData");
+            QueryResult rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData");
 
-            while (rs.hasNext() && rs.next()) {
+            while (rs.next()) {
                 String name = rs.getString("name");
                 if (!blocks.containsKey(name.toLowerCase())) {
                     Utils.log("   §e- Found.. &6"+ name +"&e. &aRemoved! §r");

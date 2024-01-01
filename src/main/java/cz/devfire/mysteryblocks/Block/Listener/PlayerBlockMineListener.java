@@ -7,6 +7,7 @@ import cz.devfire.mysteryblocks.Block.Handler.AntiAfk.Interface.AntiAfkMethod;
 import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.BlockAntiCheatHandler;
 import cz.devfire.mysteryblocks.Block.Handler.Cooldown.BlockCooldownHandler;
 import cz.devfire.mysteryblocks.Block.Handler.EnchantLimit.BlockEnchantLimitHandler;
+import cz.devfire.mysteryblocks.Block.Handler.ForceField.BlockForceFieldHandler;
 import cz.devfire.mysteryblocks.Block.Handler.ItemDamage.BlockItemDamageHandler;
 import cz.devfire.mysteryblocks.Block.Handler.MiningEffects.BlockMiningEffectsHandler;
 import cz.devfire.mysteryblocks.Block.Handler.Visibility.BlockVisibilityHandler;
@@ -86,6 +87,14 @@ public class PlayerBlockMineListener implements Listener {
             if (mysteryBlock.isPermissionRequired() && !player.hasPermission(mysteryBlock.getPermission() +".mine")) {
                 Language.BLOCK_PERMISSION.send(player);
                 return;
+            }
+
+            BlockForceFieldHandler forceFieldHandler = mysteryBlock.getForceFieldHandler();
+            if (forceFieldHandler.isEnabled()) {
+                if (forceFieldHandler.isProtectedEnabled() && forceFieldHandler.isInside(player, mysteryBlock)) {
+                    player.sendMessage(Language.BLOCK_FORCE_FIELD_PROTECTED.getMessage());
+                    return;
+                }
             }
 
             BlockEnchantLimitHandler enchantLimitHandler = mysteryBlock.getEnchantLimitHandler();

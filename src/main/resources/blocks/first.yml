@@ -152,6 +152,8 @@ ForceField:
   Radius: 1.25
   # If enabled, player will be pushed out with knockback
   Knockback: true
+  # Block players that are under radius from mining the block
+  Protected: true
 
 MiningEffects:
   # If enabled, player will have a specific effects applied to them while mining this block.

@@ -53,6 +53,7 @@ public final class Language {
     public static Language BLOCK_VISIBILITY_TOGGLE = new Language("BLOCK_VISIBILITY_TOGGLE");
     public static Language BLOCK_VISIBILITY_TOGGLE_ENABLED = new Language("BLOCK_VISIBILITY_TOGGLE_ENABLED");
     public static Language BLOCK_VISIBILITY_TOGGLE_DISABLED = new Language("BLOCK_VISIBILITY_TOGGLE_DISABLED");
+    public static Language BLOCK_FORCE_FIELD_PROTECTED = new Language("BLOCK_FORCE_FIELD_PROTECTED");
     public static Language BLOCK_MESSAGE_TOGGLE = new Language("BLOCK_MESSAGE_TOGGLE");
     public static Language BLOCK_MESSAGE_TOGGLE_ENABLED = new Language("BLOCK_MESSAGE_TOGGLE_ENABLED");
     public static Language BLOCK_MESSAGE_TOGGLE_DISABLED = new Language("BLOCK_MESSAGE_TOGGLE_DISABLED");

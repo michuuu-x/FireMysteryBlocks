@@ -43,6 +43,7 @@ BLOCK_VISIBILITY_STOP: "&c&lFireMysteryBlocks &8&l» &7Players around you are ba
 BLOCK_VISIBILITY_TOGGLE: "&c&lFireMysteryBlocks &8&l» &7While mining player will be &e{0}&7!"
 BLOCK_VISIBILITY_TOGGLE_ENABLED: "Hidden"
 BLOCK_VISIBILITY_TOGGLE_DISABLED: "Visible"
+BLOCK_FORCE_FIELD_PROTECTED: "&c&lFireMysteryBlocks &8&l» &7You are too close to this block!"
 BLOCK_MESSAGE_TOGGLE: "&c&lFireMysteryBlocks &8&l» &7Messages will now be &e{0}&7!"
 BLOCK_MESSAGE_TOGGLE_ENABLED: "Visible"
 BLOCK_MESSAGE_TOGGLE_DISABLED: "Hidden"

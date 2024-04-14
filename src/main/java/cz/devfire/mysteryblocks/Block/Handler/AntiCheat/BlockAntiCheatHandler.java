@@ -23,6 +23,8 @@ public class BlockAntiCheatHandler extends AbstractBlockHandler {
     private final LinkedList<Integer> actionKeyList = Lists.newLinkedList();
     private final HashMap<Player, Set<Long>> mineMap = Maps.newHashMap();
     private final HashMap<String, Long> warnCooldownMap = Maps.newHashMap();
+    private final HashMap<Integer, Long> modifiersEfficiency = Maps.newHashMap();
+    private final HashMap<Integer, Long> modifiersHaste = Maps.newHashMap();
 
     public BlockAntiCheatHandler(MysteryBlocksPlugin plugin, MysteryBlock mysteryBlock) {
         super(plugin, mysteryBlock);
@@ -45,6 +47,14 @@ public class BlockAntiCheatHandler extends AbstractBlockHandler {
             actionKeyList.addAll(actions.keySet());
             Collections.sort(actionKeyList);
             Collections.reverse(actionKeyList);
+
+            for (String key : section.getConfigurationSection("Modifiers.Efficiency").getKeys(false)) {
+                modifiersEfficiency.put(Integer.parseInt(key), section.getLong("Modifiers.Efficiency."+ key));
+            }
+
+            for (String key : section.getConfigurationSection("Modifiers.Haste").getKeys(false)) {
+                modifiersHaste.put(Integer.parseInt(key), section.getLong("Modifiers.Haste."+ key));
+            }
         }
 
         return true;

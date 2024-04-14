@@ -277,6 +277,18 @@ AntiCheat:
   # If the player has mine speed above this limit, all block breaks will be ignored.
   # Set to -1 if you want to ignore it.
   Break: 6
+  # If player have efficiency on item or haste effect. All limits will be increased by modifier number.
+  # Example: Player have Efficiency 1 and Haste 1 -> Player will be kicked if he mines (4)+(6) blocks in 1 second.
+  Modifiers:
+    Efficiency:
+      1: 2
+      2: 3
+      3: 5
+      4: 7
+      5: 10
+    Haste:
+      1: 2
+      2: 4
   # Actions performed after the player reaches the above limit.
   Action:
     2:

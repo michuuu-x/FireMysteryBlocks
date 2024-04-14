@@ -6,10 +6,16 @@ import com.google.common.collect.Sets;
 import cz.devfire.mysteryblocks.Block.Handler.AntiCheat.BlockAntiCheatHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class BlockAntiCheatSchedule extends BukkitRunnable {
@@ -32,8 +38,34 @@ public class BlockAntiCheatSchedule extends BukkitRunnable {
 
                     if (!player.hasPermission(mysteryBlock.getPermission() +".bypass.anti-cheat")) {
                         for (Integer actionPoint : antiCheatHandler.getActionKeyList()) {
-                            if (playerMap.size() > actionPoint) {
+                            int modifier = 0;
+
+                            // Adjust actionPoint by player's tool enchantment
+                            ItemStack tool = player.getInventory().getItemInMainHand();
+                            if (tool != null) {
+                                ItemMeta meta = tool.getItemMeta();
+
+                                if (meta != null && meta.hasEnchant(Enchantment.DIG_SPEED)) {
+                                    int efficiencyLevel = meta.getEnchantLevel(Enchantment.DIG_SPEED);
+                                    modifier += antiCheatHandler.getModifiersEfficiency().getOrDefault(efficiencyLevel, 0L).intValue();
+                                }
+                            }
+
+                            // Adjust actionPoint by player's potion effect
+                            if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
+                                List<PotionEffect> potionEffects = (List<PotionEffect>) player.getActivePotionEffects();
+
+                                for (PotionEffect potionEffect : potionEffects) {
+                                    if (potionEffect.getType().equals(PotionEffectType.FAST_DIGGING)) {
+                                        int hasteLevel = potionEffect.getAmplifier();
+                                        modifier += antiCheatHandler.getModifiersHaste().getOrDefault(hasteLevel, 0L).intValue();
+                                    }
+                                }
+                            }
+
+                            if (playerMap.size() > actionPoint + modifier) {
                                 if (antiCheatHandler.getWarnCooldownMap().getOrDefault(actionPoint + "-" + player.getName().toLowerCase(),0L) + antiCheatHandler.getActionCooldown() < System.currentTimeMillis() || actionPoint == 0) {
+                                    int finalModifier = modifier;
                                     new BukkitRunnable() {
                                         @Override
                                         public void run() {

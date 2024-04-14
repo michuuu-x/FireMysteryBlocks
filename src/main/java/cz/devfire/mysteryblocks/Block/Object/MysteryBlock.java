@@ -86,7 +86,7 @@ public class MysteryBlock {
             if (!this.file.exists()) this.file.createNewFile();
 
             this.config = Config.loadConfiguration(this.file);
-            this.config.syncWithConfig(file, plugin.getResource("blocks/first.yml"),"Action.OnDestroy.PerPlace", "AntiCheat.Action", "GUI.Items", "GUI.Actions");
+            this.config.syncWithConfig(file, plugin.getResource("blocks/first.yml"),"Action.OnDestroy.PerPlace", "AntiCheat.Action", "AntiCheat.Modifiers", "GUI.Items", "GUI.Actions");
         } catch (IOException e) {
             e.printStackTrace();
         }

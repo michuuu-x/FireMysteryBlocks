@@ -19,6 +19,7 @@ import java.util.List;
 
 public class BlockVisibilityHandler extends AbstractBlockHandler {
     private final HashMap<Player, Pair<Long, ArrayList<Player>>> playerMap = Maps.newHashMap();
+    private final HashMap<Player, Long> cooldownMap = Maps.newHashMap();
     private int visibilityRadius = 5;
 
     public BlockVisibilityHandler(MysteryBlocksPlugin plugin, MysteryBlock mysteryBlock) {
@@ -73,8 +74,17 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
                 MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(player.getName());
 
                 if (mysteryPlayer.isMessageEnabled()) {
-                    Language.BLOCK_VISIBILITY_STOP.send(player);
+                    if (cooldownMap.getOrDefault(player, 0L) + 10000 < System.currentTimeMillis()) {
+                        Language.BLOCK_VISIBILITY_STOP.send(player);
+                        cooldownMap.put(player, System.currentTimeMillis());
+                    }
                 }
+            }
+        }
+
+        for (Player player : Lists.newArrayList(cooldownMap.keySet())) {
+            if (cooldownMap.get(player) + 30000 < System.currentTimeMillis()) {
+                cooldownMap.remove(player);
             }
         }
     }
@@ -103,7 +113,10 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
             MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(player.getName());
 
             if (mysteryPlayer.isMessageEnabled()) {
-                Language.BLOCK_VISIBILITY_START.send(player);
+                if (cooldownMap.getOrDefault(player, 0L) + 10000 < System.currentTimeMillis()) {
+                    Language.BLOCK_VISIBILITY_START.send(player);
+                    cooldownMap.put(player, System.currentTimeMillis());
+                }
             }
         }
 
@@ -115,7 +128,10 @@ public class BlockVisibilityHandler extends AbstractBlockHandler {
             MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(player.getName());
 
             if (mysteryPlayer.isMessageEnabled()) {
-                Language.BLOCK_VISIBILITY_STOP.send(player);
+                if (cooldownMap.getOrDefault(player, 0L) + 10000 < System.currentTimeMillis()) {
+                    Language.BLOCK_VISIBILITY_STOP.send(player);
+                    cooldownMap.put(player, System.currentTimeMillis());
+                }
             }
 
             playerMap.get(player).getSecond().forEach(p -> player.showPlayer(plugin, p));

@@ -129,7 +129,7 @@ Visibility:
   # after he stops all players will be back visible
   Enabled: false
   # Radius in block around the mystery block
-  Radius: 5
+  Radius: 6
 
 EnchantLimit:
   # If enabled, player items will be limited to those equal or lower to the specified enchantment limit.

@@ -10,20 +10,27 @@ version = "2.3.12"
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
-    }
-    maven {
-        name = 'codemc-repo'
-        url = 'https://repo.codemc.io/repository/maven-public'
-    }
+dependencies {
+//    implementation project(":API")
+//    implementation fileTree("archive")
+
+    // Server jars
+    compileOnly "net.minecraft:server:1.18.1"
+    compileOnly "org.spigotmc:v1_18_R2:b3450-2"
+    //compileOnly "net.minecraft:server:1.8"
+    //compileOnly "org.spigotmc:v1_8_R1:latest"
+
+    // Addons
+    compileOnly "me.clip:placeholderapi:2.10.9"
+    compileOnly "com.zrips:cmi:9.2.6.1"
+    compileOnly "com.zrips:cmiLib:1.2.3.7"
+    compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
+    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.3'
+
+    // Implementations
+    implementation "com.iridium:IridiumColorAPI:1.0.5"
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation 'de.tr7zw:item-nbt-api:2.13.1'
 }
 
 allprojects {
@@ -31,9 +38,13 @@ allprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     repositories {
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://repo.bg-software.com/repository/nms/' }
-        maven { url 'https://repo1.maven.org/maven2/' }
+        mavenCentral()
+        maven { url = 'https://jitpack.io' }
+        maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+        maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven { url = 'https://repo.codemc.io/repository/maven-public' }
+        maven { url = 'https://repo.bg-software.com/repository/nms/' }
+
         maven {
             url 'http://nexus.basicland.cz:8081/repository/dev-nms/'
             allowInsecureProtocol = true
@@ -42,11 +53,6 @@ allprojects {
             url 'http://nexus.basicland.cz:8081/repository/dev-public/'
             allowInsecureProtocol = true
         }
-        maven {
-            name = 'codemc-repo'
-            url = 'https://repo.codemc.io/repository/maven-public'
-        }
-
         maven {
             url 'http://nexus.basicland.cz:8081/repository/dev-private/'
             credentials {
@@ -58,24 +64,8 @@ allprojects {
     }
 
     dependencies {
-        // Spigot jars
-        compileOnly "net.minecraft:server:1.18.1"
-        compileOnly "org.spigotmc:v1_18_R2:b3450-2"
-        //compileOnly "net.minecraft:server:1.8"
-        //compileOnly "org.spigotmc:v1_8_R1:latest"
-
-        // Addons
-        compileOnly "me.clip:placeholderapi:2.10.9"
-        compileOnly "com.zrips:cmi:9.2.6.1"
-        compileOnly "com.zrips:cmiLib:1.2.3.7"
-        compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
-        compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.3'
-
-        // Libraries
-        implementation "com.iridium:IridiumColorAPI:1.0.5"
-        implementation 'com.zaxxer:HikariCP:4.0.3'
-        implementation 'de.tr7zw:item-nbt-api:2.13.1'
-
+        // Annotation
+        compileOnly 'org.jetbrains:annotations:24.0.0'
         compileOnly 'org.projectlombok:lombok:1.18.26'
         annotationProcessor 'org.projectlombok:lombok:1.18.26'
     }
@@ -85,69 +75,46 @@ allprojects {
     }
 }
 
-dependencies {
-    implementation project(":API")
-    implementation fileTree("archive")
-}
-
 subprojects {
     shadowJar {
-        relocate ('de.tr7zw.changeme.nbtapi', 'cz.devfire.mysteryblocks.nbtapi')
+        // Relocate
+//        relocate 'de.tr7zw.changeme.nbtapi', 'cz.devfire.mysteryblocks.nbtapi'
 
-        archiveFileName = "${project.name}.jar"
-        destinationDirectory = file("../archive/")
-    }
-}
-
-processResources {
-    outputs.upToDateWhen {false}
-    String versionNumber = System.getenv("BUILD_NUMBER") == null ? version : version + "." + System.getenv("BUILD_NUMBER")
-
-    eachFile { details ->
-        if (details.name.contentEquals('plugin.yml')) {
-            filter { String line ->
-                line.replace('${project.version}', versionNumber)
-            }
-        }
+        archiveFileName = "${project.group}-${project.name}-${rootProject.version}.jar"
+        destinationDirectory = file("../target/${rootProject.version}")
     }
 }
 
 shadowJar {
     dependsOn(jar)
 
-    if (System.getenv("BUILD_NUMBER") == null) {
-        archiveName = rootProject.name + "-" + version + ".jar"
-    } else {
-        archiveName = rootProject.name + "-" + version + "-b" + System.getenv("BUILD_NUMBER") + ".jar"
+    delete fileTree("./target/") {
+        exclude archiveFileName.get()
     }
 
-    delete fileTree('./target/') {
-        exclude archiveName
+    // Relocate
+    relocate 'de.tr7zw.changeme.nbtapi', 'cz.devfire.mysteryblocks.nbtapi'
+
+    archiveFileName = "${project.name}-${project.version}.jar"
+    archiveClassifier.set("")
+    destinationDirectory = file("target/${rootProject.version}")
+}
+
+processResources {
+    outputs.upToDateWhen { false }
+
+    eachFile { details ->
+        if (details.name.contentEquals('plugin.yml') || details.name.contentEquals('bungee.yml')) {
+            filter { String line ->
+                line.replace('${project.version}', (String) version)
+            }
+        }
     }
-
-    destinationDir = file("./target/")
-    from sourceSets.getByName("main").output
-    configurations = [project.configurations.getByName("runtimeClasspath")]
-}
-
-task copyAPI(type: Copy) {
-    String versionNumber = System.getenv("BUILD_NUMBER") == null ? version : version + "." + System.getenv("BUILD_NUMBER")
-
-    from './archive/API.jar'
-    into './target/'
-    rename('API.jar', rootProject.name + 'API-'+ versionNumber +'.jar')
-}
-
-clean {
-    delete file('./archive/')
 }
 
 build {
-    dependsOn shadowJar
-//    dependsOn copyAPI
     dependsOn clean
+    dependsOn shadowJar
 }
 
 publish.shouldRunAfter shadowJar
-shadowJar.shouldRunAfter build
-build.shouldRunAfter subprojects.build

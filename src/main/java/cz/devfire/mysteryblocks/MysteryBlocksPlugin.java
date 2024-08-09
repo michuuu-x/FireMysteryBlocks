@@ -39,11 +39,6 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
-        System.out.println("§c§lServer §8§l» §7Server version: §e" + this.getServer().getVersion());
-        System.out.println("§c§lServer §8§l» §Test: §e" + Utils.getServerVersion());
-        System.out.println("§c§lServer §8§l» §Test: §e" + Bukkit.getServer().getClass().getPackage().getName());
-
         Utils.log("  ______ _          __  __           _                  ____  _            _        ");
         Utils.log(" |  ____(_)        |  \\/  |         | |                |  _ \\| |          | |       ");
         Utils.log(" | |__   _ _ __ ___| \\  / |_   _ ___| |_ ___ _ __ _   _| |_) | | ___   ___| | _____ ");
@@ -55,7 +50,12 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
         Utils.log("&6Loading..§r");
 
         Language.reload(this);
-        NBT.preloadApi();
+
+        if (!NBT.preloadApi()) {
+            Utils.log("&c - NBT-API wasn't initialized properly, disabling the plugin");
+            this.getPluginLoader().disablePlugin(this);
+            return;
+        }
 
         Metrics metrics = new Metrics(this, 16913);
         metrics.addCustomChart(new Metrics.SimplePie("hologramtype", () -> config.getString("Settings.Holograms.Provider", "NONE")));

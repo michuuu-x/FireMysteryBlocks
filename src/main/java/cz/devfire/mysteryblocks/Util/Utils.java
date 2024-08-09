@@ -6,6 +6,7 @@ import cz.devfire.mysteryblocks.Block.Handler.History.Object.History;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -110,21 +111,11 @@ public class Utils {
     }
 
     public static String getServerVersion() {
-        String version = null;
-
-        try {
-            version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-        } catch (Exception e) {
-            try {
-                version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[1];
-            } catch (Exception e2) { /* */ }
-        }
-
-        return version;
+        return Bukkit.getServer().getVersion().split("[-_]")[0];
     }
 
     public static int getServerVersionID() {
-        return Integer.parseInt(getServerVersion().split("_")[1]);
+        return Integer.parseInt(getServerVersion().split("\\.")[1]);
     }
 
     public static LinkedHashMap<String, Integer> sortMapByValue(Map<String, Integer> unsortedMap, final boolean order) {
@@ -232,7 +223,7 @@ public class Utils {
         ArrayList<String> newLines = Lists.newArrayList();
 
         for (String line : lines) {
-            if (line.trim().length() == 0) {
+            if (line.trim().isEmpty()) {
                 newLines.add(line);
             } else {
                 newLines.add(Utils.parseBlockPlaceholders(mysteryBlock,null, line));
@@ -319,7 +310,9 @@ public class Utils {
 
             for (String bypass : bypassList) {
                 String[] bypassArgs = bypass.split(";;");
+                boolean state = false;
 
+                // Display Name
                 if (bypassArgs.length >= 1 && itemMeta.hasDisplayName()) {
                     String originMatch = bypassArgs[0].replaceAll("§.", "").trim();
                     String targetMatch = itemMeta.getDisplayName().replaceAll("§.", "").trim();
@@ -342,18 +335,30 @@ public class Utils {
                     targetMatch = targetMatch.replaceAll("\\/", "\\\\/");
 
                     if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
-                        return true;
+                        state = true;
                     }
                 }
 
+                // Lore
                 if (bypassArgs.length >= 2 && itemMeta.hasLore()) {
                     String originMatch = bypassArgs[1].replaceAll("§.", "").trim();
                     String targetMatch = itemMeta.getLore().stream().map(line -> line.replaceAll("§.","")).collect(Collectors.joining("\\n"));
 
                     if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
-                        return true;
+                       state = true;
+                    } else {
+                        state = false;
                     }
                 }
+
+                // NBT Tags
+                if (bypassArgs.length >= 3) {
+                    state = NBT.get(itemStack, nbt -> {
+                        return nbt.hasTag(bypassArgs[2]);
+                    });
+                }
+
+                return state;
             }
         }
 

@@ -5,8 +5,6 @@ import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import javax.rmi.CORBA.Util;
-
 public class ActionWarnMethod implements ActionMethod {
 
     public void perform(String actionString, Player player) {

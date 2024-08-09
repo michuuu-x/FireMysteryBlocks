@@ -72,10 +72,29 @@ ItemDamage:
   # If enabled, unbreaking enchantment will be ignored
   IgnoreEnchants: false
   # Bypass works as permission, but need to match specific item description
-  # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE
+  # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE;;NBT_TAG
   Bypass:
     - "God's pickaxe"
     - "This pickaxe name;;This item lore\\nWith next line"
+    - "This pickaxe name;;This item lore;;customNBTTag"
+  # Modifier to amount of damage dealt to block
+  # Formula: Math.round(1 * (Effects + Enchants))
+  # Example: Efficiency 1 -> 1.5x damage | Efficiency 1, Haste 1 -> 2.5x damage
+  Modifiers:
+    # Enchantments must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
+    Enchantments:
+      - "EFFICIENCY:1:1.5"
+      - "EFFICIENCY:2:2"
+      - "EFFICIENCY:3:3"
+      - "EFFICIENCY:4:4"
+      - "EFFICIENCY:5:6"
+    # Effects must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+    Effects:
+      - "FAST_DIGGING:1:1"
+      - "FAST_DIGGING:2:2"
+      - "FAST_DIGGING:3:3"
+      - "FAST_DIGGING:4:4"
+      - "FAST_DIGGING:5:5"
 
 Regeneration:
   # If enabled, block will start regenerating after last mine if not destroyed
@@ -139,10 +158,11 @@ EnchantLimit:
   List:
     - "DIG_SPEED:5"
   # Bypass works as permission, but need to match specific item description
-  # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE
+  # Regex is supported! To work, all colors are ignored. Format: DISPLAY NAME;;LORE;;NBT_TAG
   Bypass:
     - "God's pickaxe"
     - "This pickaxe name;;This item lore\\nWith next line"
+    - "This pickaxe name;;This item lore;;customNBTTag"
 
 ForceField:
   # If enabled, player will not be able to get into specific radius around the block
@@ -159,7 +179,7 @@ MiningEffects:
   # If enabled, player will have a specific effects applied to them while mining this block.
   # Effect must be used from https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
   # In 1.19+, effect FREEZE is supported
-  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.mining-effects
+  # Bypass perm: "firemysteryblocks.BLOCKNAME.bypass.mining-effects"
   Enabled: false
   # These effects are added constantly every tick.
   Constant:
@@ -175,10 +195,11 @@ MiningEffects:
       - "5-FAST_DIGGING-1-20" #   5% that player gets HASTE 1 for 20 ticks (1 second)
       - "10-BLINDNESS-1-100"  #  10% that player gets BLINDNESS 1 for 100 ticks (5 seconds)
   # Bypass works as permission, but need to match specific item description
-  # Regex is supported! To work, all colors are ignored. Format: DISPLAY_NAME;;LORE
+  # Regex is supported! To work, all colors are ignored. Format: DISPLAY_NAME;;LORE;;NBT_TAG
   Bypass:
     - "God's pickaxe"
     - "This pickaxe name;;This item lore\\nWith next line"
+    - "This pickaxe name;;This item lore;;customNBTTag"
 
 History:
   # If enabled, after block is destroyed. Date and player mines are saved into history.

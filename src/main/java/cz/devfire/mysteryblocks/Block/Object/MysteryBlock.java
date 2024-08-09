@@ -273,10 +273,10 @@ public class MysteryBlock {
         }
     }
 
-    public void mine(Player player) {
-        mineMap.put(player.getName(), mineMap.getOrDefault(player.getName(),0) + 1);
+    public void mine(Player player, int amount) {
+        mineMap.put(player.getName(), mineMap.getOrDefault(player.getName(),0) + amount);
         update();
-        currentMines++;
+        currentMines += amount;
         lastMine = System.currentTimeMillis();
 
         Bukkit.getServer().getPluginManager().callEvent(new MysteryBlockMineEvent(this, player));

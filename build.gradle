@@ -1,11 +1,11 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'maven-publish'
 }
 
 group 'FireMysteryBlocks'
-version = "2.3.10"
+version = "2.3.12"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -19,6 +19,10 @@ repositories {
     maven {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        name = 'codemc-repo'
+        url = 'https://repo.codemc.io/repository/maven-public'
     }
 }
 
@@ -38,12 +42,16 @@ allprojects {
             url 'http://nexus.basicland.cz:8081/repository/dev-public/'
             allowInsecureProtocol = true
         }
+        maven {
+            name = 'codemc-repo'
+            url = 'https://repo.codemc.io/repository/maven-public'
+        }
 
         maven {
             url 'http://nexus.basicland.cz:8081/repository/dev-private/'
             credentials {
-                username "dev"
-                password "mandarinka"
+                username "admin"
+                password "brokolice"
             }
             allowInsecureProtocol = true
         }
@@ -66,6 +74,7 @@ allprojects {
         // Libraries
         implementation "com.iridium:IridiumColorAPI:1.0.5"
         implementation 'com.zaxxer:HikariCP:4.0.3'
+        implementation 'de.tr7zw:item-nbt-api:2.13.1'
 
         compileOnly 'org.projectlombok:lombok:1.18.26'
         annotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -83,6 +92,8 @@ dependencies {
 
 subprojects {
     shadowJar {
+        relocate ('de.tr7zw.changeme.nbtapi', 'cz.devfire.mysteryblocks.nbtapi')
+
         archiveFileName = "${project.name}.jar"
         destinationDirectory = file("../archive/")
     }
@@ -100,8 +111,6 @@ processResources {
         }
     }
 }
-
-
 
 shadowJar {
     dependsOn(jar)
@@ -135,7 +144,7 @@ clean {
 
 build {
     dependsOn shadowJar
-    dependsOn copyAPI
+//    dependsOn copyAPI
     dependsOn clean
 }
 

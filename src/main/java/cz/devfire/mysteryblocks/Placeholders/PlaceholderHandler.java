@@ -3,7 +3,6 @@ package cz.devfire.mysteryblocks.Placeholders;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
 import cz.devfire.mysteryblocks.Util.Utils;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,7 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 @Getter
 public class PlaceholderHandler extends AbstractHandler {
-    private final PlaceholderExpansion expansion;
+    private PlaceholderExpansion expansion;
 
     @Getter private static int percentageTotal = 5;
     @Getter private static String percentageLow = "&c■";
@@ -20,7 +19,6 @@ public class PlaceholderHandler extends AbstractHandler {
 
     public PlaceholderHandler(MysteryBlocksPlugin plugin) {
         super(plugin);
-        this.expansion = new PlaceholderExpansion(plugin);
     }
 
     public boolean init(ConfigurationSection section) {
@@ -32,6 +30,7 @@ public class PlaceholderHandler extends AbstractHandler {
         percentageFull = section.getString("Percentage.Tiles.Full");
 
         if (enabled && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            this.expansion = new PlaceholderExpansion(plugin);
             Utils.log(" §e- Queuing placeholder registry of " + expansion.getIdentifier());
 
             new BukkitRunnable() {

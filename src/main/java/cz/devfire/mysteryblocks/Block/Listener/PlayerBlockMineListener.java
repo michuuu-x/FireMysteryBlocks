@@ -136,7 +136,7 @@ public class PlayerBlockMineListener implements Listener {
                 itemDamageHandler.apply(player);
             }
 
-            mysteryBlock.mine(player);
+            mysteryBlock.mine(player, itemDamageHandler.isEnabled() ? itemDamageHandler.getDamage(player) : 1);
         }
     }
 }

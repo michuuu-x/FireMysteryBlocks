@@ -1,9 +1,11 @@
 package cz.devfire.mysteryblocks.Block.Handler.ItemDamage;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Util.Pair;
 import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -13,8 +15,11 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class BlockItemDamageHandler extends AbstractBlockHandler {
@@ -22,6 +27,8 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
     private boolean ignoreEnchants = false;
 
     private final ArrayList<String> bypassList = Lists.newArrayList();
+    private final HashMap<Enchantment, List<Pair<Integer, Double>>> enchantmentModifiers = Maps.newHashMap();
+    private final HashMap<PotionEffectType, List<Pair<Integer, Double>>> effectModifiers = Maps.newHashMap();
 
     public BlockItemDamageHandler(MysteryBlocksPlugin plugin, MysteryBlock mysteryBlock) {
         super(plugin, mysteryBlock);
@@ -36,6 +43,43 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
             itemDamage = section.getInt("Damage");
             ignoreEnchants = section.getBoolean("IgnoreEnchants");
             bypassList.addAll(section.getStringList("Bypass"));
+
+            for (String enchant : section.getStringList("Modifiers.Enchantments")) {
+                String[] enchantArgs = enchant.split(":");
+
+                for (Enchantment ench : Enchantment.values()) {
+                    if (ench.getKey().getKey().equalsIgnoreCase(enchantArgs[0]) || ench.getName().equalsIgnoreCase(enchantArgs[0])) {
+                        int level = Integer.parseInt(enchantArgs[1]);
+                        double modifier = Double.parseDouble(enchantArgs[2]);
+
+                        if (enchantmentModifiers.containsKey(ench)) {
+                            enchantmentModifiers.get(ench).add(new Pair<>(level, modifier));
+                        } else {
+                            List<Pair<Integer, Double>> list = new ArrayList<>();
+                            list.add(new Pair<>(level, modifier));
+                            enchantmentModifiers.put(ench, list);
+                        }
+                    }
+                }
+            }
+
+            for (String effect : section.getStringList("Modifiers.Effects")) {
+                String[] effectArgs = effect.split(":");
+
+                PotionEffectType potionEffectType = PotionEffectType.getByName(effectArgs[0]);
+                int amplifier = Integer.parseInt(effectArgs[1]);
+                double modifier = Double.parseDouble(effectArgs[2]);
+
+                if (potionEffectType != null) {
+                    if (effectModifiers.containsKey(potionEffectType)) {
+                        effectModifiers.get(potionEffectType).add(new Pair<>(amplifier, modifier));
+                    } else {
+                        List<Pair<Integer, Double>> list = new ArrayList<>();
+                        list.add(new Pair<>(amplifier, modifier));
+                        effectModifiers.put(potionEffectType, list);
+                    }
+                }
+            }
         }
 
         return true;
@@ -82,5 +126,41 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
                 }
             }
         }
+    }
+
+    public int getDamage(Player player) {
+        ItemStack tool = Utils.getPlayerItemInHand(player);
+
+        if (tool == null || tool.getType() == Material.AIR || player.getGameMode() == GameMode.CREATIVE) return 1;
+        if (!EnchantmentTarget.TOOL.includes(tool)) return 1;
+
+        double enchantModifier = 0;
+        double effectModifier = 0;
+
+        if (tool.getItemMeta() instanceof Damageable) {
+            Damageable damageable = (Damageable) tool.getItemMeta();
+
+            for (Enchantment ench : tool.getEnchantments().keySet()) {
+                if (enchantmentModifiers.containsKey(ench)) {
+                    for (Pair<Integer, Double> pair : enchantmentModifiers.get(ench)) {
+                        if (pair.getFirst() <= tool.getEnchantmentLevel(ench)) {
+                            enchantModifier = pair.getSecond();
+                        }
+                    }
+                }
+            }
+
+            for (PotionEffectType effect : player.getActivePotionEffects().stream().map(e -> e.getType()).toArray(PotionEffectType[]::new)) {
+                if (effectModifiers.containsKey(effect)) {
+                    for (Pair<Integer, Double> pair : effectModifiers.get(effect)) {
+                        if (pair.getFirst() <= player.getPotionEffect(effect).getAmplifier()) {
+                            effectModifier = pair.getSecond();
+                        }
+                    }
+                }
+            }
+        }
+
+        return (int) Math.round(1 * Math.max(enchantModifier + effectModifier, 1D));
     }
 }

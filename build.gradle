@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'FireMysteryBlocks'
-version = "2.3.12"
+version = "2.3.13"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -30,7 +30,7 @@ dependencies {
     // Implementations
     implementation "com.iridium:IridiumColorAPI:1.0.5"
     implementation 'com.zaxxer:HikariCP:4.0.3'
-    implementation 'de.tr7zw:item-nbt-api:2.13.1'
+    implementation 'de.tr7zw:item-nbt-api:2.13.2'
 }
 
 allprojects {

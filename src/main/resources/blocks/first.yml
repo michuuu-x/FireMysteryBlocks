@@ -458,18 +458,19 @@ Action:
       - "[MESSAGE] &6&lMysteryBlocks &8&l» &7You mined &e{6} &7blocks."
     PerPlace:
       1:
-        - "[CONSOLE-COMMAND] say {2} mined most of the stone. Total: {6}x"
+        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} mined most of the stone. Total: {6}x"
         - "[CONSOLE-COMMAND] $give {2} diamond 5"
       2~3:
-        - "[CONSOLE-COMMAND] say {2} was on second or third place"
+        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} was on second or third place"
+        - "[CONSOLE-COMMAND] $give {2} diamond 10"
         - "[CONSOLE-COMMAND] $%50%give {2} gold 5"
     PerMine:
       1~3:
-        - "[CONSOLE-COMMAND] say {2} mined over 3 blocks"
+        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} mined over 1 blocks"
         - "[CONSOLE-COMMAND] $give {2} diamond 10"
       4~7:
-        - "[CONSOLE-COMMAND] say {2} mined over 4 blocks"
+        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} mined over 4 blocks"
         - "[CONSOLE-COMMAND] $give {2} diamond 15"
       8:
-        - "[CONSOLE-COMMAND] say {2} mined over 8 blocks"
+        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} mined over 8 blocks"
         - "[CONSOLE-COMMAND] $give {2} diamond 20"

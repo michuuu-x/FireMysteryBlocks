@@ -86,7 +86,7 @@ public class MysteryBlock {
             if (!this.file.exists()) this.file.createNewFile();
 
             this.config = Config.loadConfiguration(this.file);
-            this.config.syncWithConfig(file, plugin.getResource("blocks/first.yml"),"Action.OnDestroy.PerPlace", "AntiCheat.Action", "AntiCheat.Modifiers", "GUI.Items", "GUI.Actions");
+            this.config.syncWithConfig(file, plugin.getResource("blocks/first.yml"),"Action.OnDestroy.PerPlace", "Action.OnDestroy.PerMine", "AntiCheat.Action", "AntiCheat.Modifiers", "GUI.Items", "GUI.Actions");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -321,6 +321,13 @@ public class MysteryBlock {
                 mineActionHandler.perform(BlockActionSection.DESTROY_PER_PLACE,null);
             } catch (Exception e) {
                 Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyPlaceActions is wrongly configured! Check your config!");
+                e.printStackTrace();
+            }
+
+            try {
+                mineActionHandler.perform(BlockActionSection.DESTROY_PER_MINE,null);
+            } catch (Exception e) {
+                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyPerMineActions is wrongly configured! Check your config!");
                 e.printStackTrace();
             }
 

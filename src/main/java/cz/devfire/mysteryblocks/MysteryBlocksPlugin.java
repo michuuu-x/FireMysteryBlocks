@@ -48,6 +48,7 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
         Utils.log("                            __/ |                  __/ |                            ");
         Utils.log("                           |___/                  |___/                             ");
         Utils.log("&6Loading..§r");
+        Utils.log("&e - Server version: &6" + Utils.getServerVersion() + " &8(" + Bukkit.getBukkitVersion() + "&8) ");
 
         Language.reload(this);
 

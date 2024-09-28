@@ -463,3 +463,13 @@ Action:
       2~3:
         - "[CONSOLE-COMMAND] say {2} was on second or third place"
         - "[CONSOLE-COMMAND] $%50%give {2} gold 5"
+    PerMine:
+      1~3:
+        - "[CONSOLE-COMMAND] say {2} mined over 3 blocks"
+        - "[CONSOLE-COMMAND] $give {2} diamond 10"
+      4~7:
+        - "[CONSOLE-COMMAND] say {2} mined over 4 blocks"
+        - "[CONSOLE-COMMAND] $give {2} diamond 15"
+      8:
+        - "[CONSOLE-COMMAND] say {2} mined over 8 blocks"
+        - "[CONSOLE-COMMAND] $give {2} diamond 20"

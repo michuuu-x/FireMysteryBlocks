@@ -27,6 +27,7 @@ public class BlockMineActionHandler extends AbstractBlockHandler {
     private final ArrayList<String> onDestroyGlobal = Lists.newArrayList();
     private final ArrayList<String> onDestroyEveryone = Lists.newArrayList();
     private final HashMap<Integer, ArrayList<String>> onDestroyPerPlace = Maps.newHashMap();
+    private final HashMap<Integer, ArrayList<String>> onDestroyPerMine = Maps.newHashMap();
     private final HashMap<BlockActionType, ActionMethod> methods = Maps.newHashMap();
 
     public BlockMineActionHandler(MysteryBlocksPlugin plugin, MysteryBlock mysteryBlock) {
@@ -53,6 +54,18 @@ public class BlockMineActionHandler extends AbstractBlockHandler {
                     }
                 } else {
                     onDestroyPerPlace.put(Integer.parseInt(place), Lists.newArrayList(section.getStringList("OnDestroy.PerPlace." + place)));
+                }
+            }
+
+            for (String place : section.getConfigurationSection("OnDestroy.PerMine").getKeys(false)) {
+                if (place.contains("~")) {
+                    String[] placeArgs = place.split("~");
+
+                    for (int i = Integer.parseInt(placeArgs[0]); i < Integer.parseInt(placeArgs[1]); i++) {
+                        onDestroyPerMine.put(i, Lists.newArrayList(section.getStringList("OnDestroy.PerMine." + place)));
+                    }
+                } else {
+                    onDestroyPerMine.put(Integer.parseInt(place), Lists.newArrayList(section.getStringList("OnDestroy.PerMine." + place)));
                 }
             }
 
@@ -107,6 +120,24 @@ public class BlockMineActionHandler extends AbstractBlockHandler {
                     if (mysteryBlock.getMineList().size() > place - 1) {
                         String finalPlayerName = mysteryBlock.getMineList().get(place - 1).split("\\|")[0];
                         perform(placeActions, finalPlayerName);
+                    }
+                }
+
+                break;
+            }
+
+            case DESTROY_PER_MINE: {
+                for (String player : mysteryBlock.getMineMap().keySet()) {
+                    List<String> actions = null;
+
+                    for (Integer mines : onDestroyPerMine.keySet()) {
+                        if (mysteryBlock.getMineMap().getOrDefault(player,0) >= mines) {
+                            actions = onDestroyPerMine.get(mines);
+                        }
+                    }
+
+                    if (actions != null) {
+                        perform(actions, player);
                     }
                 }
 

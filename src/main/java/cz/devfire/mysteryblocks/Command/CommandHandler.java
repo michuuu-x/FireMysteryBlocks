@@ -6,6 +6,7 @@ import cz.devfire.mysteryblocks.Command.List.*;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.AbstractHandler;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,6 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class CommandHandler extends AbstractHandler implements CommandExecutor, TabCompleter {
     private final List<ICommand> subCommands = Lists.newArrayList();
     private final String command;
@@ -109,7 +111,4 @@ public class CommandHandler extends AbstractHandler implements CommandExecutor, 
         return list;
     }
 
-    public List<ICommand> getSubCommands() {
-        return subCommands;
-    }
 }

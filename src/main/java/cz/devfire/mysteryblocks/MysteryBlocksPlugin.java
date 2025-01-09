@@ -39,6 +39,9 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        System.out.println(Bukkit.getServer().getVersion());
+        System.out.println(Bukkit.getServer().getBukkitVersion());
+
         Utils.log("  ______ _          __  __           _                  ____  _            _        ");
         Utils.log(" |  ____(_)        |  \\/  |         | |                |  _ \\| |          | |       ");
         Utils.log(" | |__   _ _ __ ___| \\  / |_   _ ___| |_ ___ _ __ _   _| |_) | | ___   ___| | _____ ");

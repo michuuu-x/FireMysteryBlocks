@@ -10,6 +10,7 @@ softdepend:
   - "CMI"
   - "HolographicDisplays"
   - "DecentHolograms"
+  - "FancyHolograms"
 
 commands:
   mysteryblocks:

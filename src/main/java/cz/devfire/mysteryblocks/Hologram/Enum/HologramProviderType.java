@@ -4,5 +4,6 @@ public enum HologramProviderType {
     NONE,
     CMI,
     HolographicDisplays,
-    DecentHolograms
+    DecentHolograms,
+    FancyHolograms
 }

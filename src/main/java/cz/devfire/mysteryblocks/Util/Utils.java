@@ -111,7 +111,7 @@ public class Utils {
     }
 
     public static String getServerVersion() {
-        return Bukkit.getServer().getVersion().split("[-_]")[0];
+        return Bukkit.getServer().getBukkitVersion().split("-")[0];
     }
 
     public static int getServerVersionID() {

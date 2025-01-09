@@ -33,8 +33,8 @@ import java.util.HashMap;
 public class BlockHandler extends AbstractHandler {
     private final HashMap<String, MysteryBlock> blocks = Maps.newHashMap();
 
-    private ArrayList<Listener> listeners = new ArrayList<>();
-    private ArrayList<BukkitRunnable> runnables = new ArrayList<>();
+    private final ArrayList<Listener> listeners = new ArrayList<>();
+    private final ArrayList<BukkitRunnable> runnables = new ArrayList<>();
 
     public BlockHandler(MysteryBlocksPlugin plugin) {
         super(plugin);
@@ -107,6 +107,8 @@ public class BlockHandler extends AbstractHandler {
             MysteryBlock mysteryBlock = new MysteryBlock(plugin, blockName);
             blocks.put(mysteryBlock.getName().toLowerCase(), mysteryBlock);
         } catch (Exception e) {
+            e.printStackTrace();
+
             if (MysteryBlocksPlugin.isDebugEnabled()) {
                 e.printStackTrace();
             }

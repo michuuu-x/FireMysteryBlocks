@@ -52,7 +52,9 @@
 #    - Example: [CONSOLE-COMMAND] %10%give {2} diamond 5
 #    - Example: [MESSAGE] $%50%You're doing well!
 #
-# ! To disable any of events place [] instead of list
+# ! To disable any actions, just remove their content and provide a correct empty brackets.
+# ! - For actions, that only contains dashes, use [] brackets. Example: OnReset or OnMine
+# ! - For actions containing under sections, use {} brackets. Example: PerMine or PerPlace
 
 Block:
   Material: "STONE"
@@ -437,6 +439,22 @@ Hologram:
       Facing: 0
       # Set UpdateInterval to 0 to disable
       UpdateInterval: 2
+    FancyHolograms:
+      Billboard:
+        # Types: FIXED, VERTICAL, HORIZONTAL, CENTER
+        Type: "CENTER"
+        # Alignments: LEFT, CENTER, RIGHT
+        Alignment: "CENTER"
+        # RED, GREEN, BLUE, ALPHA. All values are from 0 to 255
+        BackgroundColor: "0,0,0,100"
+        SeeThrough: true
+      Shadow:
+        Enabled: false
+        Radius: 0.5
+        Strength: 0.5
+      Rotation:
+        Yaw: 0
+        Pitch: 0
 
 Action:
   OnReset:

@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'FireMysteryBlocks'
-version = "2.3.14"
+version = "2.3.14-dev"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -15,22 +15,20 @@ dependencies {
 //    implementation fileTree("archive")
 
     // Server jars
-    compileOnly "net.minecraft:server:1.18.1"
-    compileOnly "org.spigotmc:v1_18_R2:b3450-2"
-    //compileOnly "net.minecraft:server:1.8"
-    //compileOnly "org.spigotmc:v1_8_R1:latest"
+    compileOnly "org.spigotmc:spigot-api:1.21.4-R0.1-20241226.060945-17"
 
     // Addons
-    compileOnly "me.clip:placeholderapi:2.10.9"
-    compileOnly "com.zrips:cmi:9.2.6.1"
-    compileOnly "com.zrips:cmiLib:1.2.3.7"
-    compileOnly "com.gmail.filoghost.holographicdisplays:HolographicDisplays:2.4.9"
+    compileOnly files("lib/PlaceholderAPI-2.11.2.jar")
+    compileOnly files("lib/CMI-9.6.2.3.jar")
+    compileOnly files("lib/CMILib-1.4.0.4.jar")
+    compileOnly files("lib/HolographicDisplays-3.0.4.jar")
+    compileOnly files("lib/FancyHolograms-2.4.1.jar")
     compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.3'
 
     // Implementations
-    implementation "com.iridium:IridiumColorAPI:1.0.5"
+    implementation files("lib/IridiumColorAPI-1.0.4.jar")
     implementation 'com.zaxxer:HikariCP:4.0.3'
-    implementation 'de.tr7zw:item-nbt-api:2.13.2'
+    implementation 'de.tr7zw:item-nbt-api:2.14.1'
 }
 
 allprojects {
@@ -42,25 +40,7 @@ allprojects {
         maven { url = 'https://jitpack.io' }
         maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
         maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url = 'https://repo.codemc.io/repository/maven-public' }
-        maven { url = 'https://repo.bg-software.com/repository/nms/' }
-
-        maven {
-            url 'http://nexus.basicland.cz:8081/repository/dev-nms/'
-            allowInsecureProtocol = true
-        }
-        maven {
-            url 'http://nexus.basicland.cz:8081/repository/dev-public/'
-            allowInsecureProtocol = true
-        }
-        maven {
-            url 'http://nexus.basicland.cz:8081/repository/dev-private/'
-            credentials {
-                username "admin"
-                password "brokolice"
-            }
-            allowInsecureProtocol = true
-        }
+        maven { url = 'https://repo.codemc.io/repository/maven-public/' }
     }
 
     dependencies {
@@ -77,9 +57,6 @@ allprojects {
 
 subprojects {
     shadowJar {
-        // Relocate
-//        relocate 'de.tr7zw.changeme.nbtapi', 'cz.devfire.mysteryblocks.nbtapi'
-
         archiveFileName = "${project.group}-${project.name}-${rootProject.version}.jar"
         destinationDirectory = file("../target/${rootProject.version}")
     }
@@ -96,7 +73,6 @@ shadowJar {
     relocate 'de.tr7zw.changeme.nbtapi', 'cz.devfire.mysteryblocks.nbtapi'
 
     archiveFileName = "${project.name}-${project.version}.jar"
-    archiveClassifier.set("")
     destinationDirectory = file("target/${rootProject.version}")
 }
 

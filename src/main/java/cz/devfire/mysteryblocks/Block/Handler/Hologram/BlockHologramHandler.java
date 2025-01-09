@@ -5,10 +5,7 @@ import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Hologram.Enum.HologramProviderType;
 import cz.devfire.mysteryblocks.Hologram.Interface.HologramProvider;
-import cz.devfire.mysteryblocks.Hologram.Providers.AbstractHologramProvider;
-import cz.devfire.mysteryblocks.Hologram.Providers.CMIHologramProvider;
-import cz.devfire.mysteryblocks.Hologram.Providers.DecentHologramsProvider;
-import cz.devfire.mysteryblocks.Hologram.Providers.HolographicDisplaysProvider;
+import cz.devfire.mysteryblocks.Hologram.Providers.*;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
@@ -56,6 +53,11 @@ public class BlockHologramHandler extends AbstractBlockHandler {
 
                     case HolographicDisplays: {
                         this.hologram = new HolographicDisplaysProvider(this, mysteryBlock);
+                        break;
+                    }
+
+                    case FancyHolograms: {
+                        this.hologram = new FancyHologramsProvider(this, mysteryBlock);
                         break;
                     }
 

@@ -6,7 +6,6 @@ import cz.devfire.mysteryblocks.Block.Handler.History.Object.History;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
-import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -306,16 +305,16 @@ public class Utils {
 
     public static boolean isItemBypassed(ItemStack itemStack, List<String> bypassList) {
         if (itemStack.hasItemMeta()) {
-            ItemMeta itemMeta = itemStack.getItemMeta();
+            assert itemStack.getItemMeta() != null;
 
             for (String bypass : bypassList) {
                 String[] bypassArgs = bypass.split(";;");
                 boolean state = false;
 
                 // Display Name
-                if (bypassArgs.length >= 1 && itemMeta.hasDisplayName()) {
+                if (bypassArgs.length >= 1 && itemStack.getItemMeta().hasDisplayName()) {
                     String originMatch = bypassArgs[0].replaceAll("§.", "").trim();
-                    String targetMatch = itemMeta.getDisplayName().replaceAll("§.", "").trim();
+                    String targetMatch = itemStack.getItemMeta().getDisplayName().replaceAll("§.", "").trim();
 
                     // Escape targetMatch special characters
                     targetMatch = targetMatch.replaceAll("\\(", "\\\\(");
@@ -334,37 +333,43 @@ public class Utils {
                     targetMatch = targetMatch.replaceAll("\\\\", "\\\\\\\\");
                     targetMatch = targetMatch.replaceAll("\\/", "\\\\/");
 
-                    if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
-                        state = true;
-                    }
+                    state = originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch);
                 }
 
                 // Lore
-                if (bypassArgs.length >= 2 && itemMeta.hasLore()) {
-                    String originMatch = bypassArgs[1].replaceAll("§.", "").trim();
-                    String targetMatch = itemMeta.getLore().stream().map(line -> line.replaceAll("§.","")).collect(Collectors.joining("\\n"));
+                if (bypassArgs.length >= 2 && itemStack.getItemMeta().hasLore()) {
+                    assert itemStack.getItemMeta().getLore() != null;
 
-                    if (originMatch.equalsIgnoreCase(targetMatch) || originMatch.matches(targetMatch)) {
-                       state = true;
-                    } else {
-                        state = false;
+                    List<String> originMatch = List.of(bypassArgs[1].split("\\\\n"));
+                    List<String> targetMatch = itemStack.getItemMeta().getLore().stream().map(line -> line.replaceAll("§.","")).toList();
+
+                    boolean equals = true;
+                    for (String target : targetMatch) {
+                        boolean found = false;
+
+                        for (String origin : originMatch) {
+                            if (origin.equalsIgnoreCase(target) || origin.matches(target)) {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (!found) {
+                            equals = false;
+                        }
                     }
+
+                    state = originMatch.size() == targetMatch.size() && equals;
                 }
 
-                // NBT Tags
-                if (bypassArgs.length >= 3) {
-                    state = NBT.get(itemStack, nbt -> {
-                        return nbt.hasTag(bypassArgs[2]);
-                    });
+                if (state) {
+                    return true;
                 }
-
-                return state;
             }
         }
 
         return false;
     }
-
 
     public static ItemStack getPlayerItemInHand(Player player) {
         ItemStack tool = null;

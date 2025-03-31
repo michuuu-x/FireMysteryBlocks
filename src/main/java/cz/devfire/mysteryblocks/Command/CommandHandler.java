@@ -49,6 +49,7 @@ public class CommandHandler extends AbstractHandler implements CommandExecutor, 
         subCommands.add(new BreaksAddCommand());
         subCommands.add(new HideCommand());
         subCommands.add(new MessageCommand());
+        subCommands.add(new BypassCommand());
 
         return true;
     }

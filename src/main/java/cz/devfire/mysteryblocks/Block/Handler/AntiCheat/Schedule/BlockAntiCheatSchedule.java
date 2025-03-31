@@ -45,18 +45,18 @@ public class BlockAntiCheatSchedule extends BukkitRunnable {
                             if (tool != null) {
                                 ItemMeta meta = tool.getItemMeta();
 
-                                if (meta != null && meta.hasEnchant(Enchantment.EFFICIENCY)) {
-                                    int efficiencyLevel = meta.getEnchantLevel(Enchantment.EFFICIENCY);
+                                if (meta != null && meta.hasEnchant(Enchantment.DIG_SPEED)) {
+                                    int efficiencyLevel = meta.getEnchantLevel(Enchantment.DIG_SPEED);
                                     modifier += antiCheatHandler.getModifiersEfficiency().getOrDefault(efficiencyLevel, 0L).intValue();
                                 }
                             }
 
                             // Adjust actionPoint by player's potion effect
-                            if (player.hasPotionEffect(PotionEffectType.HASTE)) {
+                            if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
                                 List<PotionEffect> potionEffects = (List<PotionEffect>) player.getActivePotionEffects();
 
                                 for (PotionEffect potionEffect : potionEffects) {
-                                    if (potionEffect.getType().equals(PotionEffectType.HASTE)) {
+                                    if (potionEffect.getType().equals(PotionEffectType.FAST_DIGGING)) {
                                         int hasteLevel = potionEffect.getAmplifier();
                                         modifier += antiCheatHandler.getModifiersHaste().getOrDefault(hasteLevel, 0L).intValue();
                                     }

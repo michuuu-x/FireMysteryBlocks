@@ -21,6 +21,9 @@ public final class Language {
     public static Language NO_PLAYER = new Language("NO_PLAYER");
     public static Language NO_PERMISSION = new Language("NO_PERMISSION");
     public static Language PLAYER_ONLY_COMMAND = new Language("PLAYER_ONLY_COMMAND");
+    public static Language NO_ITEM = new Language("NO_ITEM");
+    public static Language NO_ITEMMETA_ITEM = new Language("NO_ITEMMETA_ITEM");
+    public static Language BYPASS_STRING = new Language("BYPASS_STRING");
     public static Language RELOAD = new Language("RELOAD");
     public static Language TELEPORTED = new Language("TELEPORTED");
     public static Language NUMBER_OVER = new Language("NUMBER_OVER");

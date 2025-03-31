@@ -13,7 +13,6 @@ import cz.devfire.mysteryblocks.Player.Listener.PlayerJoinListener;
 import cz.devfire.mysteryblocks.Player.PlayerHandler;
 import cz.devfire.mysteryblocks.Util.Metrics;
 import cz.devfire.mysteryblocks.Util.Utils;
-import de.tr7zw.changeme.nbtapi.NBT;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -54,12 +53,6 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
         Utils.log("&e - Server version: &6" + Utils.getServerVersion() + " &8(" + Bukkit.getBukkitVersion() + "&8) ");
 
         Language.reload(this);
-
-        if (!NBT.preloadApi()) {
-            Utils.log("&c - NBT-API wasn't initialized properly, disabling the plugin");
-            this.getPluginLoader().disablePlugin(this);
-            return;
-        }
 
         Metrics metrics = new Metrics(this, 16913);
         metrics.addCustomChart(new Metrics.SimplePie("hologramtype", () -> config.getString("Settings.Holograms.Provider", "NONE")));

@@ -68,7 +68,7 @@ public class PlayerBlockMineListener implements Listener {
 
     @EventHandler(
             ignoreCancelled = true,
-            priority = EventPriority.LOWEST)
+            priority = EventPriority.HIGHEST)
     public void onMine(BlockBreakEvent event) {
         MysteryBlock mysteryBlock = plugin.getBlockHandler().getBlockAt(event.getBlock().getLocation());
 

@@ -440,6 +440,8 @@ Hologram:
       # Set UpdateInterval to 0 to disable
       UpdateInterval: 2
     FancyHolograms:
+      UpdateInterval: -1
+      VisibilityDistance: -1
       Billboard:
         # Types: FIXED, VERTICAL, HORIZONTAL, CENTER
         Type: "CENTER"

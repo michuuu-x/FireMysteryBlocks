@@ -54,6 +54,9 @@ public class FancyHologramsProvider extends AbstractHologramProvider {
         hologramData.setShadowRadius((float) settings.getDouble("Shadow.Radius", DisplayHologramData.DEFAULT_SHADOW_RADIUS));
         hologramData.setShadowStrength((float) settings.getDouble("Shadow.Strength", DisplayHologramData.DEFAULT_SHADOW_STRENGTH));
 
+        // Update
+        hologramData.setTextUpdateInterval(settings.getInt("UpdateInterval", -1));
+
         // Visibility
         hologramData.setVisibility(DisplayHologramData.DEFAULT_VISIBILITY);
         hologramData.setVisibilityDistance(settings.getInt("VisibilityDistance", DisplayHologramData.DEFAULT_VISIBILITY_DISTANCE));

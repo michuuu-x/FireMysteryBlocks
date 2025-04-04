@@ -39,9 +39,7 @@ public class PlayerBlockMineListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(
-            ignoreCancelled = true,
-            priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onMineStart(PlayerAnimationEvent event) {
         Player player = event.getPlayer();
         Block targetBlock = Utils.getServerVersionID() == 8 ? player.getTargetBlock(Sets.newHashSet(),5) : player.getTargetBlockExact(5);
@@ -66,9 +64,7 @@ public class PlayerBlockMineListener implements Listener {
         }
     }
 
-    @EventHandler(
-            ignoreCancelled = true,
-            priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onMine(BlockBreakEvent event) {
         MysteryBlock mysteryBlock = plugin.getBlockHandler().getBlockAt(event.getBlock().getLocation());
 

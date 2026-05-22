@@ -7,6 +7,7 @@ import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
 import cz.devfire.mysteryblocks.Util.Pair;
 import cz.devfire.mysteryblocks.Util.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -88,22 +89,25 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
     public void apply(Player player) {
         ItemStack tool = Utils.getPlayerItemInHand(player);
 
-        if (tool == null || tool.getType() == Material.AIR || player.getGameMode() == GameMode.CREATIVE) return;
-        if (!EnchantmentTarget.TOOL.includes(tool)) return;
-
-        if (!bypassList.isEmpty()) {
-            if (Utils.isItemBypassed(tool, bypassList)) return;
+        if (tool == null || tool.getType() == Material.AIR || player.getGameMode() == GameMode.CREATIVE) {
+            return;
         }
 
-        if (tool.getItemMeta() instanceof Damageable) {
-            Damageable damageable = (Damageable) tool.getItemMeta();
+        if (!bypassList.isEmpty() && Utils.isItemBypassed(tool, bypassList)) {
+            return;
+        }
 
-            if (itemDamage != 0 && !player.hasPermission(mysteryBlock.getPermission() +".bypass.item-damage")) {
+        if (!EnchantmentTarget.TOOL.includes(tool) && !EnchantmentTarget.WEAPON.includes(tool)) {
+            return;
+        }
+
+        if (tool.getItemMeta() instanceof Damageable damageable) {
+            if (itemDamage != 0 && !player.hasPermission(mysteryBlock.getPermission() + ".bypass.item-damage")) {
                 double durability = damageable.getDamage();
                 short maxDurability = tool.getType().getMaxDurability();
 
                 if (durability + itemDamage >= maxDurability) {
-                    Utils.setPlayerItemInHand(player,null);
+                    Utils.setPlayerItemInHand(player, null);
                 } else {
                     int unbreaking = tool.getEnchantmentLevel(Enchantment.DURABILITY);
 
@@ -130,16 +134,10 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
 
     public int getDamage(Player player) {
         ItemStack tool = Utils.getPlayerItemInHand(player);
-
-        if (tool == null || tool.getType() == Material.AIR || player.getGameMode() == GameMode.CREATIVE) return 1;
-        if (!EnchantmentTarget.TOOL.includes(tool)) return 1;
-
         double enchantModifier = 0;
         double effectModifier = 0;
 
-        if (tool.getItemMeta() instanceof Damageable) {
-            Damageable damageable = (Damageable) tool.getItemMeta();
-
+        if (tool.getItemMeta() instanceof Damageable damageable) {
             for (Enchantment ench : tool.getEnchantments().keySet()) {
                 if (enchantmentModifiers.containsKey(ench)) {
                     for (Pair<Integer, Double> pair : enchantmentModifiers.get(ench)) {

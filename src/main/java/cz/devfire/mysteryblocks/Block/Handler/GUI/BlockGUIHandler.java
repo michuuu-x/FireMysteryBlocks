@@ -124,7 +124,7 @@ public class BlockGUIHandler extends AbstractBlockHandler {
         BlockHistoryHandler historyHandler = mysteryBlock.getHistoryHandler();
         if (historyHandler.isEnabled()) {
             for (int j = 0; j < historyHandler.getSaveCount(); j++) {
-                if (j > historyHandler.getHistorySlots().length) continue;
+                if (j >= historyHandler.getHistorySlots().length) continue;
                 int slot = historyHandler.getHistorySlots()[j];
 
                 ItemStack stack = new ItemStack(historyHandler.getHistoryItem());

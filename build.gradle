@@ -1,11 +1,11 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '9.6.1'
     id 'maven-publish'
 }
 
 group 'FireMysteryBlocks'
-version = "2.3.17"
+version = "2.3.18"
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -15,38 +15,43 @@ dependencies {
 //    implementation fileTree("archive")
 
     // Server jars
-    compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-20230921.163938-66'
+    compileOnly 'org.spigotmc:spigot-api:26.2-R0.1-SNAPSHOT'
 
     // Addons
-    compileOnly files("lib/PlaceholderAPI-2.11.2.jar")
-    compileOnly files("lib/CMI-9.6.2.3.jar")
-    compileOnly files("lib/CMILib-1.4.0.4.jar")
-    compileOnly files("lib/HolographicDisplays-3.0.4.jar")
-    compileOnly files("lib/FancyHolograms-2.4.1.jar")
-    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.8.3'
+    compileOnly 'me.clip:placeholderapi:2.12.3'
+    compileOnly 'de.oliver:FancyHolograms:2.10.0'
+    compileOnly 'com.github.decentsoftware-eu:decentholograms:2.10.1'
 
     // Implementations
-    implementation files("lib/IridiumColorAPI-1.0.4.jar")
+    implementation 'com.iridium:IridiumColorAPI:1.0.9'
     implementation 'com.zaxxer:HikariCP:4.0.3'
 }
 
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'com.gradleup.shadow'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
 
     repositories {
         mavenCentral()
         maven { url = 'https://jitpack.io' }
         maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
         maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url = 'https://repo.codemc.io/repository/maven-public/' }
+        maven { url = 'https://repo.extendedclip.com/releases/' }
+        maven { url = 'https://repo.fancyinnovations.com/releases' }
+        maven { url = 'https://nexus.iridiumdevelopment.net/repository/maven-releases/' }
     }
 
     dependencies {
         // Annotation
         compileOnly 'org.jetbrains:annotations:24.0.0'
-        compileOnly 'org.projectlombok:lombok:1.18.26'
-        annotationProcessor 'org.projectlombok:lombok:1.18.26'
+        compileOnly 'org.projectlombok:lombok:1.18.46'
+        annotationProcessor 'org.projectlombok:lombok:1.18.46'
     }
 
     build {

@@ -34,7 +34,7 @@ Settings:
   Holograms:
     # If enabled, plugin will try to hook into hologram provider.
     Enabled: false
-    # Providers: CMI, HolographicDisplays, DecentHolograms
+    # Providers: DecentHolograms, FancyHolograms
     # If you know any other ones. Feel free to contact me about hooking them.
     Provider: NONE
 

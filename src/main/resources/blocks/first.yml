@@ -413,21 +413,6 @@ Hologram:
       Y-Offset: 2
   # Additional configurations for Holograms
   Providers:
-    CMI:
-      # Perm: cmi.hologram.FMB-BLOCKNAME
-      #  BlockName is the name of file without .yml at the end
-      RequirePerms: false
-      # Set LOSInterval to 0 to disable
-      LOSInterval: 0
-      TextDownOrder: true
-      TextSpacing: 0.25
-      IconSpacing: 0.5
-      ShowRange: 8
-      UpdateRange: 8
-      # Set UpdateInterval to 0 to disable
-      UpdateInterval: 0
-    HolographicDisplays:
-      AllowPlaceholders: false
     DecentHolograms:
       # Perm: decentholograms.hologram.FMB-BLOCKNAME
       #  BlockName is the name of file without .yml at the end

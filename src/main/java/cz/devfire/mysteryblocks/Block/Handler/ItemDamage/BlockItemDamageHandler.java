@@ -109,7 +109,7 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
                 if (durability + itemDamage >= maxDurability) {
                     Utils.setPlayerItemInHand(player, null);
                 } else {
-                    int unbreaking = tool.getEnchantmentLevel(Enchantment.DURABILITY);
+                    int unbreaking = tool.getEnchantmentLevel(Enchantment.UNBREAKING);
 
                     if (unbreaking != 0 && !ignoreEnchants) {
                         float prc = 100 / (float) (unbreaking + 1);

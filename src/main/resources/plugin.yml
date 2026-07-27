@@ -7,8 +7,6 @@ load: POSTWORLD
 
 softdepend:
   - "PlaceholderAPI"
-  - "CMI"
-  - "HolographicDisplays"
   - "DecentHolograms"
   - "FancyHolograms"
 

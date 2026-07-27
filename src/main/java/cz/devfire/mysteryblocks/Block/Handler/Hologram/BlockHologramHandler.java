@@ -41,18 +41,8 @@ public class BlockHologramHandler extends AbstractBlockHandler {
 
             if (plugin.getHologramHandler().isEnabled()) {
                 switch (plugin.getHologramHandler().getHologramProviderType()) {
-                    case CMI: {
-                        this.hologram = new CMIHologramProvider(this, mysteryBlock);
-                        break;
-                    }
-
                     case DecentHolograms: {
                         this.hologram = new DecentHologramsProvider(this, mysteryBlock);
-                        break;
-                    }
-
-                    case HolographicDisplays: {
-                        this.hologram = new HolographicDisplaysProvider(this, mysteryBlock);
                         break;
                     }
 

@@ -8,7 +8,6 @@ import cz.devfire.mysteryblocks.Files.Data;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Hologram.HologramHandler;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
-import cz.devfire.mysteryblocks.Player.Listener.PlayerCommandListener;
 import cz.devfire.mysteryblocks.Player.Listener.PlayerJoinListener;
 import cz.devfire.mysteryblocks.Player.PlayerHandler;
 import cz.devfire.mysteryblocks.Util.Metrics;
@@ -38,8 +37,8 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        System.out.println(Bukkit.getServer().getVersion());
-        System.out.println(Bukkit.getServer().getBukkitVersion());
+        getLogger().info(Bukkit.getServer().getVersion());
+        getLogger().info(Bukkit.getServer().getBukkitVersion());
 
         Utils.log("  ______ _          __  __           _                  ____  _            _        ");
         Utils.log(" |  ____(_)        |  \\/  |         | |                |  _ \\| |          | |       ");
@@ -119,7 +118,6 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
         playerHandler.init();
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(playerHandler),this);
-        Bukkit.getPluginManager().registerEvents(new PlayerCommandListener(playerHandler),this);
 
         debugEnabled = config.getBoolean("Settings.Debug");
         if (debugEnabled) {

@@ -99,7 +99,7 @@ public class BlockGUIHandler extends AbstractBlockHandler {
     }
 
     public void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, inventorySize, Utils.cc(Utils.parseBlockPlaceholders(mysteryBlock,null, inventoryTitle)));
+        Inventory inventory = Bukkit.createInventory(null, inventorySize, Utils.mm(Utils.parseBlockPlaceholders(mysteryBlock,null, inventoryTitle)));
         int i = -1;
 
         for (ItemStack item : template.getContents()) {
@@ -109,12 +109,14 @@ public class BlockGUIHandler extends AbstractBlockHandler {
             ItemStack itemStack = new ItemStack(item);
             ItemMeta itemMeta = itemStack.getItemMeta();
 
-            if (itemMeta != null && itemMeta.hasDisplayName() && itemMeta.getDisplayName().trim().length() != 0) {
-                itemMeta.setDisplayName(Utils.parseBlockPlaceholders(mysteryBlock,null, itemMeta.getDisplayName()));
+            if (itemMeta != null && itemMeta.hasDisplayName()) {
+                String raw = Utils.mmSerialize(itemMeta.displayName());
+                itemMeta.displayName(Utils.mm(Utils.parseBlockPlaceholders(mysteryBlock,null, raw)));
             }
 
-            if (itemMeta != null && itemMeta.hasLore() && itemMeta.getLore().size() != 0) {
-                itemMeta.setLore(Utils.parseBlockPlaceholders(mysteryBlock,null, itemMeta.getLore()));
+            if (itemMeta != null && itemMeta.hasLore() && itemMeta.lore().size() != 0) {
+                List<String> raw = Utils.mmSerialize(itemMeta.lore());
+                itemMeta.lore(Utils.mml(Utils.parseBlockPlaceholders(mysteryBlock,null, raw)));
             }
 
             itemStack.setItemMeta(itemMeta);
@@ -130,12 +132,14 @@ public class BlockGUIHandler extends AbstractBlockHandler {
                 ItemStack stack = new ItemStack(historyHandler.getHistoryItem());
                 ItemMeta meta = stack.getItemMeta();
 
-                if (meta != null && meta.hasDisplayName() && meta.getDisplayName().length() != 0) {
-                    meta.setDisplayName(Utils.parseBlockPlaceholders(mysteryBlock,null, meta.getDisplayName().replace("{history-id}",(j+1) +"")));
+                if (meta != null && meta.hasDisplayName()) {
+                    String raw = Utils.mmSerialize(meta.displayName()).replace("{history-id}",(j+1) +"");
+                    meta.displayName(Utils.mm(Utils.parseBlockPlaceholders(mysteryBlock,null, raw)));
                 }
 
-                if (meta != null && meta.hasLore() && meta.getLore().size() != 0) {
-                    meta.setLore(Utils.parseBlockPlaceholders(mysteryBlock,null, Utils.replaceAll(meta.getLore() == null ? new ArrayList<>() : meta.getLore(),"{history-id}",(j+1) +"")));
+                if (meta != null && meta.hasLore() && meta.lore().size() != 0) {
+                    List<String> raw = Utils.replaceAll(Utils.mmSerialize(meta.lore()),"{history-id}",(j+1) +"");
+                    meta.lore(Utils.mml(Utils.parseBlockPlaceholders(mysteryBlock,null, raw)));
                 }
 
                 stack.setItemMeta(meta);

@@ -1,11 +1,12 @@
 package cz.devfire.mysteryblocks.Util;
 
 import com.google.common.collect.Lists;
-import com.iridium.iridiumcolorapi.IridiumColorAPI;
 import cz.devfire.mysteryblocks.Block.Handler.History.Object.History;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.Files.Language;
 import cz.devfire.mysteryblocks.Placeholders.PlaceholderHandler;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class Utils {
     }
 
     public static void log(String string) {
-        Bukkit.getConsoleSender().sendMessage(Utils.cc(string));
+        Bukkit.getConsoleSender().sendMessage(Utils.mm(string));
     }
 
     public static Location getLocationFromString(String string) {
@@ -89,16 +90,31 @@ public class Utils {
         return list.stream().map(line -> line.replace(from, to)).collect(Collectors.toList());
     }
 
-    public static String cc(String string) {
-        if (getServerVersionID() <= 12) {
-            return ChatColor.translateAlternateColorCodes('&', string);
-        }
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
-        return string == null || string.isEmpty() ? string : IridiumColorAPI.process(string);
+    public static Component mm(String string) {
+        return string == null || string.isEmpty() ? Component.empty() : MINI_MESSAGE.deserialize(string);
     }
 
-    public static List<String> ccl(List<String> stringList) {
-        return stringList.stream().map(Utils::cc).collect(Collectors.toList());
+    public static List<Component> mml(List<String> stringList) {
+        return stringList.stream().map(Utils::mm).collect(Collectors.toList());
+    }
+
+    // Item name/lore need <italic:false> hardcoded, otherwise MiniMessage inherits the client's default italic tooltip style.
+    public static Component mmItem(String string) {
+        return mm("<italic:false>" + (string == null ? "" : string));
+    }
+
+    public static List<Component> mmItemLore(List<String> stringList) {
+        return stringList.stream().map(Utils::mmItem).collect(Collectors.toList());
+    }
+
+    public static String mmSerialize(Component component) {
+        return MINI_MESSAGE.serialize(component);
+    }
+
+    public static List<String> mmSerialize(List<Component> components) {
+        return components.stream().map(Utils::mmSerialize).collect(Collectors.toList());
     }
 
     public static String ph(String string, Player player) {
@@ -205,8 +221,8 @@ public class Utils {
         stack.setAmount(section.getInt("Amount",1));
 
         ItemMeta meta = stack.getItemMeta();
-        meta.setDisplayName(Utils.cc(section.getString("DisplayName", "&cError")));
-        meta.setLore(Utils.ccl(section.getStringList("Lore")));
+        meta.displayName(Utils.mmItem(section.getString("DisplayName", "<color:#f01f1f>Error")));
+        meta.lore(Utils.mmItemLore(section.getStringList("Lore")));
         meta.setCustomModelData(section.getInt("ModelData"));
 
         for (String flag : section.getStringList("ItemFlags")) {

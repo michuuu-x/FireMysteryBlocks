@@ -71,9 +71,9 @@ public class CaptchaMethod extends AbstractAntiAfkMethod {
         Inventory inventory = null;
 
         if (inventorySize == 5) {
-            inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Utils.cc(inventoryTitle));
+            inventory = Bukkit.createInventory(null, InventoryType.HOPPER, Utils.mm(inventoryTitle));
         } else {
-            inventory = Bukkit.createInventory(null, inventorySize, Utils.cc(inventoryTitle));
+            inventory = Bukkit.createInventory(null, inventorySize, Utils.mm(inventoryTitle));
         }
 
         if (fillEnabled) {

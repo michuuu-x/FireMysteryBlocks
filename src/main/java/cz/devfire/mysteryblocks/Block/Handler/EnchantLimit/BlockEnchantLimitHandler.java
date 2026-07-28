@@ -38,7 +38,7 @@ public class BlockEnchantLimitHandler extends AbstractBlockHandler {
                 try {
                     enchantList.put(Enchantment.getByName(enchantArgs[0]), Integer.parseInt(enchantArgs[1]));
                 } catch (Exception e) {
-                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cUnknown enchant: \"" + enchant + "\"");
+                    Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>Unknown enchant: \"" + enchant + "\""));
 
                     if (MysteryBlocksPlugin.isDebugEnabled()) {
                         e.printStackTrace();

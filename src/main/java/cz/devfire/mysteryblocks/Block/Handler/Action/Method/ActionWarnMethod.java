@@ -10,7 +10,7 @@ public class ActionWarnMethod implements ActionMethod {
     public void perform(String actionString, Player player) {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("firemysteryblocks.warn")) {
-                p.sendMessage(Utils.cc(Utils.ph(actionString, player)));
+                p.sendMessage(Utils.mm(Utils.ph(actionString, player)));
             }
         }
     }

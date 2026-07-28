@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import cz.devfire.mysteryblocks.Block.Handler.AbstractBlockHandler;
 import cz.devfire.mysteryblocks.Block.Object.MysteryBlock;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Util.Utils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -48,7 +49,7 @@ public class BlockScheduleHandler extends AbstractBlockHandler {
                     String[] args = date.split(":");
                     times.add(LocalTime.of(Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (Exception e) {
-                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cUnknown date: \"" + date + "\"");
+                    Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>Unknown date: \"" + date + "\""));
 
                     if (plugin.isPluginEnabled()) {
                         e.printStackTrace();

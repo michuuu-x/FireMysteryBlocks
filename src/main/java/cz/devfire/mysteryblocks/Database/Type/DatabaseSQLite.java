@@ -32,9 +32,9 @@ public class DatabaseSQLite extends Database {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:plugins/FireMysteryBlocks/" + file.getPath());
 
-            Bukkit.getConsoleSender().sendMessage(Utils.cc("&e - Connecting sql database &6" + fileName + "&e... &aSuccessful!"));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Connecting sql database <gold>" + fileName + "<yellow>... <color:#05fa11>Successful!"));
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(Utils.cc("&e - Cannot connect to &6" + fileName + "&e! &cError: " + e.getMessage()));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Cannot connect to <gold>" + fileName + "<yellow>! <color:#f01f1f>Error: " + e.getMessage()));
             return false;
         }
 
@@ -45,9 +45,9 @@ public class DatabaseSQLite extends Database {
         try {
             conn.close();
 
-            Bukkit.getConsoleSender().sendMessage(Utils.cc("§e - Disconnecting sql database §6" + fileName + "§e... §aSuccessful!"));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Disconnecting sql database <gold>" + fileName + "<yellow>... <color:#05fa11>Successful!"));
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(Utils.cc("§e - Cannot disconnect from §6" + fileName + "§e! §cError: " + e.getMessage()));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Cannot disconnect from <gold>" + fileName + "<yellow>! <color:#f01f1f>Error: " + e.getMessage()));
             return false;
         }
 
@@ -69,9 +69,9 @@ public class DatabaseSQLite extends Database {
         } catch (SQLException e) {
             if (isIgnoreErrors()) return;
 
-            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
-            Bukkit.getConsoleSender().sendMessage("§c - Update failed! §4" + query);
-            Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("[FireMysteryBlocks-Database]"));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<color:#f01f1f> - Update failed! <dark_red>" + query));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<color:#f01f1f> - Error: " + e.getMessage()));
         }
     }
 
@@ -82,9 +82,9 @@ public class DatabaseSQLite extends Database {
         } catch (SQLException e) {
             if (isIgnoreErrors()) return null;
 
-            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
-            Bukkit.getConsoleSender().sendMessage("§c - Query failed! §4" + query);
-            Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("[FireMysteryBlocks-Database]"));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<color:#f01f1f> - Query failed! <dark_red>" + query));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<color:#f01f1f> - Error: " + e.getMessage()));
         }
 
         return null;

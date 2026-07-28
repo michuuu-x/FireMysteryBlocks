@@ -57,10 +57,10 @@ public class DatabaseMySQL extends Database {
 
             conn = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database + "?autoReconnect=true&useSSL=false&useUnicode=true&characterEncoding=utf-8", user, password);
 
-            Bukkit.getConsoleSender().sendMessage("§e - Connecting database §6" + host + "§e... §aSuccessful!");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Connecting database <gold>" + host + "<yellow>... <color:#05fa11>Successful!"));
             return true;
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§e - Cannot connect to §6" + host + "§e! §cError: " + e.getMessage());
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Cannot connect to <gold>" + host + "<yellow>! <color:#f01f1f>Error: " + e.getMessage()));
             return false;
         }
     }
@@ -69,11 +69,11 @@ public class DatabaseMySQL extends Database {
     public boolean disconnect() {
         try {
             conn.close();
-            Bukkit.getConsoleSender().sendMessage(Utils.cc("&e - Disconnecting database &6" + host + "&e... &aSuccessful!"));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Disconnecting database <gold>" + host + "<yellow>... <color:#05fa11>Successful!"));
 
             return conn.isClosed();
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(Utils.cc("&e - Cannot disconnect from &6" + host + "&e! &cError: " + e.getMessage()));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Cannot disconnect from <gold>" + host + "<yellow>! <color:#f01f1f>Error: " + e.getMessage()));
             return false;
         }
 
@@ -103,9 +103,9 @@ public class DatabaseMySQL extends Database {
         } catch (SQLException e) {
             if (isIgnoreErrors()) return;
 
-            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
-            Bukkit.getConsoleSender().sendMessage("§c - Update failed! §4" + query);
-            Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("[FireMysteryBlocks-Database]"));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<color:#f01f1f> - Update failed! <dark_red>" + query));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<color:#f01f1f> - Error: " + e.getMessage()));
         }
     }
 
@@ -117,9 +117,9 @@ public class DatabaseMySQL extends Database {
         } catch (SQLException e) {
             if (isIgnoreErrors()) return null;
 
-            Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks-Database]");
-            Bukkit.getConsoleSender().sendMessage("§c - Query failed! §4" + query);
-            Bukkit.getConsoleSender().sendMessage("§c - Error: " + e.getMessage());
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("[FireMysteryBlocks-Database]"));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<color:#f01f1f> - Query failed! <dark_red>" + query));
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<color:#f01f1f> - Error: " + e.getMessage()));
         }
 
         return null;

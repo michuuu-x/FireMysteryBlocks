@@ -259,7 +259,7 @@ public class MysteryBlock {
             try {
                 mineActionHandler.perform(BlockActionSection.RESET,null);
             } catch (Exception e) {
-                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c"+ name +" | onResetActions is wrongly configured! Check your config!");
+                Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>"+ name +" | onResetActions is wrongly configured! Check your config!"));
                 e.printStackTrace();
             }
         }
@@ -284,7 +284,7 @@ public class MysteryBlock {
         try {
             mineActionHandler.perform(BlockActionSection.MINE, player.getName());
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c"+ name +" | onMineActions is wrongly configured! Check your config!");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>"+ name +" | onMineActions is wrongly configured! Check your config!"));
             e.printStackTrace();
         }
 
@@ -306,28 +306,28 @@ public class MysteryBlock {
             try {
                 mineActionHandler.perform(BlockActionSection.DESTROY_GLOBAL,null);
             } catch (Exception e) {
-                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyGlobalActions is wrongly configured! Check your config!");
+                Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>" + name + " | onDestroyGlobalActions is wrongly configured! Check your config!"));
                 e.printStackTrace();
             }
 
             try {
                 mineActionHandler.perform(BlockActionSection.DESTROY_EVERY_PLACE,null);
             } catch (Exception e) {
-                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyEveryPlaceActions is wrongly configured! Check your config!");
+                Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>" + name + " | onDestroyEveryPlaceActions is wrongly configured! Check your config!"));
                 e.printStackTrace();
             }
 
             try {
                 mineActionHandler.perform(BlockActionSection.DESTROY_PER_PLACE,null);
             } catch (Exception e) {
-                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyPlaceActions is wrongly configured! Check your config!");
+                Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>" + name + " | onDestroyPlaceActions is wrongly configured! Check your config!"));
                 e.printStackTrace();
             }
 
             try {
                 mineActionHandler.perform(BlockActionSection.DESTROY_PER_MINE,null);
             } catch (Exception e) {
-                Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §c" + name + " | onDestroyPerMineActions is wrongly configured! Check your config!");
+                Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>" + name + " | onDestroyPerMineActions is wrongly configured! Check your config!"));
                 e.printStackTrace();
             }
 

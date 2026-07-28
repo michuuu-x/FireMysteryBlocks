@@ -30,7 +30,7 @@ public class PlayerJoinListener implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    player.sendMessage(Utils.cc("&c&lServer &8&l» &7Server is running &eFireMysteryBlocks &8(&6v" + playerHandler.getPlugin().getDescription().getVersion() + "&8)"));
+                    player.sendMessage(Utils.mm("<color:#f01f1f><bold>Server <dark_gray><bold>» <gray>Server is running <yellow>FireMysteryBlocks <dark_gray>(<gold>v" + playerHandler.getPlugin().getDescription().getVersion() + "<dark_gray>)"));
                 }
             }.runTaskLaterAsynchronously(playerHandler.getPlugin(),20);
         }

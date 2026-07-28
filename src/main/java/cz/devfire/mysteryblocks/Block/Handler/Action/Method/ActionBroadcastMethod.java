@@ -19,7 +19,7 @@ public class ActionBroadcastMethod implements ActionMethod {
             MysteryPlayer mysteryPlayer = plugin.getPlayerHandler().getPlayer(p.getName());
 
             if (mysteryPlayer.isMessageEnabled()) {
-                p.sendMessage(Utils.cc(Utils.ph(actionString, p)));
+                p.sendMessage(Utils.mm(Utils.ph(actionString, p)));
             }
         }
     }

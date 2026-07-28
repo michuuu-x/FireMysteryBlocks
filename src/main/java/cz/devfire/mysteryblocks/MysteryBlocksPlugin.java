@@ -48,8 +48,8 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
         Utils.log(" |_|    |_|_|  \\___|_|  |_|\\__, |___/\\__\\___|_|   \\__, |____/|_|\\___/ \\___|_|\\_\\___/");
         Utils.log("                            __/ |                  __/ |                            ");
         Utils.log("                           |___/                  |___/                             ");
-        Utils.log("&6Loading..§r");
-        Utils.log("&e - Server version: &6" + Utils.getServerVersion() + " &8(" + Bukkit.getBukkitVersion() + "&8) ");
+        Utils.log("<gold>Loading..<reset>");
+        Utils.log("<yellow> - Server version: <gold>" + Utils.getServerVersion() + " <dark_gray>(" + Bukkit.getBukkitVersion() + "<dark_gray>) ");
 
         Language.reload(this);
 
@@ -63,42 +63,42 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
             config = Config.loadConfiguration(configFile);
             config.syncWithConfig(configFile, this.getResource("config.yml"));
 
-            Utils.log("&e - Loading config.yml... &aSuccessful!");
+            Utils.log("<yellow> - Loading config.yml... <color:#05fa11>Successful!");
         } catch (Exception e) {
-            Utils.log("&e - Loading config.yml... &cFailed!");
-            Utils.log("&e - Shutting down plugin, plugin cant work without config!");
-            Utils.log("&e - Error: ");
+            Utils.log("<yellow> - Loading config.yml... <color:#f01f1f>Failed!");
+            Utils.log("<yellow> - Shutting down plugin, plugin cant work without config!");
+            Utils.log("<yellow> - Error: ");
             e.printStackTrace();
-            this.getPluginLoader().disablePlugin(this);
+            Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
         try {
             cache = Data.loadFile(this,"cache.yml","cache.yml");
         } catch (Exception e) {
-            Utils.log("&e - Loading cache.yml... &cFailed!");
-            Utils.log("&e - Shutting down plugin, plugin cant work without data file!");
-            Utils.log("&e - Error: ");
+            Utils.log("<yellow> - Loading cache.yml... <color:#f01f1f>Failed!");
+            Utils.log("<yellow> - Shutting down plugin, plugin cant work without data file!");
+            Utils.log("<yellow> - Error: ");
             e.printStackTrace();
-            this.getPluginLoader().disablePlugin(this);
+            Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
         try {
             history = Data.loadFile(this,"history.yml","history.yml");
         } catch (Exception e) {
-            Utils.log("&e - Loading history.yml... &cFailed!");
-            Utils.log("&e - Shutting down plugin, plugin cant work without data file!");
-            Utils.log("&e - Error: ");
+            Utils.log("<yellow> - Loading history.yml... <color:#f01f1f>Failed!");
+            Utils.log("<yellow> - Shutting down plugin, plugin cant work without data file!");
+            Utils.log("<yellow> - Error: ");
             e.printStackTrace();
-            this.getPluginLoader().disablePlugin(this);
+            Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
         databaseHandler = new DatabaseHandler(this);
         if (!databaseHandler.init(config.getConfigurationSection("Settings.Database"))) {
-            Utils.log("&e - Shutting down plugin, plugin cant work without database!");
-            this.getPluginLoader().disablePlugin(this);
+            Utils.log("<yellow> - Shutting down plugin, plugin cant work without database!");
+            Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
@@ -121,9 +121,9 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
 
         debugEnabled = config.getBoolean("Settings.Debug");
         if (debugEnabled) {
-            Utils.log("&e - Debug mode is &aenabled§e!");
+            Utils.log("<yellow> - Debug mode is <color:#05fa11>enabled<yellow>!");
         } else {
-            Utils.log("&e - Debug mode is &cdisabled§e!");
+            Utils.log("<yellow> - Debug mode is <color:#f01f1f>disabled<yellow>!");
         }
 
         pluginEnabled = true;
@@ -146,7 +146,7 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
     public long reload() {
         long time = System.currentTimeMillis();
 
-        Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks] Re-Loading..");
+        Utils.log("[FireMysteryBlocks] Re-Loading..");
 
         hologramHandler.destroy();
         blockHandler.destroy();
@@ -159,11 +159,11 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
             config = Config.loadConfiguration(configFile);
             config.syncWithConfig(configFile, this.getResource("config.yml"));
 
-            Bukkit.getConsoleSender().sendMessage("§e - Loading config.yml... §aSuccessful!");
+            Utils.log("<yellow> - Loading config.yml... <color:#05fa11>Successful!");
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§e - Loading config.yml... §cFailed!");
-            Bukkit.getConsoleSender().sendMessage("§e - Shutting down plugin, plugin cant work without config!");
-            Bukkit.getConsoleSender().sendMessage("§e - Error: ");
+            Utils.log("<yellow> - Loading config.yml... <color:#f01f1f>Failed!");
+            Utils.log("<yellow> - Shutting down plugin, plugin cant work without config!");
+            Utils.log("<yellow> - Error: ");
             e.printStackTrace();
             onDisable();
             return -1;
@@ -172,9 +172,9 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
         try {
             cache = Data.loadFile(this, "cache.yml", "cache.yml");
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§e - Loading cache.yml... §cFailed!");
-            Bukkit.getConsoleSender().sendMessage("§e - Shutting down plugin, plugin cant work without data file!");
-            Bukkit.getConsoleSender().sendMessage("§e - Error: ");
+            Utils.log("<yellow> - Loading cache.yml... <color:#f01f1f>Failed!");
+            Utils.log("<yellow> - Shutting down plugin, plugin cant work without data file!");
+            Utils.log("<yellow> - Error: ");
             e.printStackTrace();
             onDisable();
             return -1;
@@ -182,15 +182,15 @@ public final class MysteryBlocksPlugin extends JavaPlugin {
 
         debugEnabled = config.getBoolean("Settings.Debug");
         if (debugEnabled) {
-            Bukkit.getConsoleSender().sendMessage("§e - Debug mode is §aenabled§e!");
+            Utils.log("<yellow> - Debug mode is <color:#05fa11>enabled<yellow>!");
         } else {
-            Bukkit.getConsoleSender().sendMessage("§e - Debug mode is §cdisabled§e!");
+            Utils.log("<yellow> - Debug mode is <color:#f01f1f>disabled<yellow>!");
         }
 
         hologramHandler.init(config.getConfigurationSection("Settings.Holograms"));
         blockHandler.init();
 
-        Bukkit.getConsoleSender().sendMessage("[FireMysteryBlocks] Plugin reloaded in.. " + (System.currentTimeMillis() - time) + "ms");
+        Utils.log("[FireMysteryBlocks] Plugin reloaded in.. " + (System.currentTimeMillis() - time) + "ms");
         return System.currentTimeMillis() - time;
     }
 

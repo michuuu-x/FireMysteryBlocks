@@ -118,9 +118,9 @@ Regeneration:
   # When progressive is NOT enabled, start actions are skipped
   Actions:
     Start:
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has started regenerating!"
+      - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>Block <yellow>{0} <gray>has started regenerating!"
     End:
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has been fully regenerated!"
+      - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>Block <yellow>{0} <gray>has been fully regenerated!"
 
 Cooldown:
   # If enabled, the block will temporarily change into an unbreakable material specified bellow.
@@ -214,18 +214,18 @@ History:
   # {history-id} gets replaced by current id, only in this section
   Item:
     Material: "BOOK"
-    DisplayName: "&f&lHistory {history-id}."
+    DisplayName: "<white><bold>History {history-id}."
     Amount: 1
     ModelData: 0
     Lore:
       - ""
-      - " &f&lDate:"
-      - "  &f&l» &e{history-{history-id}-date}"
+      - " <white><bold>Date:"
+      - "  <white><bold>» <yellow>{history-{history-id}-date}"
       - ""
-      - " &f&lPosition:"
-      - "  &f&l» &61. &7{history-{history-id}-pos-1-name} &8- &e{history-{history-id}-pos-1-value}x"
-      - "  &f&l» &62. &7{history-{history-id}-pos-2-name} &8- &e{history-{history-id}-pos-2-value}x"
-      - "  &f&l» &63. &7{history-{history-id}-pos-3-name} &8- &e{history-{history-id}-pos-3-value}x"
+      - " <white><bold>Position:"
+      - "  <white><bold>» <gold>1. <gray>{history-{history-id}-pos-1-name} <dark_gray>- <yellow>{history-{history-id}-pos-1-value}x"
+      - "  <white><bold>» <gold>2. <gray>{history-{history-id}-pos-2-name} <dark_gray>- <yellow>{history-{history-id}-pos-2-value}x"
+      - "  <white><bold>» <gold>3. <gray>{history-{history-id}-pos-3-name} <dark_gray>- <yellow>{history-{history-id}-pos-3-value}x"
       - ""
   # If GUI is enabled, this is slot numbers where history items will be placed
   Slots: "21,22,23,24,25"
@@ -239,50 +239,50 @@ GUI:
   Items:
     0~8:
       Material: "BLACK_STAINED_GLASS_PANE"
-      DisplayName: "&r"
+      DisplayName: ""
       Lore: []
       # ItemFlags: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/inventory/ItemFlag.html
       ItemFlags:
         - "HIDE_ATTRIBUTES"
     36~44:
       Material: "BLACK_STAINED_GLASS_PANE"
-      DisplayName: "&r"
+      DisplayName: ""
       Lore: []
     19:
       Material: "STONE"
-      DisplayName: "&c&l{0} Block - Stats"
+      DisplayName: "<color:#f01f1f><bold>{0} Block - Stats"
       Lore:
         - ""
-        - " &f&lCurrent:"
-        - "  &f&l» &61. &7{pos-1-name} &8- &e{pos-1-value}x"
-        - "  &f&l» &62. &7{pos-2-name} &8- &e{pos-2-value}x"
-        - "  &f&l» &63. &7{pos-3-name} &8- &e{pos-3-value}x"
+        - " <white><bold>Current:"
+        - "  <white><bold>» <gold>1. <gray>{pos-1-name} <dark_gray>- <yellow>{pos-1-value}x"
+        - "  <white><bold>» <gold>2. <gray>{pos-2-name} <dark_gray>- <yellow>{pos-2-value}x"
+        - "  <white><bold>» <gold>3. <gray>{pos-3-name} <dark_gray>- <yellow>{pos-3-value}x"
         - ""
-        - " &f&lRewards:"
-        - "  &f&l» &750% &65x &eDiamond"
+        - " <white><bold>Rewards:"
+        - "  <white><bold>» <gray>50% <gold>5x <yellow>Diamond"
         - ""
-        - " &7*Break this block, get rewards!*"
+        - " <gray>*Break this block, get rewards!*"
         - ""
     40:
       Material: "BARRIER"
-      DisplayName: "&cClose"
+      DisplayName: "<color:#f01f1f>Close"
       Lore: []
   Actions:
     40:
       # If close is set to true will close inventory on click
       Close: true
       List:
-        - "[MESSAGE] &6&lMysteryBlocks &8&l» &7Closing.."
+        - "[MESSAGE] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>Closing.."
     21~25:
       Close: false
       List:
-        - "[MESSAGE] &6&lMysteryBlocks &8&l» &7This is history click action.."
+        - "[MESSAGE] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>This is history click action.."
 
 Click:
   # If enabled, player that left click this block, will be affected by actions specified down bellow.
   Enabled: true
   Actions:
-    - "[MESSAGE] &6&lMysteryBlocks &8&l» &7Opening GUI of &e{0}&7."
+    - "[MESSAGE] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>Opening GUI of <yellow>{0}<gray>."
     - "[CONSOLE-COMMAND] fmb open {0} {2}"
 
 AntiCheat:
@@ -348,27 +348,27 @@ AntiAFK:
         # Enabling this will ignore if the player clicks on an empty item in inventory
         SkipBlank: false
         # Title of the inventory
-        Title: "&c&lMysteryBlocks &8- &0CAPTCHA"
+        Title: "<color:#f01f1f><bold>MysteryBlocks <dark_gray>- <black>CAPTCHA"
         # Material that will be used in menu
         Active:
           Material: "BEDROCK"
-          DisplayName: "&c&lCAPTCHA ITEM"
+          DisplayName: "<color:#f01f1f><bold>CAPTCHA ITEM"
           Lore:
-            - "&r"
-            - "&7 Click this item to verify you aren't afk &r"
-            - "&r"
+            - ""
+            - "<gray> Click this item to verify you aren't afk "
+            - ""
         # Material that will be filled in all other slots
         Fill:
           Enabled: true
           Item:
             Material: "STONE"
-            DisplayName: "&r"
+            DisplayName: ""
             Lore: []
       Action:
         OnFail:
           - "[CONSOLE-COMMAND] kick {2} You have failed CAPTCHA!"
         OnSuccess:
-          - "[MESSAGE] &c&lFireMysteryBlocks &8&l» &7Captcha was successfully checked!"
+          - "[MESSAGE] <color:#f01f1f><bold>FireMysteryBlocks <dark_gray><bold>» <gray>Captcha was successfully checked!"
 
 Hologram:
   # If enabled, holograms will be placed above this block.
@@ -389,27 +389,27 @@ Hologram:
   State:
     Inactive:
       Lines:
-        - "&6&lThis is an {0} block"
+        - "<gold><bold>This is an {0} block"
         - ""
-        - "Current mines: &e{3}/{5}"
+        - "Current mines: <yellow>{3}/{5}"
         - ""
         - "1. {pos-1-name} - {pos-1-value}x"
         - "2. {pos-2-name} - {pos-2-value}x"
         - "3. {pos-3-name} - {pos-3-value}x"
         - ""
-        - "&7*Block will regenerate after.. &a{9}&7*"
+        - "<gray>*Block will regenerate after.. <color:#05fa11>{9}<gray>*"
       Y-Offset: 2
     Active:
       Lines:
-        - "&6&lThis is an {0} block"
+        - "<gold><bold>This is an {0} block"
         - ""
-        - "Current mines: &e{3}/{5}"
+        - "Current mines: <yellow>{3}/{5}"
         - ""
         - "1. {pos-1-name} - {pos-1-value}x"
         - "2. {pos-2-name} - {pos-2-value}x"
         - "3. {pos-3-name} - {pos-3-value}x"
         - ""
-        - "&7* Break this block to get rewards *"
+        - "<gray>* Break this block to get rewards *"
       Y-Offset: 2
   # Additional configurations for Holograms
   Providers:
@@ -446,36 +446,36 @@ Hologram:
 Action:
   OnReset:
     - "[SOUND] UI_TOAST_CHALLENGE_COMPLETE-1-1"
-    - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &e{0} &7has been regenerated!"
+    - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>Block <yellow>{0} <gray>has been regenerated!"
   OnMine:
     - "[SOUND] BLOCK_ANVIL_LAND-1-1"
-    - "[ACTIONBAR] &7Your mine speed is {7}/s"
-    - "[MESSAGE] &6&lMysteryBlocks &8&l» &7You mined &e{0} &7block. (&6{6}x&7)."
+    - "[ACTIONBAR] <gray>Your mine speed is {7}/s"
+    - "[MESSAGE] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>You mined <yellow>{0} <gray>block. (<gold>{6}x<gray>)."
   OnDestroy:
     Global:
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &7Block &b{0} &7was mined! Miners: "
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f1. &e{pos-1-name} &7mined &6{pos-1-value}&7x"
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f2. &e{pos-2-name} &7mined &6{pos-2-value}&7x"
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f3. &e{pos-3-name} &7mined &6{pos-3-value}&7x"
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f4. &e{pos-4-name} &7mined &6{pos-4-value}&7x"
-      - "[BROADCAST] &6&lMysteryBlocks &8&l» &r &f5. &e{pos-5-name} &7mined &6{pos-5-value}&7x"
+      - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>Block <aqua>{0} <gray>was mined! Miners: "
+      - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <reset> <white>1. <yellow>{pos-1-name} <gray>mined <gold>{pos-1-value}<gray>x"
+      - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <reset> <white>2. <yellow>{pos-2-name} <gray>mined <gold>{pos-2-value}<gray>x"
+      - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <reset> <white>3. <yellow>{pos-3-name} <gray>mined <gold>{pos-3-value}<gray>x"
+      - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <reset> <white>4. <yellow>{pos-4-name} <gray>mined <gold>{pos-4-value}<gray>x"
+      - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» <reset> <white>5. <yellow>{pos-5-name} <gray>mined <gold>{pos-5-value}<gray>x"
     EveryPlace:
-      - "[MESSAGE] &6&lMysteryBlocks &8&l» &7You mined &e{6} &7blocks."
+      - "[MESSAGE] <gold><bold>MysteryBlocks <dark_gray><bold>» <gray>You mined <yellow>{6} <gray>blocks."
     PerPlace:
       1:
-        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} mined most of the stone. Total: {6}x"
+        - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» {2} mined most of the stone. Total: {6}x"
         - "[CONSOLE-COMMAND] $give {2} diamond 5"
       2~3:
-        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} was on second or third place"
+        - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» {2} was on second or third place"
         - "[CONSOLE-COMMAND] $give {2} diamond 10"
         - "[CONSOLE-COMMAND] $%50%give {2} gold 5"
     PerMine:
       1~3:
-        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} mined over 1 blocks"
+        - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» {2} mined over 1 blocks"
         - "[CONSOLE-COMMAND] $give {2} diamond 10"
       4~7:
-        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} mined over 4 blocks"
+        - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» {2} mined over 4 blocks"
         - "[CONSOLE-COMMAND] $give {2} diamond 15"
       8:
-        - "[BROADCAST] &6&lMysteryBlocks &8&l» {2} mined over 8 blocks"
+        - "[BROADCAST] <gold><bold>MysteryBlocks <dark_gray><bold>» {2} mined over 8 blocks"
         - "[CONSOLE-COMMAND] $give {2} diamond 20"

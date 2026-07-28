@@ -42,7 +42,7 @@ public final class InfoCommand implements ICommand {
 
     @Override
     public void perform(MysteryBlocksPlugin plugin, CommandSender sender, String[] args) {
-        sender.sendMessage(Utils.cc("&c&lServer &8&l» &7FireMysteryBlocks&8("+ plugin.getDescription().getVersion() +")&7 made by &eFirestone82"));
+        sender.sendMessage(Utils.mm("<color:#f01f1f><bold>Server <dark_gray><bold>» <gray>FireMysteryBlocks<dark_gray>("+ plugin.getDescription().getVersion() +")<gray> made by <yellow>Firestone82"));
     }
 
     @Override

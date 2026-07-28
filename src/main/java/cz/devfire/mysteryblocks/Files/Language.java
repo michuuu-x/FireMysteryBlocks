@@ -76,15 +76,15 @@ public final class Language {
             config = Config.loadConfiguration(langFile);
             config.syncWithConfig(langFile, plugin.getResource("lang.yml"));
 
-            Bukkit.getConsoleSender().sendMessage("§e - Loading language... §aSuccessful!");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Loading language... <color:#05fa11>Successful!"));
         } catch (IOException e) {
-            Bukkit.getConsoleSender().sendMessage("§e - Loading language... §cFailed!");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Loading language... <color:#f01f1f>Failed!"));
 
             e.printStackTrace();
         }
 
         for (String identifier : localeMap.keySet()) {
-            localeMap.get(identifier).setMessage(Utils.cc(config.getString(identifier, "")));
+            localeMap.get(identifier).setMessage(config.getString(identifier, ""));
         }
     }
 
@@ -113,7 +113,7 @@ public final class Language {
         String message = getMessage(objects);
 
         if (message != null && sender != null)
-            sender.sendMessage(message);
+            sender.sendMessage(Utils.mm(message));
     }
 
     private void setMessage(String message) {

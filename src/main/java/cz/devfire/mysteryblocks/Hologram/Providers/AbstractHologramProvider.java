@@ -75,7 +75,7 @@ public abstract class AbstractHologramProvider implements HologramProvider {
 
                         OfflinePlayer offlinePlayer = offlinePlayerCache.get(playerName);
                         if (offlinePlayer != null) {
-                            parsedPlayerName = PlaceholderAPI.setPlaceholders(offlinePlayer,prefixInjection + playerName + suffixInjection +"§r");
+                            parsedPlayerName = PlaceholderAPI.setPlaceholders(offlinePlayer,prefixInjection + playerName + suffixInjection +"<reset>");
                         }
 
                         if (!staticEnabled) {

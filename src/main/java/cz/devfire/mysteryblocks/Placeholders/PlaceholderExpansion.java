@@ -282,7 +282,7 @@ public class PlaceholderExpansion extends me.clip.placeholderapi.expansion.Place
                 }
             }
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cUnknown placeholder: \"" + placeholder + "\"");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>Unknown placeholder: \"" + placeholder + "\""));
 
             if (MysteryBlocksPlugin.isDebugEnabled()) {
                 e.printStackTrace();

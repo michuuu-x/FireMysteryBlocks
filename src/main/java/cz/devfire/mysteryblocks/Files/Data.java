@@ -2,6 +2,7 @@ package cz.devfire.mysteryblocks.Files;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
@@ -143,9 +144,9 @@ public class Data {
             }
 
             if (success) {
-                Bukkit.getConsoleSender().sendMessage("§e - Loading " + ff.getName() + "... §aSuccessful!");
+                Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Loading " + ff.getName() + "... <color:#05fa11>Successful!"));
             } else {
-                Bukkit.getConsoleSender().sendMessage("§e - Loading " + ff.getName() + "... §cFailed!");
+                Bukkit.getConsoleSender().sendMessage(Utils.mm("<yellow> - Loading " + ff.getName() + "... <color:#f01f1f>Failed!"));
             }
 
             f = ff;
@@ -249,7 +250,7 @@ public class Data {
             return true;
         } catch (Exception e) {
             plugin.getLogger().info("");
-            Bukkit.getConsoleSender().sendMessage(" §c- Reload failed!");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm(" <color:#f01f1f>- Reload failed!"));
             return false;
         }
     }

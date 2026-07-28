@@ -40,7 +40,7 @@ public class BlockMiningEffectsHandler extends AbstractBlockHandler {
                 String[] effectArgs = constantEffect.split("-");
 
                 if (effectArgs.length != 2) {
-                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cConstant PotionEffectType " + constantEffect + " is not valid!");
+                    Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>Constant PotionEffectType " + constantEffect + " is not valid!"));
                 } else {
                     effectMap.add(new MiningEffect(
                             effectArgs[0],
@@ -55,7 +55,7 @@ public class BlockMiningEffectsHandler extends AbstractBlockHandler {
                 String[] effectArgs = percentageEffect.split("-");
 
                 if (effectArgs.length != 4) {
-                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cPercentage PotionEffectType " + percentageEffect + " is not valid!");
+                    Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>Percentage PotionEffectType " + percentageEffect + " is not valid!"));
                 } else {
                     effectMap.add(new MiningEffect(
                             effectArgs[1],
@@ -85,7 +85,7 @@ public class BlockMiningEffectsHandler extends AbstractBlockHandler {
             try {
                 PotionEffectType type = PotionEffectType.getByName(effect.getType());
                 if (type == null && !effect.getType().equalsIgnoreCase("FREEZE")) {
-                    Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cPotionEffectType " + effect + " is not valid!");
+                    Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>PotionEffectType " + effect + " is not valid!"));
                     continue;
                 }
 

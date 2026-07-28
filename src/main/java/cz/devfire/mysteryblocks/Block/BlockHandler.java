@@ -48,26 +48,26 @@ public class BlockHandler extends AbstractHandler {
             File[] files = folder.listFiles();
 
             if (files.length != 0) {
-                Utils.log(" &e- Loading blocks");
+                Utils.log(" <yellow>- Loading blocks");
 
                 for (File file : files) {
                     String name = file.getName().split("\\.")[0];
 
                     if (loadBlock(name)) {
-                        Utils.log("   &e- Loading block &6" + name + "&e... &aSuccessful");
+                        Utils.log("   <yellow>- Loading block <gold>" + name + "<yellow>... <color:#05fa11>Successful");
                     } else {
-                        Utils.log("   &e- Loading block &6" + name + "&e... &cFailed");
+                        Utils.log("   <yellow>- Loading block <gold>" + name + "<yellow>... <color:#f01f1f>Failed");
                     }
                 }
             } else {
-                Utils.log(" &e- No blocks were found");
+                Utils.log(" <yellow>- No blocks were found");
             }
         } else {
             folder.mkdir();
             plugin.saveResource("blocks/first.yml", false);
 
-            Utils.log(" &e- Loading blocks");
-            Utils.log("   &e- Default block was created. Configure it!");
+            Utils.log(" <yellow>- Loading blocks");
+            Utils.log("   <yellow>- Default block was created. Configure it!");
 
             loadBlock("first");
         }
@@ -94,11 +94,11 @@ public class BlockHandler extends AbstractHandler {
     }
 
     public void save() {
-        Utils.log(" §e- Saving blocks");
+        Utils.log(" <yellow>- Saving blocks");
 
         for (MysteryBlock block : blocks.values()) {
             block.save();
-            Utils.log("   §e- Saving block §6" + block.getName() + "§e... §aFinished");
+            Utils.log("   <yellow>- Saving block <gold>" + block.getName() + "<yellow>... <color:#05fa11>Finished");
         }
     }
 
@@ -141,7 +141,7 @@ public class BlockHandler extends AbstractHandler {
     }
 
     public void removeOld() {
-        Utils.log(" §e- Removing old blocks");
+        Utils.log(" <yellow>- Removing old blocks");
 
         try {
             QueryResult rs = plugin.getDatabaseHandler().getDatabase().query("SELECT * FROM MysteryBlocksData");
@@ -149,7 +149,7 @@ public class BlockHandler extends AbstractHandler {
             while (rs.next()) {
                 String name = rs.getString("name");
                 if (!blocks.containsKey(name.toLowerCase())) {
-                    Utils.log("   §e- Found.. &6"+ name +"&e. &aRemoved! §r");
+                    Utils.log("   <yellow>- Found.. <gold>"+ name +"<yellow>. <color:#05fa11>Removed! <reset>");
                     plugin.getDatabaseHandler().getDatabase().update("DELETE FROM MysteryBlocksData WHERE name = ?", name);
                 }
             }

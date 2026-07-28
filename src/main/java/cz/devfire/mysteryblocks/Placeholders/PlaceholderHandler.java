@@ -13,9 +13,9 @@ public class PlaceholderHandler extends AbstractHandler {
     private PlaceholderExpansion expansion;
 
     @Getter private static int percentageTotal = 5;
-    @Getter private static String percentageLow = "&c■";
-    @Getter private static String percentageHalf = "&a■";
-    @Getter private static String percentageFull = "&2⬛";
+    @Getter private static String percentageLow = "<color:#f01f1f>■";
+    @Getter private static String percentageHalf = "<color:#05fa11>■";
+    @Getter private static String percentageFull = "<dark_green>⬛";
 
     public PlaceholderHandler(MysteryBlocksPlugin plugin) {
         super(plugin);
@@ -31,7 +31,7 @@ public class PlaceholderHandler extends AbstractHandler {
 
         if (enabled && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             this.expansion = new PlaceholderExpansion(plugin);
-            Utils.log(" §e- Queuing placeholder registry of " + expansion.getIdentifier());
+            Utils.log(" <yellow>- Queuing placeholder registry of " + expansion.getIdentifier());
 
             new BukkitRunnable() {
                 @Override
@@ -41,7 +41,7 @@ public class PlaceholderHandler extends AbstractHandler {
             }.runTaskLater(plugin, 1);
         } else if (enabled) {
             enabled = false;
-            Utils.log(" &e- Placeholders provider not found.. &cPlaceholders disabled.");
+            Utils.log(" <yellow>- Placeholders provider not found.. <color:#f01f1f>Placeholders disabled.");
         }
 
         return true;
@@ -50,9 +50,9 @@ public class PlaceholderHandler extends AbstractHandler {
     public boolean destroy() {
         try {
             expansion.unregister();
-            Bukkit.getConsoleSender().sendMessage(" §e- Unregistering placeholder " + expansion.getIdentifier() + ".. §aSuccessful");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm(" <yellow>- Unregistering placeholder " + expansion.getIdentifier() + ".. <color:#05fa11>Successful"));
         } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage(" §e- Unregistering placeholder " + expansion.getIdentifier() + ".. §cFailed");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm(" <yellow>- Unregistering placeholder " + expansion.getIdentifier() + ".. <color:#f01f1f>Failed"));
             e.printStackTrace();
             return false;
         }

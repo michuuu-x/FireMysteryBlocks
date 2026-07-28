@@ -15,7 +15,7 @@ dependencies {
 //    implementation fileTree("archive")
 
     // Server jars
-    compileOnly 'org.spigotmc:spigot-api:26.2-R0.1-SNAPSHOT'
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
 
     // Addons
     compileOnly 'me.clip:placeholderapi:2.12.3'
@@ -23,8 +23,7 @@ dependencies {
     compileOnly 'com.github.decentsoftware-eu:decentholograms:2.10.1'
 
     // Implementations
-    implementation 'com.iridium:IridiumColorAPI:1.0.9'
-    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation("com.zaxxer:HikariCP:7.1.0")
 }
 
 allprojects {
@@ -44,7 +43,10 @@ allprojects {
         maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url = 'https://repo.extendedclip.com/releases/' }
         maven { url = 'https://repo.fancyinnovations.com/releases' }
-        maven { url = 'https://nexus.iridiumdevelopment.net/repository/maven-releases/' }
+        maven {
+            name = "papermc"
+            url = uri("https://repo.papermc.io/repository/maven-public/")
+        }
     }
 
     dependencies {

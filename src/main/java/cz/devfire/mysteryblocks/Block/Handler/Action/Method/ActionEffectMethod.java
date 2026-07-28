@@ -2,6 +2,7 @@ package cz.devfire.mysteryblocks.Block.Handler.Action.Method;
 
 import cz.devfire.mysteryblocks.Block.Handler.Action.Interface.ActionMethod;
 import cz.devfire.mysteryblocks.MysteryBlocksPlugin;
+import cz.devfire.mysteryblocks.Util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -38,7 +39,7 @@ public class ActionEffectMethod implements ActionMethod {
         }
 
         if (er || type == null) {
-            Bukkit.getConsoleSender().sendMessage("§4[FireMysteryBlocks-ERROR] §cUnknown effect: \"" + actionString + "\"");
+            Bukkit.getConsoleSender().sendMessage(Utils.mm("<dark_red>[FireMysteryBlocks-ERROR] <color:#f01f1f>Unknown effect: \"" + actionString + "\""));
 
             if (MysteryBlocksPlugin.isDebugEnabled()) {
                 exception.printStackTrace();

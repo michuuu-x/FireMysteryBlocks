@@ -23,14 +23,14 @@ public class HologramHandler extends AbstractHandler {
                 hologramProviderType = HologramProviderType.valueOf(providerName);
 
                 if (hologramProviderType == HologramProviderType.NONE) {
-                    Utils.log(" &e- Hologram provider not selected.. &cHolograms disabled.");
+                    Utils.log(" <yellow>- Hologram provider not selected.. <color:#f01f1f>Holograms disabled.");
                     enabled = false;
                 } else {
-                    Utils.log(" &e- Hologram provider selected: &6" + hologramProviderType.name() + "&e.. &aHolograms enabled.");
+                    Utils.log(" <yellow>- Hologram provider selected: <gold>" + hologramProviderType.name() + "<yellow>.. <color:#05fa11>Holograms enabled.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Utils.log(" &e- Hologram provider &6" + providerName + " &enot found.. &cHolograms disabled.");
+                Utils.log(" <yellow>- Hologram provider <gold>" + providerName + " <yellow>not found.. <color:#f01f1f>Holograms disabled.");
                 enabled = false;
             }
         }

@@ -12,7 +12,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -49,7 +48,7 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
                 String[] enchantArgs = enchant.split(":");
 
                 for (Enchantment ench : Enchantment.values()) {
-                    if (ench.getKey().getKey().equalsIgnoreCase(enchantArgs[0]) || ench.getName().equalsIgnoreCase(enchantArgs[0])) {
+                    if (ench.getKey().getKey().equalsIgnoreCase(enchantArgs[0])) {
                         int level = Integer.parseInt(enchantArgs[1]);
                         double modifier = Double.parseDouble(enchantArgs[2]);
 
@@ -97,7 +96,7 @@ public class BlockItemDamageHandler extends AbstractBlockHandler {
             return;
         }
 
-        if (!EnchantmentTarget.TOOL.includes(tool) && !EnchantmentTarget.WEAPON.includes(tool)) {
+        if (!Enchantment.UNBREAKING.canEnchantItem(tool)) {
             return;
         }
 
